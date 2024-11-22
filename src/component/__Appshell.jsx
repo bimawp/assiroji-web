@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 const listProfile = [
   {
     name: 'SEJARAH',
@@ -24,6 +25,7 @@ const listProfile = [
   },
 ];
 export default function Appshell() {
+  const navigation = useRouter();
   return (
     <div className="h-24 ">
       <div className="flex h-full items-center justify-around">
@@ -39,7 +41,10 @@ export default function Appshell() {
             <Link href="/">Home</Link>
           </li>
           <li>
-            <button href={'#'} className="px-3 relative py-1 cursor-pointer group">
+            <button
+              onClick={() => navigation.push('/profile')}
+              className="px-3 relative py-1 cursor-pointer group"
+            >
               Profile
               <span className="ml-2 transition-all ease-in-out group-hover-text"></span>
               <div
@@ -48,7 +53,7 @@ export default function Appshell() {
                 <ul className=" text-black p-4 rounded-md transition-all ease-in-out bg-white flex flex-col items-start ">
                   {listProfile &&
                     listProfile.map((item, index) => (
-                      <li className='border-b border-gray-400 mb-2 hover:bg-gray-400' key={index}>
+                      <li className="border-b border-gray-400 mb-2 hover:bg-gray-400" key={index}>
                         <Link href={item.href}>{item.name}</Link>
                       </li>
                     ))}
