@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function Footer() {
   return (
-    <footer className=" bg-black text-white">
+    <footer className=" bg-[#1D564F] text-white">
       <div className="border-b border-gray-800">
         <div className="container mx-auto px-4 py-4 flex items-center gap-4">
           <Image
@@ -22,7 +22,7 @@ export default function Footer() {
 
       <div className="container mx-auto px-4 py-8 grid gap-8 md:grid-cols-4">
         <div className="space-y-6">
-          <h3 className="text-lg font-semibold border-l-4 border-[#039786] pl-2">Contact Info</h3>
+          <h3 className="text-lg font-semibold border-l-4 border-[#F7B118] pl-2">Contact Info</h3>
           <div className="space-y-4">
             <div>
               <p className="text-gray-400">Adress :</p>
@@ -45,7 +45,7 @@ export default function Footer() {
         </div>
 
         <div className="space-y-6">
-          <h3 className="text-lg font-semibold border-l-4 border-[#039786] pl-2">Menu</h3>
+          <h3 className="text-lg font-semibold border-l-4 border-[#F7B118] pl-2">Menu</h3>
           <nav className="space-y-2">
             {['Home', 'Profil', 'Sarana', 'Prestasi', 'PPDB', 'Kontak'].map((item) => (
               <Link
@@ -60,21 +60,21 @@ export default function Footer() {
         </div>
 
         <div className="space-y-6">
-          <h3 className="text-lg font-semibold border-l-4 border-[#039786] pl-2">Post A Comment</h3>
+          <h3 className="text-lg font-semibold border-l-4 border-[#F7B118] pl-2">Post A Comment</h3>
           <form className="mt-4 space-y-4 flex flex-col">
             <input
               placeholder="Enter Your Name ......."
-              className="bg-gray-800 border-gray-700 p-2 rounded-md"
+              className="bg-gray-200 text-black border-gray-700 p-2 rounded-md"
             />
             <textarea
               placeholder="Enter Your Comment ......."
-              className="bg-gray-800 border-gray-700 min-h-[100px]  p-2 rounded-md"
+              className="bg-gray-200 text-black border-gray-700 min-h-[100px]  p-2 rounded-md"
             />
             <button className="bg-gray-700 py-2 rounded-sm hover:bg-gray-400">Publish</button>
           </form>
         </div>
         <div className="space-y-6">
-          <h3 className="text-lg font-semibold border-l-4 border-[#039786] pl-2 mb-4">Comment</h3>
+          <h3 className="text-lg font-semibold border-l-4 border-[#F7B118] pl-2 mb-4">Comment</h3>
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <div className="h-10 w-10 bg-white rounded-full" />

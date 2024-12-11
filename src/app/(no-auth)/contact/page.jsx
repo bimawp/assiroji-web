@@ -15,7 +15,7 @@ export default function ContactPage() {
             height={120}
             className="rounded-full"
           />
-          <h1 className="text-2xl font-bold">SARANA & PRASARANA</h1>
+          <h1 className="text-2xl font-bold">CONTACT</h1>
         </div>
       </div>
       <div className="max-w-4xl mx-auto space-y-6 pb-20 mt-10"></div>
