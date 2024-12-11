@@ -5,7 +5,7 @@ export default function PpdbPage() {
     <div className=" bg-[#40E0D0] p-4 md:p-0 text-black">
       <div>
         <div className="relative w-full h-48 md:h-[600px] rounded-lg overflow-hidden">
-          <Image src="/image/rumah.jpeg" alt="Madrasah Building" fill className="object-cover" />
+          <Image src="/image/rumah.png" alt="Madrasah Building" fill className="object-cover" />
         </div>
         <div className="flex flex-col items-center text-center space-y-4 -mt-10 z-10 relative">
           <Image
