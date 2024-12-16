@@ -47,14 +47,16 @@ export default function Home() {
       <div className="p-4 md:py-10 w-full lg:px-14">
         <div className="rounded-md bg-[#f4f4f4] shadow-xl w-full flex flex-col md:flex-row">
           <div className="md:w-[93%] px-2 md:px-10">
-            <h2 className="text-2xl md:text-4xl font-bold text-[#1D564F] mt-10 mb-4 text-center ">BERITA</h2>
+            <h2 className="text-2xl md:text-4xl font-bold text-[#1D564F] mt-10 mb-4 text-center ">
+              BERITA
+            </h2>
             <hr className="bg-[#1D564F] w-full h-1" />
             <div className=" w-full">
               <Berita />
             </div>
           </div>
           <Link
-            href={'#'}
+            href={'/artikel'}
             className="bg-[#F7B118] text-black flex flex-col py-3 lg:py-0 justify-center rounded-md"
           >
             <p className="md:-rotate-90 text-center"> Berita Lainnya</p>

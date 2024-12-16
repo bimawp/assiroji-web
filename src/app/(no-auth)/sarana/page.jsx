@@ -34,7 +34,7 @@ export default function SaranaPage() {
     <div className=" bg-[#40E0D0] p-4 md:p-0 text-black">
       <div>
         <div className="relative w-full h-48 md:h-[600px] rounded-lg overflow-hidden">
-          <Image src="/image/rumah.png" alt="Madrasah Building" fill className="object-cover" />
+          <Image src="/image/rumah.jpeg" alt="Madrasah Building" fill className="object-cover" />
         </div>
         <div className="flex flex-col items-center text-center space-y-4 -mt-10 z-10 relative">
           <Image
@@ -44,23 +44,25 @@ export default function SaranaPage() {
             height={120}
             className="rounded-full"
           />
-          <h1 className="text-2xl font-bold">SARANA & PRASARANA</h1>
+          <h1 className="text-2xl font-bold">SARANA</h1>
         </div>
       </div>
       <div className="max-w-7xl mx-auto space-y-6 pb-20 mt-10">
-        <div className="container grid gap-8 md:grid-cols-4">
-          {Array.from({ length: 6 }, (_, index) => (
-            <div className="bg-white p-4 w-[300px]" key={index}>
-              <Image
-                src="/image/logo.png"
-                className="m-auto"
-                width={200}
-                height={200}
-                alt="image"
-              />
-              <p className="text-center mt-4">KETERANGAN</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          {Array(8)
+            .fill(null)
+            .map((_, index) => (
+              <div key={index} className="p-4 bg-white/20 rounded-lg overflow-hidden">
+                <Image
+                  src="/image/logo.png"
+                  className="m-auto"
+                  width={200}
+                  height={200}
+                  alt="image"
+                />
+                <p className="text-center py-2 text-sm">Keterangan</p>
+              </div>
+            ))}
         </div>
         <div className="w-full bg-white rounded-md">
           <div>

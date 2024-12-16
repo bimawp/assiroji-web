@@ -64,14 +64,14 @@ export default function Appshell() {
         </span>
         <ul
           className={`transform transition ease-in-out delay-150 ${
-            sidebar ? '-translate-x-full' : 'translate-x-0'
+            sidebar ? 'translate-x-0' : '-translate-x-full'
           } flex flex-col items-center justify-center gap-12 w-full h-screen bg-black bg-opacity-[0.9] text-white absolute top-0 z-[99] mt-24 
     lg:transform-none lg:flex-row lg:w-auto lg:h-auto lg:relative lg:justify-normal lg:bg-white lg:text-black lg:items-center lg:mt-0`}
         >
           {menuItems.map((menu, index) => (
             <li key={index}>
               {menu.isDropdown ? (
-                <button className="px-3 relative py-1 cursor-pointer group flex">
+                <button className="px-3 relative py-1 cursor-pointer group flex flex-col lg:flex-row items-center ">
                   <p
                     onClick={() => {
                       navigation.push('/profile');
@@ -82,7 +82,7 @@ export default function Appshell() {
                   </p>
                   <span className="ml-2 transition-all ease-in-out group-hover-text"></span>
                   <div
-                    className={`left-0 z-10 max-h-0 mt-2 text-black transition-[max-height] duration-500 ease-in-out bg-white rounded-lg shadow-lg lg:absolute top-10 w-[240px] group-hover:max-h-[190px] group-hover:z-50 overflow-hidden`}
+                    className={`left-0 z-10 lg:max-h-0 mt-2 text-black transition-[max-height] duration-500 ease-in-out bg-white rounded-lg shadow-lg lg:absolute top-10 w-[240px] group-hover:max-h-[190px] group-hover:z-50 overflow-hidden`}
                   >
                     <ul className=" text-black p-4 rounded-md transition-all ease-in-out bg-white flex flex-col items-start ">
                       {menu.items.map((subItem, subIndex) => (
