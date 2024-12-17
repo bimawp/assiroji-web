@@ -24,7 +24,7 @@ export default function PageBerita() {
     <div>
       <div className="flex w-full justify-between items-center border-b border-[#1D564F] pb-4">
         <div className="flex gap-1 rounded-full bg-emerald-100 p-1">
-          <Link href="/admin" className={`rounded-full px-6 py-2 text-sm text-emerald-600`}>
+          <Link href="/admin/artikel" className={`rounded-full px-6 py-2 text-sm text-emerald-600`}>
             Artikel
           </Link>
           <div className={`rounded-full px-6 py-2 text-sm bg-emerald-600 text-white`}>
