@@ -1,11 +1,14 @@
 'use client';
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { ExternalLink, Search, ChevronDown, Plus } from 'lucide-react';
 import Link from 'next/link';
 import EditorComponent from '@/component/__EditorInput';
 import ImageUploader from '@/component/__DropImageInput';
 
-export default function PageBerita() {
+export default function PageUpdateArtikel() {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     title: '',
     category: '',
@@ -19,6 +22,9 @@ export default function PageBerita() {
   const [showCategoryInput, setShowCategoryInput] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [content, setEditorContent] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -27,9 +33,42 @@ export default function PageBerita() {
     }));
   };
 
+  useEffect(() => {
+    const fetchArticle = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/test/${id}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setFormData({
+          title: data.title,
+          category: data.category,
+          tags: data.tags,
+          headerImage: data.headerImage,
+          content: data.content,
+        });
+        setEditorContent(data.content);
+      } catch (error) {
+        console.error('Error fetching article:', error);
+        setError('Failed to load article. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchArticle();
+    }
+  }, [id]);
+
   const handleEditorChange = (htmlContent) => {
     setEditorContent(htmlContent);
-    console.log('HTML Content:', htmlContent);
+    setFormData((prevData) => ({
+      ...prevData,
+      content: htmlContent,
+    }));
   };
 
   const handleImageUpload = (file) => {
@@ -77,11 +116,40 @@ export default function PageBerita() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data:', { ...formData, content });
-    console.log('Form Data:', content);
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/articles/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Handle successful update
+      console.log('Article updated successfully');
+      // You might want to redirect to the article list or show a success message
+    } catch (error) {
+      console.error('Error updating article:', error);
+      setError('Failed to update article. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
@@ -91,7 +159,7 @@ export default function PageBerita() {
             Artikel
           </Link>
           <div className={`rounded-full px-6 py-2 text-sm bg-emerald-600 text-white`}>
-            Buat artikel
+            Update artikel
           </div>
         </div>
       </div>
@@ -99,7 +167,7 @@ export default function PageBerita() {
       <form onSubmit={handleSubmit} className="space-y-6 mt-3">
         <div className="space-y-2">
           <label className="block">
-            <span className=" font-extralight text-gray-900 ">Judul Artikel</span>
+            <span className="text-sm font-medium text-gray-900">Judul Artikel</span>
             <span className="ml-1 text-sm text-gray-500">(Required)</span>
           </label>
           <input
@@ -114,7 +182,7 @@ export default function PageBerita() {
 
         <div className="space-y-2">
           <label className="block">
-            <span className=" font-extralight text-gray-900 ">Kategori</span>
+            <span className="text-sm font-medium text-gray-900">Kategori</span>
             <span className="ml-1 text-sm text-gray-500">(Required)</span>
           </label>
           <div className="relative">
@@ -171,15 +239,15 @@ export default function PageBerita() {
 
         <div className="space-y-2">
           <label className="block">
-            <span className=" font-extralight text-gray-900 ">Header Artikel</span>
+            <span className="text-sm font-medium text-gray-900">Header Artikel</span>
             <span className="ml-1 text-sm text-gray-500">(Required)</span>
           </label>
-          <ImageUploader onImageUpload={handleImageUpload} />
+          <ImageUploader onImageUpload={handleImageUpload} initialState={formData.headerImage} />
         </div>
 
         <div className="space-y-2">
           <label className="block">
-            <span className=" font-extralight text-gray-900 ">Tag</span>
+            <span className="text-sm font-medium text-gray-900">Tag</span>
             <span className="ml-1 text-sm text-gray-500">(Required)</span>
           </label>
           <div className="flex flex-wrap gap-2">
@@ -220,11 +288,14 @@ export default function PageBerita() {
 
         <div className="space-y-2">
           <label className="block">
-            <span className="text-lg font-extralight text-gray-900 ">Isi</span>
+            <span className="text-sm font-medium text-gray-900">Isi</span>
             <span className="ml-1 text-sm text-gray-500">(Required)</span>
           </label>
           <div className="mt-2">
-            <EditorComponent onContentChange={handleEditorChange} />
+            <EditorComponent
+              onContentChange={handleEditorChange}
+              initialContent={formData.content || ''}
+            />
           </div>
         </div>
 
@@ -241,8 +312,9 @@ export default function PageBerita() {
             <button
               type="submit"
               className="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700"
+              disabled={isLoading}
             >
-              Publish
+              {isLoading ? 'Updating...' : 'Update'}
               <ChevronDown className="ml-2 h-4 w-4" />
             </button>
           </div>

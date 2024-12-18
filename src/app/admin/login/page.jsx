@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import { z } from 'zod';
 import { signIn } from 'next-auth/react';
@@ -16,85 +17,129 @@ export default function LoginPage() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e) => {
-    setIsLoading(true);
     e.preventDefault();
+    setIsLoading(true);
     try {
       loginSchema.parse(formData);
-      console.log('Data valid:', formData);
-
-      const ress = await signIn('credentials', {
+      const res = await signIn('credentials', {
         redirect: false,
-        nrp: formData.get('nrp'),
-        password: formData.get('password'),
+        email: formData.email,
+        password: formData.password,
         callbackUrl: '/admin',
       });
-      if (!ress?.error) {
+      if (!res?.error) {
         window.location.href = '/admin';
       } else {
-        console.log(ress.error);
-        alert(ress.error);
+        alert(res.error);
       }
-      setIsLoading(false);
     } catch (err) {
-      if (err.errors) {
+      if (err instanceof z.ZodError) {
         const validationErrors = {};
         err.errors.forEach((error) => {
           validationErrors[error.path[0]] = error.message;
         });
         setErrors(validationErrors);
-        setIsLoading(false);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-700">
-      <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-center mb-6 text-black">Login</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-800">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`mt-1 block w-full px-4 py-2 border text-black ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
-              } rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-            />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`mt-1 block w-full px-4 py-2 border text-black ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              } rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-            />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-          </div>
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={isLoading}
-          >
-            Login
-          </button>
-        </form>
+    <div className="flex items-center justify-center min-h-screen bg-[#1D564F]">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="p-6 space-y-6">
+          {/* <div className="flex justify-center">
+            <div className="w-16 h-16 bg-[#F7B118] rounded-full flex items-center justify-center">
+              <span className="text-2xl font-bold text-[#1D564F]">Logo</span>
+            </div>
+          </div> */}
+          <h2 className="text-2xl font-semibold text-center text-[#1D564F]">Login</h2>
+          <p className="text-sm text-center text-gray-500">
+            Enter your email and password to access your account
+          </p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-medium text-[#1D564F]">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#F7B118] ${
+                  errors.email ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 mr-1"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {errors.email}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="password" className="block text-sm font-medium text-[#1D564F]">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#F7B118] ${
+                  errors.password ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.password && (
+                <p className="text-red-500 text-sm flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 mr-1"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {errors.password}
+                </p>
+              )}
+            </div>
+            <button
+              type="submit"
+              className={`w-full py-2 px-4 bg-[#F7B118] text-[#1D564F] font-semibold rounded-md hover:bg-[#e5a516] focus:outline-none focus:ring-2 focus:ring-[#F7B118] focus:ring-opacity-50 transition-all duration-300 ${
+                isLoading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Logging in...' : 'Log in'}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

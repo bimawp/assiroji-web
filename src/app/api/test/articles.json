@@ -1,0 +1,82 @@
+ [
+  {
+    "id-artikel": "123",
+    "title": "The Future of Artificial Intelligence",
+    "category": "Teknologi",
+    "tags": ["AI", "Machine Learning", "Technology"],
+    "headerImage": "https://cdn.pixabay.com/photo/2018/06/07/16/49/virtual-3460451_1280.jpg",
+    "content": "<h1>The Future of Artificial Intelligence</h1><p>Artificial Intelligence is rapidly changing the world around us...</p>"
+  },
+  {
+    "id-artikel": "124",
+    "title": "Advancements in Renewable Energy",
+    "category": "Energi",
+    "tags": ["Renewable Energy", "Solar Power", "Sustainability"],
+    "headerImage": "https://cdn.pixabay.com/photo/2017/09/12/13/21/photovoltaic-system-2742302_1280.jpg",
+    "content": "<h1>Advancements in Renewable Energy</h1><p>Renewable energy sources are becoming more efficient...</p>"
+  },
+  {
+    "id-artikel": "125",
+    "title": "Exploring the Depths of Space",
+    "category": "Astronomi",
+    "tags": ["Space Exploration", "NASA", "Astronomy"],
+    "headerImage": "https://cdn.pixabay.com/photo/2011/12/14/12/21/orion-nebula-11107_1280.jpg",
+    "content": "<h1>Exploring the Depths of Space</h1><p>Space exploration has taken giant leaps...</p>"
+  },
+  {
+    "id-artikel": "126",
+    "title": "The Rise of Electric Vehicles",
+    "category": "Otomotif",
+    "tags": ["Electric Vehicles", "EV", "Sustainability"],
+    "headerImage": "https://cdn.pixabay.com/photo/2021/01/15/16/49/tesla-5919764_1280.jpg",
+    "content": "<h1>The Rise of Electric Vehicles</h1><p>Electric vehicles (EVs) are transforming the automotive industry...</p>"
+  },
+  {
+    "id-artikel": "127",
+    "title": "The Importance of Mental Health Awareness",
+    "category": "Kesehatan",
+    "tags": ["Mental Health", "Wellness", "Awareness"],
+    "headerImage": "https://cdn.pixabay.com/photo/2018/03/30/09/14/body-3274551_1280.jpg",
+    "content": "<h1>The Importance of Mental Health Awareness</h1><p>Mental health is a critical component of overall well-being...</p>"
+  },
+  {
+    "id-artikel": "128",
+    "title": "The Evolution of Smart Homes",
+    "category": "Teknologi",
+    "tags": ["Smart Home", "IoT", "Innovation"],
+    "headerImage": "https://cdn.pixabay.com/photo/2017/08/06/10/26/woman-2591874_1280.jpg",
+    "content": "<h1>The Evolution of Smart Homes</h1><p>Smart home technology is making our lives more convenient...</p>"
+  },
+  {
+    "id-artikel": "129",
+    "title": "The Future of Blockchain Technology",
+    "category": "Teknologi",
+    "tags": ["Blockchain", "Cryptocurrency", "Finance"],
+    "headerImage": "https://cdn.pixabay.com/photo/2018/01/18/07/31/bitcoin-3089728_1280.jpg",
+    "content": "<h1>The Future of Blockchain Technology</h1><p>Blockchain is revolutionizing industries...</p>"
+  },
+  {
+    "id-artikel": "130",
+    "title": "How to Combat Climate Change",
+    "category": "Lingkungan",
+    "tags": ["Climate Change", "Environment", "Sustainability"],
+    "headerImage": "https://cdn.pixabay.com/photo/2015/09/09/16/05/forest-fire-931223_1280.jpg",
+    "content": "<h1>How to Combat Climate Change</h1><p>Addressing climate change is one of the most critical challenges...</p>"
+  },
+  {
+    "id-artikel": "131",
+    "title": "The Impact of 5G Technology",
+    "category": "Teknologi",
+    "tags": ["5G", "Technology", "Connectivity"],
+    "headerImage": "https://cdn.pixabay.com/photo/2017/12/15/13/51/polynomials-3021097_1280.jpg",
+    "content": "<h1>The Impact of 5G Technology</h1><p>5G technology promises faster connectivity...</p>"
+  },
+  {
+    "id-artikel": "132",
+    "title": "The Benefits of Daily Meditation",
+    "category": "Kesehatan",
+    "tags": ["Meditation", "Wellness", "Mindfulness"],
+    "headerImage": "https://cdn.pixabay.com/photo/2017/03/26/21/54/yoga-2176668_1280.jpg",
+    "content": "<h1>The Benefits of Daily Meditation</h1><p>Meditation has numerous health benefits...</p>"
+  }
+]
