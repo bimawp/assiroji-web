@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-export default function PrestasiPage() {
+export default async function PrestasiPage() {
   const achievements = [
     {
       id: 1,

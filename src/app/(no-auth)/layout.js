@@ -1,7 +1,7 @@
-import Appshell from '@/component/__Appshell';
+import Appshell from '@/components/__Appshell';
 import React from 'react';
 import './../globals.css';
-import Footer from '@/component/__Fotter';
+import Footer from '@/components/__Fotter';
 
 export const metadata = {
   title: 'Home Page',

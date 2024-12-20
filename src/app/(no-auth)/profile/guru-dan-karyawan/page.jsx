@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-export default function guruKaryawanPage() {
+export default async function guruKaryawanPage() {
   return (
     <div className=" bg-[#40E0D0] p-4 md:p-0 text-black">
       <div>

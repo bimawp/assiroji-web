@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ExternalLink, Search, ChevronDown, Plus } from 'lucide-react';
 import Link from 'next/link';
-import EditorComponent from '@/component/__EditorInput';
-import ImageUploader from '@/component/__DropImageInput';
+import EditorComponent from '@/components/__EditorInput';
+import ImageUploader from '@/components/__DropImageInput';
+import ModalViewArtikel from '../../_components/ModalViewArtikel';
 
 export default function PageUpdateArtikel() {
   const { id } = useParams();
@@ -24,7 +25,8 @@ export default function PageUpdateArtikel() {
   const [content, setEditorContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [openModal, setOpenModal] = useState(false);
+  const onHandleOpenModal = () => setOpenModal(!openModal);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -152,7 +154,8 @@ export default function PageUpdateArtikel() {
   }
 
   return (
-    <div>
+    <>
+      <ModalViewArtikel data={formData} handleOpen={onHandleOpenModal} open={openModal} />
       <div className="flex w-full justify-between items-center border-b border-[#1D564F] pb-4">
         <div className="flex gap-1 rounded-full bg-emerald-100 p-1">
           <Link href="/admin/artikel" className={`rounded-full px-6 py-2 text-sm text-emerald-600`}>
@@ -303,6 +306,7 @@ export default function PageUpdateArtikel() {
           <button
             type="button"
             className="inline-flex items-center rounded-lg bg-amber-500 px-4 py-2 text-white hover:bg-amber-600"
+            onClick={onHandleOpenModal}
           >
             Open Preview
             <ExternalLink className="ml-2 h-4 w-4" />
@@ -320,6 +324,6 @@ export default function PageUpdateArtikel() {
           </div>
         </div>
       </form>
-    </div>
+    </>
   );
 }

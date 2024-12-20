@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ExternalLink, PlusIcon, Search } from 'lucide-react';
-import ModalDeleteArtikel from '@/component/__ModalDeleteArtikel';
-import { fetchAllArticleData } from './update-artikel/[id]/page';
+import ModalDeleteArtikel from './_components/ModalDeleteArtikel';
 
 export default function Page() {
   const [modalDelete, setModalDelete] = useState(false);
@@ -51,7 +50,7 @@ export default function Page() {
 
   const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
   return (
-    <>
+    <div className="p-4">
       <ModalDeleteArtikel open={modalDelete} handleOpen={onModalDelete} data={articleDelete} />
       <div className="flex w-full justify-between items-center border-b border-[#1D564F] pb-4">
         <div className="w-[400px] relative flex items-center border  px-3 border-[#1D564F]">
@@ -231,6 +230,6 @@ export default function Page() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

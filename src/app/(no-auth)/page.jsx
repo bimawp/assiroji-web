@@ -1,10 +1,12 @@
-import Berita from '@/component/__Berita';
-import { ArrowRight, ArrowRightCircle, ArrowUpRight, DoorClosedIcon } from 'lucide-react';
+import React from 'react';
+import { ArrowRightCircle, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import EkstrakulikulerCard from './_components/EkstrakulikulerCard';
+import GalleryCard from './_components/GalleryCard';
+import Berita from './_components/BeritaCard';
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="">
       <div className="w-full">
@@ -44,6 +46,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+
       <div className="p-4 md:py-10 w-full lg:px-14">
         <div className="rounded-md bg-[#f4f4f4] shadow-xl w-full flex flex-col md:flex-row">
           <div className="md:w-[93%] px-2 md:px-10">
@@ -63,6 +66,7 @@ export default function Home() {
           </Link>
         </div>
       </div>
+      {/* ekstrakulikuler */}
       <div className="p-4 md:py-10 w-full lg:px-14">
         <div className="rounded-md bg-[#039685] text-white shadow-xl w-full p-6">
           <h2 className="text-2xl md:text-4xl font-bold mb-4 text-center ">EKSTRAKULIKULER</h2>
@@ -70,30 +74,13 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:p-3 lg:p-10">
             {Array.from({ length: 6 }, (_, index) => (
               <div key={index} className="bg-white rounded-md w-full">
-                <div className="bg-white rounded-3xl overflow-hidden shadow-sm">
-                  <div className="p-6">
-                    <div className="flex justify-between items-center mb-4  border-b-2 border-[#1D564F] pb-3">
-                      <h1 className="md:text-3xl font-bold text-[#1D564F]">PRAMUKA</h1>
-                      <div className="bg-[#B4D5D0] p-4 rounded-full">
-                        <ArrowUpRight className="w-6 h-6 text-[#1D564F]" />
-                      </div>
-                    </div>
-                    <div className="relative h-[200px] md:h-[240px] rounded-2xl overflow-hidden">
-                      <Image
-                        src="/image/KEGIATAN DO'A BERSAMA.jpeg"
-                        alt="Group of scouts posing outdoors with camping tents in background"
-                        fill
-                        className="object-cover transition-transform hover:scale-105 duration-300"
-                        priority
-                      />
-                    </div>
-                  </div>
-                </div>
+                <EkstrakulikulerCard />
               </div>
             ))}
           </div>
         </div>
       </div>
+      {/* gallery */}
       <div className="container mx-auto px-4 py-10">
         <h2 className="text-2xl md:text-4xl font-bold  pb-5 text-center ">GALERY</h2>
         <hr className="bg-[#1D564F] mb-4 w-full rounded-md h-1" />
@@ -121,23 +108,15 @@ export default function Home() {
             },
           ].map((image, index) => (
             <div key={index} className="relative group overflow-hidden rounded-lg">
-              <Image
-                src={image.src}
-                alt={image.alt}
-                width={600}
-                height={400}
-                className="w-full h-[300px] object-cover transition-transform hover:scale-105 duration-300"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <p className="text-sm font-medium">{image.caption}</p>
-              </div>
+              <GalleryCard image={image} />
             </div>
           ))}
         </div>
       </div>
+
+      {/* Map Section */}
       <div className=" bg-[#e0f2f1] p-4 md:p-8">
         <div className="max-w-6xl mx-auto grid gap-4 md:grid-cols-2">
-          {/* Map Section */}
           <div>
             <div className="h-[300px] md:h-full">
               <iframe
@@ -147,13 +126,6 @@ export default function Home() {
                 allowFullScreen
               />
             </div>
-            {/* <div className="bg-[#009688] text-white">
-              <div className="p-4">
-                <button className="w-full text-xl font-bold hover:text-[#ffc107] transition-colors">
-                  Visit
-                </button>
-              </div>
-            </div> */}
           </div>
 
           {/* Contact Information */}

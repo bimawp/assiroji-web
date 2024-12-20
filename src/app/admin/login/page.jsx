@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { z } from 'zod';
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 
 const loginSchema = z.object({
   email: z.string().email('Email tidak valid'),
@@ -51,6 +52,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#1D564F]">
+      {/* <Image className='absolute w-full ' width={1200} height={1200} src="/image/ma-assiroji.jpg" alt="ma-assiroji" /> */}
       <div className="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-6 space-y-6">
           {/* <div className="flex justify-center">
