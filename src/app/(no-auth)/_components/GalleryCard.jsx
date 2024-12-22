@@ -5,8 +5,8 @@ function GalleryCard({ image }) {
   return (
     <>
       <Image
-        src={image.src}
-        alt={image.alt}
+        src={image.imageUrl}
+        alt={image.caption}
         width={600}
         height={400}
         className="w-full h-[300px] object-cover transition-transform hover:scale-105 duration-300"

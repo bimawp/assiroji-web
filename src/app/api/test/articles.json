@@ -1,4 +1,4 @@
- [
+[
   {
     "id-artikel": "123",
     "title": "The Future of Artificial Intelligence",
@@ -26,7 +26,7 @@
   {
     "id-artikel": "126",
     "title": "The Rise of Electric Vehicles",
-    "category": "Otomotif",
+    "category": "Prestasi",
     "tags": ["Electric Vehicles", "EV", "Sustainability"],
     "headerImage": "https://cdn.pixabay.com/photo/2021/01/15/16/49/tesla-5919764_1280.jpg",
     "content": "<h1>The Rise of Electric Vehicles</h1><p>Electric vehicles (EVs) are transforming the automotive industry...</p>"
@@ -34,7 +34,7 @@
   {
     "id-artikel": "127",
     "title": "The Importance of Mental Health Awareness",
-    "category": "Kesehatan",
+    "category": "Prestasi",
     "tags": ["Mental Health", "Wellness", "Awareness"],
     "headerImage": "https://cdn.pixabay.com/photo/2018/03/30/09/14/body-3274551_1280.jpg",
     "content": "<h1>The Importance of Mental Health Awareness</h1><p>Mental health is a critical component of overall well-being...</p>"

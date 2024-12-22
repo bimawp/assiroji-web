@@ -87,22 +87,22 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             {
-              src: '/image/KEGIATAN STUDY TOUR.jpg',
+              imageUrl: '/image/KEGIATAN STUDY TOUR.jpg',
               alt: 'School assembly in courtyard',
               caption: 'Annual School Assembly',
             },
             {
-              src: '/image/KEGIATAN STUDY TOUR.jpg',
+              imageUrl: '/image/KEGIATAN STUDY TOUR.jpg',
               alt: 'Graduation ceremony',
               caption: 'Graduation Ceremony 2023',
             },
             {
-              src: '/image/KEGIATAN STUDY TOUR.jpg',
+              imageUrl: '/image/KEGIATAN STUDY TOUR.jpg',
               alt: 'Study tour group photo',
               caption: 'Study Tour MA AS-SIROJI',
             },
             {
-              src: '/image/KEGIATAN STUDY TOUR.jpg',
+              imageUrl: '/image/KEGIATAN STUDY TOUR.jpg',
               alt: 'Students group photo',
               caption: 'Student Activities',
             },

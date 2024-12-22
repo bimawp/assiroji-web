@@ -1,0 +1,32 @@
+[
+  {
+    "id-guru": "U001",
+    "nama": "John Doe",
+    "jabatan": "Photographer",
+    "urlImage": "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+  },
+  {
+    "id-guru": "U002",
+    "nama": "Jane Smith",
+    "jabatan": "Graphic Designer",
+    "urlImage": "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+  },
+  {
+    "id-guru": "U003",
+    "nama": "Alice Johnson",
+    "jabatan": "Content Creator",
+    "urlImage": "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+  },
+  {
+    "id-guru": "U004",
+    "nama": "Bob Brown",
+    "jabatan": "Web Developer",
+    "urlImage": "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+  },
+  {
+    "id-guru": "U005",
+    "nama": "Emma Davis",
+    "jabatan": "Digital Marketer",
+    "urlImage": "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+  }
+]
