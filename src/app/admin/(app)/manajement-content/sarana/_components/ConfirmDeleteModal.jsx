@@ -4,8 +4,16 @@ export default function ConfirmDeleteModal({ isOpen, onClose, onConfirm, namaBan
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full p-6">
+    <div
+      className={`fixed inset-0 z-50 grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300 ${
+        isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
+    >
+      <div
+        className={`relative m-4 max-w-md w-full rounded-lg bg-white p-6 text-blue-gray-500 shadow-2xl transition-transform duration-300 ${
+          isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}
+      >
         <h2 className="text-2xl font-bold mb-4">Confirm Delete</h2>
         <p className="mb-4">
           Are you sure you want to delete the activity &quot;{namaBangunan}&quot;?
