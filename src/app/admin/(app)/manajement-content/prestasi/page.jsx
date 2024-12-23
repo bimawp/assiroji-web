@@ -54,15 +54,15 @@ export default function Page() {
 
   const totalPages = Math.ceil(filteredPrestasis.length / itemsPerPage);
   return (
-    <div className="p-4">
+    <div className="">
       <ModalDeletePrestasi open={modalDelete} handleOpen={onModalDelete} data={prestasiDelete} />
       <ModalViewPrestasi
         isOpen={isPreviewModalOpen}
         onClose={() => setIsPreviewModalOpen(false)}
         data={filteredPrestasis}
       />
-      <div className="flex w-full justify-between items-center border-b border-[#1D564F] pb-4">
-        <div className="w-[400px] relative flex items-center border  px-3 border-[#1D564F]">
+      <div className="flex w-full justify-between items-center bg-white border-b border-gray-200 p-4">
+        <div className="w-[400px] relative flex items-center border rounded-md px-3 border-[#1D564F]">
           <input
             type="search"
             className=" w-full outline-none py-2"
@@ -89,7 +89,7 @@ export default function Page() {
           </Link>
         </div>
       </div>
-      <div className="w-full py-4">
+      <div className="w-full p-4">
         <div className="overflow-x-auto shadow-md ">
           <table className="w-full border-collapse ">
             <thead>

@@ -1,3 +1,4 @@
+import Header from '@/components/__Header';
 import Image from 'next/image';
 const scheduleItems = [
   { id: 1, title: 'Pendaftaran', date: '18 Januari - 6 Februari 2025' },
@@ -14,22 +15,23 @@ const navigationItems = [
 ];
 export default function PpdbPage() {
   return (
-    <div className=" bg-[#40E0D0] p-4 md:p-0 text-black">
-      <div>
-        <div className="relative w-full h-48 md:h-[600px] rounded-lg overflow-hidden">
-          <Image src="/image/rumah.png" alt="Madrasah Building" fill className="object-cover" />
-        </div>
-        <div className="flex flex-col items-center text-center space-y-4 -mt-10 z-10 relative">
-          <Image
-            src="/image/logo.png"
-            alt="MA AS-SIROJI Logo"
-            width={120}
-            height={120}
-            className="rounded-full"
-          />
-          <h1 className="text-2xl font-bold">PPDB</h1>
-        </div>
+    <div className="bg-gradient-to-b from-teal-200 to-teal-400 p-4 md:p-0 text-black">
+      <Header
+        h1Content="Penerimaan Siswa Baru"
+        subtitle="Membuka Pintu Masa Depan untuk Generasi Penerus"
+        backgroundImage="/image/rumah.png"
+      />
+      <div className="flex flex-col items-center text-center space-y-4 -mt-10 z-10 relative">
+        <Image
+          src="/image/logo.png"
+          alt="MA AS-SIROJI Logo"
+          width={120}
+          height={120}
+          className="rounded-full"
+        />
       </div>
+
+      {/* content */}
       <div className="max-w-4xl mx-auto space-y-6 pb-20 mt-10">
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           <div className="order-2 md:order-1">
@@ -37,7 +39,6 @@ export default function PpdbPage() {
               Informasi penerimaan Santri Baru Madrasah Aliyah As Siroji tahun pelajaran 2025-2026:
             </h3>
 
-            {/* Navigation Buttons */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
               {navigationItems.map((item) => (
                 <button
@@ -50,7 +51,6 @@ export default function PpdbPage() {
               ))}
             </div>
 
-            {/* Schedule Table */}
             <div className="bg-white/20 backdrop-blur-sm rounded-lg overflow-hidden">
               <table className="w-full">
                 <tbody>
@@ -86,13 +86,14 @@ export default function PpdbPage() {
           </div>
         </div>
 
-        {/* Register Button */}
         <div className="text-center">
           <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-4 px-8 rounded-full text-lg transition-colors">
             DAFTAR SEKARANG
           </button>
         </div>
       </div>
+
+      {/* end */}
     </div>
   );
 }

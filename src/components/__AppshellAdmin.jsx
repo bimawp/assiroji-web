@@ -242,7 +242,7 @@ export default function AppshellAdmin({ children }) {
               isCollapsed ? 'ml-[80px]' : 'ml-[300px]'
             }`}
           >
-            <div className="bg-white rounded-lg p-4 min-h-screen">
+            <div className="bg-gray-50 rounded-lg min-h-screen">
               <button
                 className={`fixed top-1/2 -translate-y-1/2 p-1 rounded-full text-white bg-[#F7B118] border-4 border-white hover:bg-orange-400 transition-all duration-300 ease-in-out ${
                   isCollapsed ? 'left-[60px] rotate-0' : 'left-[276px] rotate-180'

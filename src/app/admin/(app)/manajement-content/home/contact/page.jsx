@@ -92,8 +92,8 @@ export default function SocialMediaSettings() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-lg ">
+    <div className="space-y-6 mt-2">
+      <div className="bg-white p-2 rounded-lg shadow">
         <div className=" mt-3">
           <h1 className="text-xl font-semibold mb-4">Social Media Links</h1>
           <form onSubmit={handleSubmit} className="px-2 flex flex-col gap-4 ">

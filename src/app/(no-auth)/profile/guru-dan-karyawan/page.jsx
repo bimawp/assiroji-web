@@ -1,22 +1,22 @@
+import Header from '@/components/__Header';
 import Image from 'next/image';
 
 export default async function guruKaryawanPage() {
   return (
-    <div className=" bg-[#40E0D0] p-4 md:p-0 text-black">
-      <div>
-        <div className="relative w-full h-48 md:h-[600px] rounded-lg overflow-hidden">
-          <Image src="/image/rumah.jpeg" alt="Madrasah Building" fill className="object-cover" />
-        </div>
-        <div className="flex flex-col items-center text-center space-y-4 -mt-10 z-10 relative">
-          <Image
-            src="/image/logo.png"
-            alt="MA AS-SIROJI Logo"
-            width={120}
-            height={120}
-            className="rounded-full"
-          />
-          <h1 className="text-2xl font-bold">GURU & KARYAWAN</h1>
-        </div>
+    <div className="bg-gradient-to-b from-teal-200 to-teal-400 p-4 md:p-0 text-black">
+      <Header
+        h1Content="Guru & Karyawan"
+        subtitle="Tim Dedikasi Pembentuk Masa Depan"
+        backgroundImage="/image/rumah.png"
+      />
+      <div className="flex flex-col items-center text-center space-y-4 -mt-10 z-10 relative">
+        <Image
+          src="/image/logo.png"
+          alt="MA AS-SIROJI Logo"
+          width={120}
+          height={120}
+          className="rounded-full"
+        />
       </div>
       <div className="max-w-4xl mx-auto space-y-6 pb-20 mt-10">
         <div className="relative z-20">

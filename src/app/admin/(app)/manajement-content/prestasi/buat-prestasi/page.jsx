@@ -92,7 +92,7 @@ export default function PagePrestasi() {
   return (
     <>
       <ModalViewPrestasi data={formData} handleOpen={onHandleOpenModal} open={openModal} />
-      <div className="flex w-full justify-between items-center border-b border-[#1D564F] pb-4">
+      <div className="flex w-full justify-between items-center bg-white border-b border-gray-200 p-4">
         <div className="flex gap-1 rounded-full bg-emerald-100 p-1">
           <Link
             href="/admin/manajement-content/prestasi"
@@ -106,7 +106,7 @@ export default function PagePrestasi() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 mt-3">
+      <form onSubmit={handleSubmit} className="space-y-6 p-4">
         <div className="space-y-2">
           <label className="block">
             <span className=" font-extralight text-gray-900 ">Judul Prestasi</span>

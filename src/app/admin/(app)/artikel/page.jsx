@@ -50,10 +50,10 @@ export default function Page() {
 
   const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
   return (
-    <div className="p-4">
+    <div className="">
       <ModalDeleteArtikel open={modalDelete} handleOpen={onModalDelete} data={articleDelete} />
-      <div className="flex w-full justify-between items-center border-b border-[#1D564F] pb-4">
-        <div className="w-[400px] relative flex items-center border  px-3 border-[#1D564F]">
+      <div className="flex w-full justify-between items-center bg-white border-b border-gray-200 p-4">
+        <div className="w-[400px] relative flex items-center border rounded-md px-3 border-[#1D564F]">
           <input
             type="search"
             className=" w-full outline-none py-2"
@@ -70,14 +70,14 @@ export default function Page() {
           </Link>
           <Link
             href="/admin/artikel/buat-artikel"
-            className="bg-[#F7B118] text-white flex items-center gap-2 px-3 py-2"
+            className="bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center gap-2 px-3 py-2"
           >
             <PlusIcon />
             <p>Tambah artikel</p>
           </Link>
         </div>
       </div>
-      <div className="w-full py-4">
+      <div className="w-full p-4">
         <div className="overflow-x-auto shadow-md ">
           <table className="w-full border-collapse ">
             <thead>
