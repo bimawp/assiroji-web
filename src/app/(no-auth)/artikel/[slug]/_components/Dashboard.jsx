@@ -63,13 +63,11 @@ const articles = [
   },
 ];
 
-export default function ArticleDetailPage() {
-  const params = useParams();
-  const article = articles.find((a) => a.id === Number(params.id));
-
+export default function ArticleDetailPage({ data: article }) {
   if (!article) {
     return <div className="container mx-auto p-4">Article not found</div>;
   }
+  console.log(article)
 
   return (
     <div className="bg-gradient-to-b from-teal-200 to-teal-400 min-h-screen">
@@ -79,29 +77,35 @@ export default function ArticleDetailPage() {
         </Link>
         <article className="bg-white shadow-lg rounded-lg overflow-hidden">
           <Image
-            src={article.image}
+            src={article.headerImage}
             alt={article.title}
             width={800}
             height={400}
             className="w-full h-[400px] object-cover"
           />
           <div className="p-6">
-            <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
+            <h1 className="text-4xl font-bold mb-4">admin</h1>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <Image
                   src="/image/logo.png"
-                  alt={article.author}
+                  alt="admin"
                   width={40}
                   height={40}
                   className="rounded-full mr-2"
                 />
-                <span className="text-gray-600">{article.author}</span>
+                <span className="text-gray-600">admin</span>
               </div>
-              <span className="text-gray-500">{article.date}</span>
+              <span className="text-gray-500">
+                {article.createdAt.toLocaleDateString('id-ID', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </span>
             </div>
             <div className="flex gap-2 mb-6">
-              {article.categories.map((category) => (
+              {article.tags.map((category) => (
                 <span
                   key={category}
                   className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded"

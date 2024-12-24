@@ -1,162 +1,50 @@
-import { getUser, editUser, deleteUser, updatePassword } from '../services';
+import { NextResponse } from 'next/server';
+import { handleDeleteUser, handleGetUser, handleUpdateUser } from '../services';
 
-export const openapi = {
-  get: {
-    description: 'Returns a user by ID.',
-    summary: 'Get users by ID',
-    parameters: [
-      {
-        name: 'id',
-        in: 'path',
-        required: true,
-        description: 'The ID of the user.',
-        schema: {
-          type: 'string',
-        },
-      },
-    ],
-    responses: {
-      200: {
-        description: 'OK',
-      },
-      404: {
-        description: 'Not Found',
-      },
-    },
-  },
-  put: {
-    description: 'Edit a user.',
-    summary: 'Edit Users',
-    parameters: [
-      {
-        name: 'id',
-        in: 'path',
-        required: true,
-        description: 'The ID of the user.',
-        schema: {
-          type: 'string',
-        },
-      },
-    ],
-    requestBody: {
-      description: 'Data yang diperlukan',
-      required: true,
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              nrp: {
-                type: 'string',
-              },
-              username: {
-                type: 'string',
-              },
-              role: {
-                type: 'string',
-                enum: ['Admin', 'User'],
-              },
-            },
-          },
-        },
-      },
-    },
-    responses: {
-      200: {
-        description: 'OK',
-      },
-      404: {
-        description: 'Not Found',
-      },
-      422: {
-        description: 'Unprocessable Entity',
-      },
-    },
-  },
-  delete: {
-    description: 'Delete a user.',
-    summary: 'Delete Users',
-    parameters: [
-      {
-        name: 'id',
-        in: 'path',
-        required: true,
-        description: 'The ID of the user.',
-        schema: {
-          type: 'string',
-        },
-      },
-    ],
-    responses: {
-      200: {
-        description: 'OK',
-      },
-      404: {
-        description: 'Not Found',
-      },
-      422: {
-        description: 'Unprocessable Entity',
-      },
-    },
-  },
-  patch: {
-    description: 'Update a user password.',
-    summary: 'Update User Password',
-    parameters: [
-      {
-        name: 'id',
-        in: 'path',
-        required: true,
-        description: 'The ID of the user.',
-        schema: {
-          type: 'string',
-        },
-      },
-    ],
-    requestBody: {
-      description: 'New password for the user',
-      required: true,
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              password: {
-                type: 'string',
-              },
-            },
-            required: ['password'],
-          },
-        },
-      },
-    },
-    responses: {
-      200: {
-        description: 'Password updated successfully',
-      },
-      404: {
-        description: 'Not Found',
-      },
-      422: {
-        description: 'Unprocessable Entity',
-      },
-    },
-  },
-};
+export async function GET(req, { params }) {
+  try {
+    if (params.id) {
+      const user = await handleGetUser(params.id);
+      console.log('user id', user);
+      return NextResponse.json(user, { status: 200 });
+    }
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+}
 
-export const GET = async (request, { params }) => {
-  return getUser(params.id);
-};
+export async function PUT(req, { params }) {
+  if (!params.id) {
+    return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+  }
 
-export const PUT = async (request, { params }) => {
-  const schema = openapi.put.requestBody.content['application/json'].schema;
-  return editUser(schema, params.id, request);
-};
+  try {
+    const body = await req.json();
+    const updatedUser = await handleUpdateUser(params.id, body);
+    return NextResponse.json(updatedUser, { status: 200 });
+  } catch (error) {
+    if (error.code === 'P2002') {
+      return NextResponse.json(
+        { error: `The email is already taken, please choose another one.` },
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      { error: error.message || 'Something went wrong while updating the record.' },
+      { status: 400 }
+    );
+  }
+}
 
-export const DELETE = async (request, { params }) => {
-  return deleteUser(params.id);
-};
+export async function DELETE(req, { params }) {
+  if (!params.id) {
+    return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+  }
 
-export const PATCH = async (request, { params }) => {
-  return updatePassword(params.id, request);
-};
+  try {
+    await handleDeleteUser(params.id);
+    return NextResponse.json({ message: 'User deleted successfully' }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+}

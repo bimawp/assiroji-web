@@ -5,4 +5,4 @@ export function mainMiddleware(req) {
   const res = NextResponse.next();
   return res;
 }
-export default withAuth(mainMiddleware, ['/admin2']);
+export default withAuth(mainMiddleware, ['/admin']);

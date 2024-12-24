@@ -21,7 +21,7 @@ export default function Page() {
     const fetchArticles = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('/api/test');
+        const response = await fetch('/api/v1.0.0/auth/artikel');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -122,7 +122,7 @@ export default function Page() {
                             </svg>
                           </button>
                           <Link
-                            href={`/admin/artikel/update-artikel/${article['id-artikel']}`}
+                            href={`/admin/artikel/update-artikel/${article['slug']}`}
                             className="text-blue-500 hover:text-blue-700"
                           >
                             <svg

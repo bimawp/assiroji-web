@@ -1,6 +1,25 @@
-import React from 'react';
+import { useSession } from 'next-auth/react';
+import React, { useState } from 'react';
 
-const ModalDeleteArtikel = ({ open, handleOpen, className, data, handleDelete, isLoading }) => {
+const ModalDeleteArtikel = ({ open, handleOpen, className, data }) => {
+  const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+  const handleDelete = async (slug) => {
+    setIsLoading(true);
+    try {
+      await fetch(`/api/v1.0.0/auth/artikel/${slug}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    } finally {
+      handleOpen();
+      setIsLoading(false);
+    }
+  };
   return (
     <div
       className={`fixed inset-0 z-50 grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300 ${
@@ -23,10 +42,10 @@ const ModalDeleteArtikel = ({ open, handleOpen, className, data, handleDelete, i
           </button>
           <button
             className="text-white bg-red-500 w-24 h-12 text-lg font-bold rounded-md"
-            // onClick={() => handleDelete(data['id-artikel'])}
+            onClick={() => handleDelete(data.slug)}
             disabled={isLoading}
           >
-            Delete
+            {isLoading ? 'Deleting...' : 'Delete'}
           </button>
         </div>
       </div>

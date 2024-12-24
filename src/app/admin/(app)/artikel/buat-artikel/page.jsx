@@ -5,13 +5,16 @@ import Link from 'next/link';
 import EditorComponent from '@/components/__EditorInput';
 import ImageUploader from '@/components/__DropImageInput';
 import ModalViewArtikel from '../_components/ModalViewArtikel';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function PageBerita() {
   const [formData, setFormData] = useState({
+    slug: '',
     title: '',
     category: '',
     tags: [],
-    headerImage: null,
+    headerImage: '',
     content: '',
   });
   const [currentTag, setCurrentTag] = useState('');
@@ -83,10 +86,57 @@ export default function PageBerita() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data:', { ...formData, content });
-    console.log('Form Data:', content);
+    const sendformData = new FormData(e.target);
+
+    const title = sendformData.get('title') || '';
+    const slug = title
+      .toLowerCase()
+      .replace(/ /g, '-')
+      .replace(/[^\w-]+/g, '');
+
+    sendformData.append('slug', slug);
+
+    const authorId = session.user.id;
+    if (!authorId) {
+      console.error('User not authenticated');
+      return;
+    }
+    // slug: '',
+    // title: '',
+    // category: '',
+    // tags: [],
+    // headerImage: '',
+    // content: '',
+
+    sendformData.append('authorId', authorId);
+    sendformData.append('category', formData.category);
+    sendformData.append('headerImage', formData.headerImage);
+    sendformData.append('tags', formData.tags);
+    sendformData.append('content', formData.content);
+
+    try {
+      const response = await fetch('/api/v1.0.0/auth/artikel/', {
+        method: 'POST',
+        body: sendformData,
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
+
+      if (response.ok) {
+        console.log('Article created successfully');
+        router.push('/admin/artikel');
+      } else {
+        console.error('Failed to create article');
+      }
+    } catch (error) {
+      console.error('Error creating article:', error);
+    }
   };
 
   return (

@@ -67,11 +67,11 @@ const articles = [
   },
 ];
 
-export default function ArticlePage() {
+export default function ArticlePage({ data }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-
-  const filteredArticles = articles.filter(
+  console.log(data);
+  const filteredArticles = data.filter(
     (article) =>
       (selectedCategory === 'All' || article.categories.includes(selectedCategory)) &&
       (article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -130,17 +130,17 @@ export default function ArticlePage() {
             <h2 className="text-2xl font-semibold mb-4 text-teal-800">Latest Article</h2>
             <div className="flex flex-col md:flex-row gap-6">
               <Image
-                src={articles[0].image}
-                alt={articles[0].title}
+                src={data[0].headerImage}
+                alt={data[0].title}
                 width={400}
                 height={300}
                 className="rounded-lg object-cover w-full md:w-1/3 h-64 md:h-auto"
               />
               <div className="md:w-2/3">
-                <h3 className="text-xl font-semibold mb-2 text-teal-700">{articles[0].title}</h3>
-                <p className="text-gray-600 mb-4">{articles[0].description}</p>
+                <h3 className="text-xl font-semibold mb-2 text-teal-700">{data[0].title}</h3>
+                <p className="text-gray-600 mb-4">{data[0].content}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {articles[0].categories.map((category) => (
+                  {data[0].tags.map((category) => (
                     <span
                       key={category}
                       className="bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full"
@@ -159,14 +159,14 @@ export default function ArticlePage() {
 
         {/* Article List */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredArticles.slice(1).map((article) => (
+          {filteredArticles.map((article) => (
             <div
               className="bg-[#039685] rounded-xl text-white w-full h-full shadow-lg "
-              key={article.id}
+              key={article.slug}
             >
               <div className="relative p-4">
                 <Image
-                  src="/image/KEGIATAN STUDY TOUR.jpg"
+                  src={article.headerImage}
                   alt={article.title}
                   width={500}
                   height={300}
@@ -176,11 +176,22 @@ export default function ArticlePage() {
               <div className="p-6 space-y-4">
                 <h2 className="text-xl font-medium leading-tight">{article.title}</h2>
                 <div className="flex items-center justify-between border-t border-teal-400 py-2">
-                  <time dateTime={'24 Agustus 2024'} className="text-sm">
-                    24 Agustus 2024
+                  <time
+                    dateTime={article.createdAt.toLocaleDateString('id-ID', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                    className="text-sm"
+                  >
+                    {article.createdAt.toLocaleDateString('id-ID', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
                   </time>
                   <Link
-                    href={`/artikel/${article.id}`}
+                    href={`/artikel/${article.slug}`}
                     className="rounded-full bg-gradient-to-tr from-emerald-900 to-emerald-400 p-2 transition-transform hover:scale-110"
                   >
                     <ArrowRight className="text-xl font-bold -rotate-45" />

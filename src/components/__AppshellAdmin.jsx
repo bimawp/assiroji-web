@@ -22,6 +22,7 @@ import {
   UserPlus,
   Users,
 } from 'lucide-react';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -110,8 +111,11 @@ const navItems = [
 export default function AppshellAdmin({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(1);
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+  console.log('session', session);
   console.log(openSubmenu);
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
@@ -130,7 +134,17 @@ export default function AppshellAdmin({ children }) {
       <ConfirmLogoutModal
         isOpen={logoutModal}
         onClose={() => setLogoutModal(false)}
-        onConfirm={() => setLogoutModal(false)}
+        onConfirm={async () => {
+          try {
+            setIsLoading(true);
+            await signOut({ redirect: true, callbackUrl: '/admin/login' });
+            setLogoutModal(false);
+          } catch (error) {
+            console.error('Error during logout:', error);
+          } finally {
+            setIsLoading(false);
+          }
+        }}
       />
       <div className="relative bg-[#1D564F]">
         <div className="flex">
@@ -220,12 +234,16 @@ export default function AppshellAdmin({ children }) {
                 </ul>
                 <div className=" w-full py-4 ">
                   <div className="bg-[#006D5B] rounded-md flex flex-col gap-2 p-3">
-                    <div className="flex gap-2 border-b border-b-slate-400 py-3">
+                    <div className="flex gap-2 border-b items-center border-b-slate-400 py-3">
                       <User />
-                      {!isCollapsed && <p className="font-extralight">Administrator</p>}
+                      {session ? (
+                        !isCollapsed && <p className="font-extralight">{session?.user.name}</p>
+                      ) : (
+                        <div className="h-4 w-2/4 animate-pulse rounded bg-gray-400" />
+                      )}
                     </div>
                     <button
-                      className=" flex items-center gap-2 py-2 font-bold rounded-md"
+                      className=" flex items-center gap-2 py-2 font-bold rounded-md "
                       onClick={() => setLogoutModal(true)}
                     >
                       <LogOutIcon />

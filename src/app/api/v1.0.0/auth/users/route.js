@@ -1,62 +1,24 @@
-import { createUser, deleteUser, getUsers } from './services';
+import { NextResponse } from 'next/server';
+import {
+  handleCreateUser,
+  handleGetAllUsers,
+} from './services';
 
-export const openapi = {
-  get: {
-    description: 'Returns a list of users.',
-    summary: 'Get users',
-    responses: {
-      200: {
-        description: 'OK',
-      },
-      404: {
-        description: 'Not Found',
-      },
-    },
-  },
-  post: {
-    description: 'Send a new user.',
-    summary: 'Add Users',
-    requestBody: {
-      description: 'Data yang diperlukan',
-      required: true,
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              nrp: {
-                type: 'string',
-              },
-              username: {
-                type: 'string',
-              },
-              password: {
-                type: 'string',
-              },
-              role: {
-                type: 'string',
-                enum: ['Admin', 'User'],
-              },
-            },
-            required: ['nrp', 'username', 'password', 'role'],
-          },
-        },
-      },
-    },
-    responses: {
-      201: {
-        description: 'Created',
-      },
-      400: {
-        description: 'Bad Request',
-      },
-    },
-  },
-};
+export async function GET(req) {
+  try {
+    const users = await handleGetAllUsers();
+    return NextResponse.json(users, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+}
 
-export const GET = async () => getUsers();
-
-export const POST = async (request) => {
-  const schema = openapi.post.requestBody.content['application/json'].schema;
-  return createUser(schema, request);
-};
+export async function POST(req) {
+  try {
+    const body = await req.json();
+    const user = await handleCreateUser(body);
+    return NextResponse.json(user, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+}

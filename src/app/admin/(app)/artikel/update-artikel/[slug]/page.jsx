@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { ExternalLink, Search, ChevronDown, Plus } from 'lucide-react';
 import Link from 'next/link';
 import EditorComponent from '@/components/__EditorInput';
 import ImageUploader from '@/components/__DropImageInput';
 import ModalViewArtikel from '../../_components/ModalViewArtikel';
+import { useSession } from 'next-auth/react';
 
 export default function PageUpdateArtikel() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [formData, setFormData] = useState({
     title: '',
     category: '',
@@ -26,7 +27,9 @@ export default function PageUpdateArtikel() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [originalData, setOriginalData] = useState(null); 
   const onHandleOpenModal = () => setOpenModal(!openModal);
+   const router = useRouter();
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -34,23 +37,25 @@ export default function PageUpdateArtikel() {
       [name]: value,
     }));
   };
-
+  const { data: session } = useSession();
   useEffect(() => {
     const fetchArticle = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/test/${id}`);
+        const response = await fetch(`/api/v1.0.0/auth/artikel/${slug}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setFormData({
+        const formattedData = {
           title: data.title,
           category: data.category,
           tags: data.tags,
           headerImage: data.headerImage,
           content: data.content,
-        });
+        };
+        setFormData(formattedData);
+        setOriginalData(formattedData); // Set originalData
         setEditorContent(data.content);
       } catch (error) {
         console.error('Error fetching article:', error);
@@ -60,10 +65,10 @@ export default function PageUpdateArtikel() {
       }
     };
 
-    if (id) {
+    if (slug) {
       fetchArticle();
     }
-  }, [id]);
+  }, [slug]);
 
   const handleEditorChange = (htmlContent) => {
     setEditorContent(htmlContent);
@@ -118,16 +123,72 @@ export default function PageUpdateArtikel() {
     }
   };
 
+  const isEqual = (obj1, obj2) => {
+    if (obj1 === obj2) return true;
+    if (typeof obj1 !== 'object' || typeof obj2 !== 'object' || obj1 == null || obj2 == null)
+      return false;
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+    if (keys1.length !== keys2.length) return false;
+    for (const key of keys1) {
+      if (!keys2.includes(key) || !isEqual(obj1[key], obj2[key])) return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('oke', session.user.access_token);
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/articles/${id}`, {
+      const sendFormData = new FormData();
+      let hasChanges = false;
+
+      Object.keys(formData).forEach((key) => {
+        if (!isEqual(formData[key], originalData[key])) {
+          if (key === 'tags' && Array.isArray(formData[key])) {
+            formData[key].forEach((tag, index) => {
+              sendFormData.append(`tags[${index}]`, tag);
+            });
+          } else if (key === 'headerImage' && formData[key] instanceof File) {
+            sendFormData.append(key, formData[key]);
+          } else {
+            sendFormData.append(key, formData[key]);
+          }
+          hasChanges = true;
+        }
+      });
+      console.log(formData.headerImage);
+
+      if (!hasChanges) {
+        console.log('No changes detected');
+        setIsLoading(false);
+        return;
+      }
+
+      // Ensure slug is included if title has changed
+      if (sendFormData.has('title')) {
+        const title = sendFormData.get('title');
+        const slug = title
+          .toLowerCase()
+          .replace(/ /g, '-')
+          .replace(/[^\w-]+/g, '');
+        sendFormData.set('slug', slug);
+      }
+
+      // Include authorId if it's not already in the form data
+      const authorId = session.user.id;
+      if (authorId && !sendFormData.has('authorId')) {
+        sendFormData.append('authorId', authorId);
+      }
+
+      console.log('Sending updated data', sendFormData);
+      const response = await fetch(`/api/v1.0.0/auth/artikel/${slug}`, {
         method: 'PUT',
+        body: sendFormData,
         headers: {
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.user.access_token}`,
         },
-        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
@@ -136,6 +197,9 @@ export default function PageUpdateArtikel() {
 
       // Handle successful update
       console.log('Article updated successfully');
+      router.push('/admin/artikel');
+
+      setOriginalData(formData);
       // You might want to redirect to the article list or show a success message
     } catch (error) {
       console.error('Error updating article:', error);
@@ -269,7 +333,7 @@ export default function PageUpdateArtikel() {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    strokeWidth={1.5}
+                    strokeWslugth={1.5}
                     stroke="currentColor"
                     className="h-4 w-4"
                   >

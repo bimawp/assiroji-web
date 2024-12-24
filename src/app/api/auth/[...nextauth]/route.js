@@ -1,7 +1,11 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import bcrypt from 'bcrypt';
-import { retrieveDataByField } from '@/service';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 const authOptions = {
   session: {
@@ -10,47 +14,58 @@ const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     Credentials({
-      name: 'Credentials',
+      name: 'Supabase Login',
       credentials: {
-        nrp: { label: 'nrp', type: 'text' },
-        password: { label: 'password', type: 'password' },
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
-      authorize: async (credentials, req) => {
-        const { nrp, password } = credentials;
-        const user = await retrieveDataByField('users', 'nrp', nrp);
-        if (user[0]) {
-          const passwordConfirm = await bcrypt.compare(password, user[0].password);
-          if (passwordConfirm || (await bcrypt.compare(password, 'YOUR_FALLBACK_HASH'))) {
-            return user[0];
-          } else {
-            throw new Error(`Password salah`);
+      authorize: async (credentials) => {
+        const { email, password } = credentials;
+        // if(email){
+        //   return {
+        //     id: 'sdfdf',email: email, role: 'admin', access_token: '3f3f'
+        //   }
+        // }
+
+        const { data, error } = await supabase.auth.signInWithPassword(
+          {
+            email,
+            password,
+          },
+          {
+            expiresIn: 864000, // Token berlaku selama 10 hari
           }
-        } else {
-          throw new Error(`NRP tidak ditemukan`);
-        }
+        );
+
+        if (error) throw new Error(error.message);
+
+        return {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.user_metadata.name,
+          role: data.user.user_metadata.role || 'admin',
+          access_token: data.session.access_token,
+        };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
-      if (account?.provider === 'credentials') {
-        token.username = user.username;
-        token.nrp = user.nrp;
-        // token['id-users'] = user['id-users'];
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
         token.role = user.role;
-        token.expires = Date.now() + 1000 * 60 * 60 * 12;
+        token.access_token = user.access_token;
       }
       return token;
     },
     async session({ session, token }) {
-      if (Date.now() > token.expires) {
-        session = null;
-        return session;
-      }
-      session.user.nrp = token.nrp;
-      session.user.username = token.username;
-      session.user.expires = token.expires;
+      session.user.id = token.id;
+      session.user.email = token.email;
+      session.user.name = token.name;
       session.user.role = token.role;
+      session.user.access_token = token.access_token;
       return session;
     },
   },
@@ -60,5 +75,4 @@ const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };
