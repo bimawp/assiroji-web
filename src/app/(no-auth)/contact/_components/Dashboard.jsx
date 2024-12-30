@@ -11,7 +11,7 @@ const contactItems = [
   { id: 4, icon: '🕒', label: 'Jam Kerja', value: 'Senin - Jumat: 08:00 - 16:00' },
 ];
 
-export default function ContactPage() {
+export default function ContactPage({ data }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -121,13 +121,28 @@ export default function ContactPage() {
               <div className="p-4">
                 <h4 className="font-semibold mb-2">Informasi Kontak</h4>
                 <div className="space-y-2">
-                  {contactItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-2">
-                      <span>{item.icon}</span>
-                      <span className="font-medium">{item.label}:</span>
-                      <span>{item.value}</span>
-                    </div>
-                  ))}
+                  {/* {contactItems.map((item) => ( */}
+                  <div className="flex items-center gap-2">
+                    <span>📞</span>
+                    <span className="font-medium">Telepon:</span>
+                    <span>{data.phone}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>✉️</span>
+                    <span className="font-medium">Email:</span>
+                    <span>{data.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>📍</span>
+                    <span className="font-medium">Alamat:</span>
+                    <span>{data.address}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>🕒</span>
+                    <span className="font-medium">Waktu kerja:</span>
+                    <span>08:00-15:00 | senin-jumat</span>
+                  </div>
+                  {/* ))} */}
                 </div>
               </div>
             </div>

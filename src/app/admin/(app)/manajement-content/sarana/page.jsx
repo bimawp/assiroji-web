@@ -5,93 +5,44 @@ import { Eye, PlusIcon, Search } from 'lucide-react';
 import PreviewModal from './_components/PreviewModal.jsx';
 import AddEditSaranaModal from './_components/AddEditSaranaModal.jsx.jsx';
 import ConfirmDeleteModal from './_components/ConfirmDeleteModal.jsx';
+import { useSession } from 'next-auth/react';
 
 export default function Page() {
   const [sarana, setSaranas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  // Modal states
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [selectedSarana, setSelectedSarana] = useState(null);
-
+  const { data: session } = useSession();
+  const fetchSaranas = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/v1.0.0/auth/sarana');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setSaranas(data);
+    } catch (error) {
+      console.error('Error fetching sarana:', error);
+      setError('Failed to load sarana. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
     fetchSaranas();
   }, []);
 
-  const fetchSaranas = async () => {
-    setIsLoading(true);
-    try {
-      // Simulasi delay API dengan setTimeout
-      setTimeout(() => {
-        const dummyData = [
-          {
-            'id-bangunan': 'B001',
-            namaBangunan: 'Gedung Olahraga',
-            jumlah: 3,
-            volume: '200 m²',
-            kondisi: 'Baik',
-            imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66',
-          },
-          {
-            'id-bangunan': 'B002',
-            namaBangunan: 'Perpustakaan',
-            jumlah: 1,
-            volume: '150 m²',
-            kondisi: 'Cukup',
-            imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66',
-          },
-          {
-            'id-bangunan': 'B003',
-            namaBangunan: 'Laboratorium',
-            jumlah: 2,
-            volume: '120 m²',
-            kondisi: 'Baik',
-            imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66',
-          },
-          {
-            'id-bangunan': 'B004',
-            namaBangunan: 'Kantin',
-            jumlah: 1,
-            volume: '80 m²',
-            kondisi: 'Kurang Baik',
-            imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66',
-          },
-          {
-            'id-bangunan': 'B005',
-            namaBangunan: 'Ruang Kelas',
-            jumlah: 10,
-            volume: '300 m²',
-            kondisi: 'Baik',
-            imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66',
-          },
-          {
-            'id-bangunan': 'B006',
-            namaBangunan: 'Aula',
-            jumlah: 1,
-            volume: '250 m²',
-            kondisi: 'Cukup',
-            imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66',
-          },
-        ];
-        setSaranas(dummyData);
-        setIsLoading(false);
-      }, 1500); // Delay 1.5 detik
-    } catch (error) {
-      console.error('Error fetching sarana:', error);
-      setIsLoading(false);
-    }
-  };
-
   const filteredSaranas = sarana.filter((sarana) =>
-    sarana.namaBangunan.toLowerCase().includes(searchQuery.toLowerCase())
+    sarana.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentSaranas = filteredSaranas.slice(indexOfFirstItem, indexOfLastItem);
@@ -116,18 +67,29 @@ export default function Page() {
   };
 
   const handleSaveSarana = async (saranaData) => {
-    // Implement save logic here
     console.log('Saving sarana:', saranaData);
-    await fetchSaranas(); // Refresh the list after saving
+    await fetchSaranas();
     setIsAddEditModalOpen(false);
   };
 
   const handleConfirmDelete = async () => {
     if (selectedSarana) {
-      // Implement delete logic here
+      setIsLoadingDelete(true);
       console.log('Deleting sarana:', selectedSarana);
-      await fetchSaranas(); // Refresh the list after deleting
-      setIsDeleteModalOpen(false);
+      try {
+        await fetch(`/api/v1.0.0/auth/sarana/${selectedSarana['id_sarana']}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
+        });
+      } catch (error) {
+        console.error('Error deleting item:', error);
+      } finally {
+        setIsLoadingDelete(false);
+        await fetchSaranas();
+        setIsDeleteModalOpen(false);
+      }
     }
   };
 
@@ -140,10 +102,11 @@ export default function Page() {
         onSave={handleSaveSarana}
       />
       <ConfirmDeleteModal
-        namaBangunan={selectedSarana?.namaBangunan}
+        namaBangunan={selectedSarana?.name}
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
+        isLoading={isLoadingDelete}
       />
       <PreviewModal
         isOpen={isPreviewModalOpen}
@@ -194,67 +157,91 @@ export default function Page() {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {isLoading
-                ? Array(5)
-                    .fill(0)
-                    .map((_, index) => (
-                      <tr key={index}>
-                        <td colSpan="6" className="px-6 py-4">
-                          <div className="h-4 bg-gray-200 rounded animate-pulse" />
-                        </td>
-                      </tr>
-                    ))
-                : currentSaranas.map((item, index) => (
-                    <tr key={item['id-bangunan']} className="hover:bg-gray-50">
-                      <td className="px-6 py-4">{indexOfFirstItem + index + 1}</td>
-                      <td className="px-6 py-4">{item.namaBangunan}</td>
-                      <td className="px-6 py-4 text-center">{item.jumlah}</td>
-                      <td className="px-6 py-4 text-center">{item.volume} m²</td>
-                      <td className="px-6 py-4 text-center">{item.kondisi}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-end gap-2">
-                          <button
-                            className="text-red-500 hover:text-red-700"
-                            onClick={() => handleDeleteSarana(sarana)}
+              {isLoading ? (
+                [1, 2, 3, 4].map((index) => (
+                  <tr key={index} className="">
+                    <td className="px-6 py-4">
+                      <div className="h-4 w-3/4 animate-pulse rounded bg-gray-300" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 w-2/3 animate-pulse rounded bg-gray-300" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 w-1/2 animate-pulse rounded bg-gray-300" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 w-2/3 animate-pulse rounded bg-gray-300" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 w-1/3 animate-pulse rounded bg-gray-300" />
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <div className="h-4 w-2/4 animate-pulse rounded bg-gray-300" />
+                        <div className="h-4 w-2/4 animate-pulse rounded bg-gray-300" />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : sarana.length > 0 ? (
+                currentSaranas.map((item, index) => (
+                  <tr key={item['id_sarana']} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">{indexOfFirstItem + index + 1}</td>
+                    <td className="px-6 py-4">{item.name}</td>
+                    <td className="px-6 py-4 text-center">{item.quantity}</td>
+                    <td className="px-6 py-4 text-center">{item.volume} m²</td>
+                    <td className="px-6 py-4 text-center">{item.condition}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          className="text-red-500 hover:text-red-700"
+                          onClick={() => handleDeleteSarana(item)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="h-5 w-5"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="h-5 w-5"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                              />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => handleEditSarana(item)}
-                            className="text-blue-500 hover:text-blue-700"
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleEditSarana(item)}
+                          className="text-blue-500 hover:text-blue-700"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-5 h-5"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-5 h-5"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr className="">
+                  <td colSpan={6} className="px-6 py-4 text-center">
+                    Belum ada data
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

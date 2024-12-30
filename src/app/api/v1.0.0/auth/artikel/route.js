@@ -7,18 +7,7 @@ import {
   handleUpdateArtikel,
 } from './services.js';
 import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-export async function verifyToken(token) {
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
-  const { data, error } = await supabase.auth.getUser(token);
-  if (error || !data.user) {
-    return false;
-  }
-  return true;
-}
+import { bucket, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma/index.js';
 
 export async function GET(req) {
   try {
@@ -58,6 +47,7 @@ export async function POST(req) {
     const content = formData.get('content');
     const category = formData.get('category');
     const slug = formData.get('slug');
+    const description = formData.get('description');
     const tags = formData.getAll('tags');
     const authorId = formData.get('authorId');
 
@@ -77,7 +67,7 @@ export async function POST(req) {
     const filePath = `${folderPath}/${fileName}`;
 
     const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('artikel-bucket')
+      .from(bucket)
       .upload(filePath, headerImage);
 
     if (uploadError) {
@@ -85,7 +75,7 @@ export async function POST(req) {
     }
 
     const { data: publicUrlData, error: publicUrlError } = supabase.storage
-      .from('artikel-bucket')
+      .from(bucket)
       .getPublicUrl(filePath);
 
     if (publicUrlError) {
@@ -98,6 +88,7 @@ export async function POST(req) {
       headerImage: publicUrl,
       title,
       content,
+      description,
       category,
       slug,
       tags,

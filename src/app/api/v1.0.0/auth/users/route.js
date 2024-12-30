@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import {
-  handleCreateUser,
-  handleGetAllUsers,
-} from './services';
+import { handleCreateUser, handleGetAllUsers } from './services';
 
 export async function GET(req) {
   try {

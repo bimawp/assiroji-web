@@ -42,6 +42,7 @@ export const handleCreateUser = async (body) => {
   const newUser = {
     ...body,
     password: hashPassword,
+    role: 'peserta',
   };
   return await createRecord('User', newUser);
 };

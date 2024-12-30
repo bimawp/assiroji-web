@@ -7,7 +7,6 @@ export default async function Page({ params }) {
 
   try {
     const artikel = await handleGetArtikelBySlug(slug);
-
     if (!artikel) {
       notFound();
     }

@@ -1,37 +1,30 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dashboard from './_components/Dashboard';
 
-const defaultActivities = [
-  {
-    id: 1,
-    name: 'Pramuka',
-    description: 'Kegiatan kepanduan untuk membentuk karakter dan keterampilan',
-    imageUrl: 'https://cdn.pixabay.com/photo/2018/06/07/16/49/virtual-3460451_1280.jpg',
-    isActive: true,
-  },
-  {
-    id: 2,
-    name: 'Basket',
-    description: 'Olahraga tim yang mengembangkan kerjasama dan kebugaran',
-    imageUrl: 'https://cdn.pixabay.com/photo/2017/03/26/21/54/yoga-2176668_1280.jpg',
-    isActive: true,
-  },
-  {
-    id: 3,
-    name: 'Paduan Suara',
-    description: 'Kegiatan musik vokal untuk mengasah bakat dan kreativitas',
-    imageUrl: 'https://cdn.pixabay.com/photo/2018/06/07/16/49/virtual-3460451_1280.jpg',
-    isActive: false,
-  },
-];
-
 export default function ExtracurricularCMS() {
-  const [activities, setActivities] = useState(defaultActivities);
+  const [activities, setActivities] = useState([]);
 
+  const fetchArticles = async () => {
+    try {
+      const response = await fetch('/api/v1.0.0/auth/page/home/ekstrakulikuler');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data);
+      setActivities(data);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      setError('Failed to load articles. Please try again later.');
+    }
+  };
+  useEffect(() => {
+    fetchArticles();
+  }, []);
   return (
     <div className="">
-      <Dashboard activities={activities} setActivities={setActivities} />
+      <Dashboard activities={activities} setActivities={setActivities} onRefresh={fetchArticles} />
     </div>
   );
 }

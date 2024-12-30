@@ -2,17 +2,27 @@ import Appshell from '@/components/__Appshell';
 import React from 'react';
 import './../globals.css';
 import Footer from '@/components/__Fotter';
+import { getAllRecords } from '@/service';
 
 export const metadata = {
   title: 'Home Page',
   description: 'Welcome to the home page',
 };
-export default function Layout({ children }) {
+async function getFooterData() {
+  const ress = await getAllRecords('Contact');
+  console.log(ress);
+  if (!ress) {
+    notFound();
+  }
+  return ress[0];
+}
+export default async function Layout({ children }) {
+  const footerData = await getFooterData();
   return (
     <>
       <Appshell />
       <main>{children}</main>
-      <Footer />
+      <Footer data={footerData} />
     </>
   );
 }

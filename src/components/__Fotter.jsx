@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function Footer() {
+export default function Footer({ data }) {
   return (
     <footer className=" bg-[#1D564F] text-white">
       <div className="border-b border-gray-800">
@@ -31,16 +31,16 @@ export default function Footer() {
             </div>
             <div>
               <p className="text-gray-400">Phone :</p>
-              <p>085353802722</p>
+              <p>{data.phone}</p>
             </div>
             <div>
               <p className="text-gray-400">Email :</p>
-              <p>siroji@gmail.com</p>
+              <p>{data.email}</p>
             </div>
-            <div>
+            {/* <div>
               <p className="text-gray-400">You Tube :</p>
-              <p>Siroji Tv Media</p>
-            </div>
+              <p>{data.facebook}</p>
+            </div> */}
           </div>
         </div>
 

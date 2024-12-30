@@ -24,7 +24,7 @@ export default function GalleryCard({ gallery, onEdit, onDelete, onToggleActive 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="relative h-48">
-        <Image src={gallery.imageUrl} alt={gallery.caption} layout="fill" objectFit="cover" />
+        <Image src={gallery.itemImage} alt={gallery.title} layout="fill" objectFit="cover" />
         <div className="absolute top-2 right-2" ref={optionsRef}>
           <div className="relative">
             <button
@@ -61,8 +61,8 @@ export default function GalleryCard({ gallery, onEdit, onDelete, onToggleActive 
         </div>
       </div>
       <div className="p-4">
-        <p className="text-gray-600 mb-4">{gallery.caption}</p>
-        <div className="flex justify-between items-center">
+        <p className="text-gray-600 mb-4">{gallery.description}</p>
+        {/* <div className="flex justify-between items-center">
           <span
             className={`px-2 py-1 rounded-full text-xs ${
               gallery.isActive ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
@@ -84,7 +84,7 @@ export default function GalleryCard({ gallery, onEdit, onDelete, onToggleActive 
               `}
             />
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

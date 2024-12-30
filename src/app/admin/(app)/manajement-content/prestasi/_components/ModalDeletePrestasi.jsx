@@ -1,6 +1,28 @@
-import React from 'react';
+import { useSession } from 'next-auth/react';
+import React, { useState } from 'react';
 
-const ModalDeletePrestasi = ({ open, handleOpen, className, data, handleDelete, isLoading }) => {
+const ModalDeletePrestasi = ({ open, handleOpen, className, data, onRefres }) => {
+  const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDelete = async (slug) => {
+    setIsLoading(true);
+    try {
+      await fetch(`/api/v1.0.0/auth/artikel/${slug}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    } finally {
+      onRefres();
+      handleOpen();
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div
       className={`fixed inset-0 z-50 grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300 ${
@@ -22,11 +44,34 @@ const ModalDeletePrestasi = ({ open, handleOpen, className, data, handleDelete, 
             Cancel
           </button>
           <button
-            className="text-white bg-red-500 w-24 h-12 text-lg font-bold rounded-md"
-            // onClick={() => handleDelete(data['id-artikel'])}
+            className="text-white bg-red-500 w-24 h-12 flex items-center justify-center text-lg font-bold rounded-md"
+            onClick={() => handleDelete(data.slug)}
             disabled={isLoading}
           >
-            Delete
+            {isLoading ? (
+              <svg
+                className="animate-spin h-7 w-7 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            ) : (
+              'Delete'
+            )}
           </button>
         </div>
       </div>

@@ -1,18 +1,12 @@
 import { NextResponse } from 'next/server';
 import { handleDeleteArtikel, handleGetArtikelBySlug, handleUpdateArtikel } from '../services.js';
 import { createClient } from '@supabase/supabase-js';
+import { bucket, verifyToken } from '@/lib/prisma/index.js';
+import { getRecordByColumn } from '@/service/index.js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export async function verifyToken(token) {
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
-  const { data, error } = await supabase.auth.getUser(token);
-  if (error || !data.user) {
-    return false;
-  }
-  return true;
-}
 export async function GET(req, context) {
   const { params } = context;
   const slug = params?.slug;
@@ -32,7 +26,12 @@ export async function GET(req, context) {
   }
 }
 
-export async function PUT(req, { params }) {
+export async function PUT(req, context) {
+  const { slug } = context.params;
+
+  if (!slug) {
+    return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
+  }
   const authHeader = req.headers.get('Authorization');
   console.log('authHeader', authHeader);
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -61,11 +60,11 @@ export async function PUT(req, { params }) {
     const title = formData.get('title');
     const content = formData.get('content');
     const category = formData.get('category');
-    const slug = formData.get('slug');
+    const getSlug = formData.get('slug');
     const tags = formData.getAll('tags');
+    const description = formData.get('description');
     const authorId = formData.get('authorId');
-    const bucket = 'artikel-bucket';
-    if (!params.slug) {
+    if (!slug) {
       throw new Error('Article ID is required for update.');
     }
 
@@ -74,11 +73,11 @@ export async function PUT(req, { params }) {
 
     // if (authorId) updateData.authorId = authorId;
 
-    console.log('updateData', headerImage.name);
+    console.log('updateData', headerImage?.name);
 
     // console.log(publicUrl);
-    if (headerImage && headerImage.name) {
-      const { headerImage: relativePath } = await handleGetArtikelBySlug(params.slug);
+    if (headerImage instanceof Blob && headerImage?.name) {
+      const { headerImage: relativePath } = await handleGetArtikelBySlug(slug);
       const oldDataImage = relativePath.split(`${bucket}/`)[1];
 
       console.log('OLDATA:', oldDataImage);
@@ -90,10 +89,8 @@ export async function PUT(req, { params }) {
         if (errorDeleteOldData) {
           throw new Error(`Error uploading image: ${errorDeleteOldData.message}`);
         }
-        // const { data } = supabase.storage
-        //   .from(bucket)
-        //   .getPublicUrl(oldDataImage);
-
+        console.log('oldDataImage', oldDataImage);
+        console.log('deleteOldData', deleteOldData);
         const date = new Date();
         const folderPath = `artikel/${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
           2,
@@ -101,18 +98,6 @@ export async function PUT(req, { params }) {
         )}`;
         const fileName = `${Date.now()}_${headerImage.name}`;
         const filePath = `${folderPath}/${fileName}`;
-
-        // console.log('header image', headerImage);
-        // const { data, error: replaceError } = await supabase.storage
-        //   .from(bucket)
-        //   .update('artikel/2024-12/1735010078377_Screenshot 2024-01-31 152925.png', headerImage, {
-        //     cacheControl: '3600',
-        //     upsert: true,
-        //   });
-        // if (replaceError) {
-        //   throw new Error(`Error uploading image: ${replaceError.message}`);
-        // }
-        // console.log('KDSKAJSLAFKLJADSKLJASDKFL', data);
 
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from(bucket)
@@ -124,6 +109,7 @@ export async function PUT(req, { params }) {
         if (uploadError) {
           throw new Error(`Error uploading image: ${uploadError.message}`);
         }
+        console.log('ieu hasil uploade', uploadData);
 
         const { data: publicUrlData, error: publicUrlError } = supabase.storage
           .from(bucket)
@@ -132,17 +118,19 @@ export async function PUT(req, { params }) {
         if (publicUrlError) {
           throw new Error(`Error getting public URL: ${publicUrlError.message}`);
         }
+        console.log('ieu hasil ngambil data', publicUrlData);
 
         publicUrl = publicUrlData.publicUrl;
       }
     }
-    if (publicUrl) updateData.headerImage = publicUrl;
+    if (headerImage instanceof Blob) updateData.headerImage = publicUrl;
     if (title) updateData.title = title;
     if (content) updateData.content = content;
     if (category) updateData.category = category;
-    if (slug) updateData.slug = slug;
+    if (description) updateData.description = description;
+    if (getSlug) updateData.slug = getSlug;
     if (tags && tags.length > 0) updateData.tags = tags;
-    const updatedArtikel = await handleUpdateArtikel(params.slug, updateData);
+    const updatedArtikel = await handleUpdateArtikel(slug, updateData);
 
     return NextResponse.json(updatedArtikel, { status: 200 });
   } catch (error) {
@@ -151,153 +139,52 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
-  const authHeader = req.headers.get('Authorization');
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-  }
-
-  const token = authHeader.split(' ')[1];
-  const isValidToken = await verifyToken(token);
-
-  if (!isValidToken) {
-    return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-  }
-
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    global: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
+export async function DELETE(req, context) {
   try {
-    if (!params.slug) {
-      throw new Error('Article ID is required for deletion.');
+    const { slug } = context.params;
+
+    if (!slug) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    }
+    const authHeader = req.headers.get('Authorization');
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
     }
 
-    await handleDeleteArtikel(params.slug);
+    const token = authHeader.split(' ')[1];
+    const isValidToken = await verifyToken(token);
 
-    if ('artikel/2024-12/1735013858181_code.png') {
-      const { error: deleteError } = await supabase.storage
-        .from('artikel-bucket')
-        .remove(['artikel/2024-12/1735013858181_code.png']);
-
-      if (deleteError) {
-        console.error(`Error deleting image: ${deleteError.message}`);
-      }
+    if (!isValidToken) {
+      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
     }
 
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    });
+
+    const { headerImage: relativePath } = await getRecordByColumn('Artikel', 'slug', slug);
+
+    if (!relativePath) {
+      return NextResponse.json({ error: 'data tidak ada' }, { status: 400 });
+    }
+    const oldDataImage = relativePath.split(`${bucket}/`)[1];
+    console.log('DATA LAMA : ', oldDataImage);
+    const { data: deleteOldData, error: errorDeleteOldData } = await supabaseAuth.storage
+      .from(bucket)
+      .remove([oldDataImage]);
+    if (errorDeleteOldData) {
+      throw new Error(`Error uploading image: ${errorDeleteOldData.message}`);
+    }
+    console.log('BERHASIL DI HAPUS : ', deleteOldData);
+    await handleDeleteArtikel(slug);
     return NextResponse.json({ message: 'Artikel deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
-
-// export async function PUT(req, { params }) {
-//   const authHeader = req.headers.get('Authorization');
-//   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-//     return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-//   }
-
-//   const token = authHeader.split(' ')[1];
-//   const isValidToken = await verifyToken(token);
-
-//   if (!isValidToken) {
-//     return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-//   }
-
-//   const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-//     global: {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     },
-//   });
-
-//   try {
-//     const formData = await req.formData();
-//     const headerImage = formData.get('headerImage');
-//     const title = formData.get('title');
-//     const content = formData.get('content');
-//     const category = formData.get('category');
-//     const slug = formData.get('slug');
-//     const tags = formData.getAll('tags');
-//     const authorId = formData.get('authorId');
-//     const currentHeaderImageUrl = formData.get('currentHeaderImage');
-
-//     if (!params.slug) {
-//       throw new Error('Article slug is required for update.');
-//     }
-
-//     let publicUrl = currentHeaderImageUrl;
-
-//     if (headerImage && headerImage.name) {
-//       // Delete the old image if it exists
-//       if (currentHeaderImageUrl) {
-//         const bucketName = 'artikel-bucket';
-
-//         console.log(oldImagePath);
-//         if (oldImagePath) {
-//           const { error: deleteError } = await supabase.storage
-//             .from('artikel-bucket')
-//             .remove([oldImagePath]);
-
-//           if (deleteError) {
-//             console.error(`Error deleting old image: ${deleteError.message}`);
-//             // Continue with the update even if deletion fails
-//           }
-//         }
-//       }
-
-//       // Upload the new image
-//       const date = new Date();
-//       const folderPath = `artikel/${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-//         2,
-//         '0'
-//       )}`;
-//       const fileName = `${Date.now()}_${headerImage.name}`;
-//       const filePath = `${folderPath}/${fileName}`;
-
-//       const { data: uploadData, error: uploadError } = await supabase.storage
-//         .from('artikel-bucket')
-//         .upload(filePath, headerImage, {
-//           cacheControl: '3600',
-//           upsert: true,
-//         });
-
-//       if (uploadError) {
-//         throw new Error(`Error uploading image: ${uploadError.message}`);
-//       }
-
-//       const { data: publicUrlData, error: publicUrlError } = supabase.storage
-//         .from('artikel-bucket')
-//         .getPublicUrl(filePath);
-
-//       if (publicUrlError) {
-//         throw new Error(`Error getting public URL: ${publicUrlError.message}`);
-//       }
-
-//       publicUrl = publicUrlData.publicUrl;
-//     }
-
-//     const updateData = {};
-//     if (publicUrl) updateData.headerImage = publicUrl;
-//     if (title) updateData.title = title;
-//     if (content) updateData.content = content;
-//     if (category) updateData.category = category;
-//     if (slug) updateData.slug = slug;
-//     if (tags && tags.length > 0) updateData.tags = tags;
-//     if (authorId) updateData.authorId = authorId;
-
-//     const updatedArtikel = await handleUpdateArtikel(params.slug, updateData);
-
-//     return NextResponse.json(updatedArtikel, { status: 200 });
-//   } catch (error) {
-//     console.error('Error:', error);
-//     return NextResponse.json({ error: error.message }, { status: 400 });
-//   }
-// }

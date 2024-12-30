@@ -13,6 +13,7 @@ export default function PageUpdateArtikel() {
   const { slug } = useParams();
   const [formData, setFormData] = useState({
     title: '',
+    description: '',
     category: '',
     tags: [],
     headerImage: null,
@@ -24,12 +25,13 @@ export default function PageUpdateArtikel() {
   const [showCategoryInput, setShowCategoryInput] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [content, setEditorContent] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
   const [error, setError] = useState(null);
   const [openModal, setOpenModal] = useState(false);
-  const [originalData, setOriginalData] = useState(null); 
+  const [originalData, setOriginalData] = useState(null);
   const onHandleOpenModal = () => setOpenModal(!openModal);
-   const router = useRouter();
+  const router = useRouter();
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -40,7 +42,7 @@ export default function PageUpdateArtikel() {
   const { data: session } = useSession();
   useEffect(() => {
     const fetchArticle = async () => {
-      setIsLoading(true);
+      setIsLoadingData(true);
       try {
         const response = await fetch(`/api/v1.0.0/auth/artikel/${slug}`);
         if (!response.ok) {
@@ -61,7 +63,7 @@ export default function PageUpdateArtikel() {
         console.error('Error fetching article:', error);
         setError('Failed to load article. Please try again later.');
       } finally {
-        setIsLoading(false);
+        setIsLoadingData(false);
       }
     };
 
@@ -209,8 +211,32 @@ export default function PageUpdateArtikel() {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isLoadingData) {
+    return (
+      <div className="p-4 space-y-6">
+        <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+          <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+          <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+          <div className="h-40 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+          <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+          <div className="h-40 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -232,161 +258,234 @@ export default function PageUpdateArtikel() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 p-4">
-        <div className="space-y-2">
-          <label className="block">
-            <span className="text-sm font-medium text-gray-900">Judul Artikel</span>
-            <span className="ml-1 text-sm text-gray-500">(Required)</span>
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="block">
-            <span className="text-sm font-medium text-gray-900">Kategori</span>
-            <span className="ml-1 text-sm text-gray-500">(Required)</span>
-          </label>
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-left focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 flex justify-between items-center"
-            >
-              {formData.category || 'Pilih kategori'}
-              <ChevronDown className="h-4 w-4" />
-            </button>
-            {showDropdown && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                {categories.map((category, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    onClick={() => handleCategoryChange(category)}
-                    className="block w-full px-4 py-2 text-left hover:bg-emerald-50"
-                  >
-                    {category}
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => setShowCategoryInput(true)}
-                  className="flex items-center w-full px-4 py-2 text-left hover:bg-emerald-50 text-emerald-600"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Tambah kategori baru
-                </button>
-              </div>
-            )}
-          </div>
-          {showCategoryInput && (
-            <div className="flex mt-2">
+        {isLoadingData ? (
+          <>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+              <div className="h-40 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+              <div className="h-40 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="space-y-2">
+              <label className="block">
+                <span className="text-sm font-medium text-gray-900">Judul Artikel</span>
+                <span className="ml-1 text-sm text-gray-500">(Required)</span>
+              </label>
               <input
                 type="text"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                className="flex-grow rounded-l-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                placeholder="Nama kategori baru"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                required
               />
-              <button
-                type="button"
-                onClick={handleAddCategory}
-                className="rounded-r-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-              >
-                Tambah
-              </button>
             </div>
-          )}
-        </div>
+            <div className="space-y-2">
+              <label className="block">
+                <span className="text-sm font-medium text-gray-900">Deskripsi Artikel</span>
+                <span className="ml-1 text-sm text-gray-500">(Required)</span>
+              </label>
+              <input
+                type="text"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                required
+              />
+            </div>
 
-        <div className="space-y-2">
-          <label className="block">
-            <span className="text-sm font-medium text-gray-900">Header Artikel</span>
-            <span className="ml-1 text-sm text-gray-500">(Required)</span>
-          </label>
-          <ImageUploader onImageUpload={handleImageUpload} initialState={formData.headerImage} />
-        </div>
-
-        <div className="space-y-2">
-          <label className="block">
-            <span className="text-sm font-medium text-gray-900">Tag</span>
-            <span className="ml-1 text-sm text-gray-500">(Required)</span>
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {formData.tags.map((tag, index) => (
-              <span
-                key={index}
-                className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm"
-              >
-                {tag}
+            <div className="space-y-2">
+              <label className="block">
+                <span className="text-sm font-medium text-gray-900">Kategori</span>
+                <span className="ml-1 text-sm text-gray-500">(Required)</span>
+              </label>
+              <div className="relative">
                 <button
                   type="button"
-                  onClick={() => removeTag(tag)}
-                  className="ml-1 text-gray-500 hover:text-gray-700"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-left focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 flex justify-between items-center"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWslugth={1.5}
-                    stroke="currentColor"
-                    className="h-4 w-4"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  {formData.category || 'Pilih kategori'}
+                  <ChevronDown className="h-4 w-4" />
                 </button>
-              </span>
-            ))}
-          </div>
-          <input
-            type="text"
-            value={currentTag}
-            onChange={(e) => setCurrentTag(e.target.value)}
-            onKeyDown={handleAddTag}
-            placeholder="Press Enter to add tags"
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-          />
-        </div>
+                {showDropdown && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+                    {categories.map((category, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleCategoryChange(category)}
+                        className="block w-full px-4 py-2 text-left hover:bg-emerald-50"
+                      >
+                        {category}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setShowCategoryInput(true)}
+                      className="flex items-center w-full px-4 py-2 text-left hover:bg-emerald-50 text-emerald-600"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Tambah kategori baru
+                    </button>
+                  </div>
+                )}
+              </div>
+              {showCategoryInput && (
+                <div className="flex mt-2">
+                  <input
+                    type="text"
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    className="flex-grow rounded-l-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    placeholder="Nama kategori baru"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddCategory}
+                    className="rounded-r-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                  >
+                    Tambah
+                  </button>
+                </div>
+              )}
+            </div>
 
-        <div className="space-y-2">
-          <label className="block">
-            <span className="text-sm font-medium text-gray-900">Isi</span>
-            <span className="ml-1 text-sm text-gray-500">(Required)</span>
-          </label>
-          <div className="mt-2">
-            <EditorComponent
-              onContentChange={handleEditorChange}
-              initialContent={formData.content || ''}
-            />
-          </div>
-        </div>
+            <div className="space-y-2">
+              <label className="block">
+                <span className="text-sm font-medium text-gray-900">Header Artikel</span>
+                <span className="ml-1 text-sm text-gray-500">(Required)</span>
+              </label>
+              <ImageUploader
+                onImageUpload={handleImageUpload}
+                initialState={formData.headerImage}
+              />
+            </div>
 
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            className="inline-flex items-center rounded-lg bg-amber-500 px-4 py-2 text-white hover:bg-amber-600"
-            onClick={onHandleOpenModal}
-          >
-            Open Preview
-            <ExternalLink className="ml-2 h-4 w-4" />
-          </button>
+            <div className="space-y-2">
+              <label className="block">
+                <span className="text-sm font-medium text-gray-900">Tag</span>
+                <span className="ml-1 text-sm text-gray-500">(Required)</span>
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {formData.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="ml-1 text-gray-500 hover:text-gray-700"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWslugth={1.5}
+                        stroke="currentColor"
+                        className="h-4 w-4"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <input
+                type="text"
+                value={currentTag}
+                onChange={(e) => setCurrentTag(e.target.value)}
+                onKeyDown={handleAddTag}
+                placeholder="Press Enter to add tags"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+            </div>
 
-          <div className="relative">
-            <button
-              type="submit"
-              className="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Updating...' : 'Update'}
-              <ChevronDown className="ml-2 h-4 w-4" />
-            </button>
-          </div>
-        </div>
+            <div className="space-y-2">
+              <label className="block">
+                <span className="text-sm font-medium text-gray-900">Isi</span>
+                <span className="ml-1 text-sm text-gray-500">(Required)</span>
+              </label>
+              <div className="mt-2">
+                <EditorComponent
+                  onContentChange={handleEditorChange}
+                  initialContent={formData.content || ''}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-lg bg-amber-500 px-4 py-2 text-white hover:bg-amber-600"
+                onClick={onHandleOpenModal}
+              >
+                Open Preview
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </button>
+
+              <div className="relative">
+                <button
+                  type="submit"
+                  className="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    <>
+                      Update
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </form>
     </>
   );

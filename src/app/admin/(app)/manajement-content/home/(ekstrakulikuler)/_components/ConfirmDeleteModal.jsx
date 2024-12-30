@@ -1,6 +1,12 @@
 import React from 'react';
 
-export default function ConfirmDeleteModal({ isOpen, onClose, onConfirm, activityName }) {
+export default function ConfirmDeleteModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  activityName,
+  isLoading,
+}) {
   if (!isOpen) return null;
 
   return (
@@ -20,8 +26,32 @@ export default function ConfirmDeleteModal({ isOpen, onClose, onConfirm, activit
           <button
             onClick={onConfirm}
             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            disabled={isLoading}
           >
-            Delete
+            {isLoading ? (
+              <svg
+                className="animate-spin h-7 w-7 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            ) : (
+              'Delete'
+            )}
           </button>
         </div>
       </div>

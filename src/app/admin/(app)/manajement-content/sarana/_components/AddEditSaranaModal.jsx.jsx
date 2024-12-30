@@ -1,25 +1,30 @@
 'use client';
 import ImageUploader from '@/components/__DropImageInput';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
+import { addSarana, updateSarana } from './actions';
 
 export default function AddEditSaranaModal({ sarana, isOpen, onClose, onSave }) {
   const [formData, setFormData] = useState({
-    namaBangunan: '',
-    jumlah: '',
+    name: '',
+    quantity: '',
     volume: '',
-    kondisi: '',
+    condition: '',
     imageUrl: '',
   });
-
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     if (sarana) {
-      setFormData(sarana);
+      setFormData({ ...sarana, imageUrl: sarana.itemImage });
     } else {
       setFormData({
-        namaBangunan: '',
-        jumlah: '',
+        name: '',
+        quantity: '',
         volume: '',
-        kondisi: '',
+        condition: '',
         imageUrl: '',
       });
     }
@@ -33,18 +38,38 @@ export default function AddEditSaranaModal({ sarana, isOpen, onClose, onSave }) 
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData);
+    setIsSubmitting(true);
+
+    const submitFormData = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key !== 'imageUrl' && key !== 'id') {
+        submitFormData.append(key, formData[key]);
+      }
+    });
+
+    try {
+      if (sarana) {
+        await updateSarana(submitFormData, session.user.access_token, formData['id_sarana']);
+      } else {
+        await addSarana(submitFormData, session.user.access_token);
+      }
+      router.refresh();
+      onClose();
+    } catch (error) {
+      console.error('Error submitting sarana:', error);
+    } finally {
+      onSave();
+      setIsSubmitting(false);
+    }
   };
 
-  if (!isOpen) return null;
   const handleImageUpload = (file) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      imageUrl: file,
-    }));
+    const imageUrl = URL.createObjectURL(file);
+    setFormData({ ...formData, imageUrl, itemImage: file });
   };
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -58,8 +83,8 @@ export default function AddEditSaranaModal({ sarana, isOpen, onClose, onSave }) 
               <label className="block text-sm font-medium text-gray-700 mb-1">Nama Bangunan</label>
               <input
                 type="text"
-                name="namaBangunan"
-                value={formData.namaBangunan}
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#039786]"
                 required
@@ -69,8 +94,8 @@ export default function AddEditSaranaModal({ sarana, isOpen, onClose, onSave }) 
               <label className="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
               <input
                 type="number"
-                name="jumlah"
-                value={formData.jumlah}
+                name="quantity"
+                value={formData.quantity}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#039786]"
                 required
@@ -91,8 +116,8 @@ export default function AddEditSaranaModal({ sarana, isOpen, onClose, onSave }) 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Kondisi</label>
               <select
-                name="kondisi"
-                value={formData.kondisi}
+                name="condition"
+                value={formData.condition}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#039786]"
                 required
@@ -105,7 +130,7 @@ export default function AddEditSaranaModal({ sarana, isOpen, onClose, onSave }) 
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Foto bangunan</label>
-              <ImageUploader onImageUpload={handleImageUpload} />
+              <ImageUploader onImageUpload={handleImageUpload} initialState={formData.imageUrl} />
             </div>
           </div>
           <div className="mt-6 flex justify-end gap-2">
@@ -113,14 +138,42 @@ export default function AddEditSaranaModal({ sarana, isOpen, onClose, onSave }) 
               type="button"
               onClick={onClose}
               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+              disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#039786] text-white rounded-md hover:bg-emerald-600"
+              className="px-4 py-2 flex items-center justify-center bg-[#039786] text-white rounded-md hover:bg-emerald-600 gap-3"
+              disabled={isSubmitting}
             >
-              Save
+              {isSubmitting ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              ) : sarana ? (
+                'Update'
+              ) : (
+                'Add'
+              )}
+              Sarana
             </button>
           </div>
         </form>

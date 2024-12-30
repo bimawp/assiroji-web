@@ -9,33 +9,146 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
 enum Role {
   peserta
   admin
 }
+
 model User {
-  id_user   String    @id @default(dbgenerated()) 
-  email     String    @unique                 
-  name      String?                            
-  password  String?                            
-  articles  Artikel[]                           
-  role      Role      @default(peserta)        
+  id_user                 String @id @default(dbgenerated("gen_random_uuid()"))
+  email                   String    @unique
+  name                    String?
+  password                String?
+  articles                Artikel[]
+  riwayatPPDB             RiwayatPPDB[]
+  formulirPendaftaran     FormulirPendaftaran[]
+  dataPendaftar           DataPendaftar[] 
+  role     Role           @default(peserta)
+}
+model Artikel {
+  id_artikel        String   @id @default(cuid())
+  slug              String   @unique
+  title             String
+  description       String @default("") 
+  category          String
+  tags              String[]
+  headerImage       String
+  content           String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  author            User     @relation(fields: [authorId], references: [id_user])
+  authorId          String
+}
+model Gallery {
+  id_gallery  String    @id @default(cuid())
+  title       String
+  description String
+  itemImage   String
+  createdAt   DateTime  @default(now())
+  updatedAt  DateTime @default(now())
+}
+model Contact {
+  id_contact String    @id @default(cuid())
+  address    String
+  email      String
+  phone      String
+  instagram  String
+  facebook   String
+  whatsApp   String
+  tiktok     String
+  youtube    String
+  createdAt  DateTime  @default(now())
+ updatedAt  DateTime @default(now())
+}
+model Ekstrakurikuler {
+  id_ekstrakurikuler String    @id @default(cuid())
+  title              String
+  itemImage          String
+  description        String
+  createdAt          DateTime  @default(now())
+  updatedAt  DateTime @updatedAt @default(now()) 
+  isActive            Boolean  @default(true)
+}
+model Sarana {
+  id_sarana  String    @id @default(cuid())
+  name       String   @db.VarChar(255) 
+  quantity   Int      
+  volume     String   @db.VarChar(255) 
+  condition  Int     
+  itemImage          String
+}
+model Prasarana {
+  id_prasarana  String    @id @default(cuid())
+  name          String   @db.VarChar(255) 
+  quantity      Int      
+  condition     Int   
+}
+model Guru {
+  id_guru  String    @id @default(cuid())
+  name       String   @db.VarChar(255) 
+  position   String 
+  itemImage          String
+}
+model PPDB {
+  id_ppdb           String          @id @default(cuid())
+  namaPPDB          String
+  tahunAjaran       String
+  status            String          @default("dibuka")
+  biayaPendaftaran  Decimal  @db.Decimal(10, 2)
+  biayaBulanan      Decimal  @db.Decimal(10, 2)
+  biayaSeragam      Decimal  @db.Decimal(10, 2)
+  jumlahKuota       Int?            
+  dataPendaftar     DataPendaftar[] 
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime @default(now())
 }
 
-model Artikel {
-  id_artikel  String   @id @default(cuid())     
-  slug        String   @unique               
-  title       String                         
-  category    String                         
-  tags        String[]                      
-  headerImage String                          
-  content     String                           
-  createdAt   DateTime @default(now())     
-  updatedAt   DateTime @updatedAt              
-  author      User     @relation(fields: [authorId], references: [id_user]) 
-  authorId    String                           
+model DataPendaftar {
+  id_data_pendaftar   String          @id @default(cuid())
+  id_ppdb              String
+  id_user              String
+  statusPendaftaran   String          @default("proses")
+  tanggalPendaftaran  DateTime        @default(now()) 
+  ppdb                PPDB            @relation(fields: [id_ppdb], references: [id_ppdb])
+  user                User            @relation(fields: [id_user], references: [id_user])
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime @updatedAt @default(now())
+  jenisPendaftaran    String
+  jenjang             String
+}
+
+model FormulirPendaftaran {
+  id_formulir_pendaftar  String       @id @default(cuid())
+  id_user                String       @unique
+  namaLengkap            String
+  jenisKelamin           String
+  tempatTanggalLahir     String
+  asalSekolah            String
+  namaIbu                String
+  pendidikanTerakhirIbu  String
+  pekerjaanIbu           String
+  namaAyah               String
+  pendidikanTerakhirAyah String
+  pekerjaanAyah          String
+  alamatLengkap          String
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt @default(now()) 
+  noTelepon              String       @db.VarChar(15) 
+  user                   User         @relation(fields: [id_user], references: [id_user])
+}
+
+model RiwayatPPDB {
+  id_riwayat_ppdb    String          @id @default(cuid())
+  id_user             String 
+  id_ppdb             String
+  status             String         
+  keterangan         String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt @default(now()) 
+  user               User         @relation(fields: [id_user], references: [id_user])
 }

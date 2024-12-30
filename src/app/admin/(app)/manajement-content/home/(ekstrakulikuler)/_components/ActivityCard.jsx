@@ -24,7 +24,7 @@ export default function ActivityCard({ activity, onEdit, onDelete, onToggleActiv
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="relative h-48">
-        <Image src={activity.imageUrl} alt={activity.name} layout="fill" objectFit="cover" />
+        <Image src={activity.itemImage} alt={activity.title} layout="fill" objectFit="cover" />
         <div className="absolute top-2 right-2" ref={optionsRef}>
           <div className="relative">
             <button
@@ -62,10 +62,10 @@ export default function ActivityCard({ activity, onEdit, onDelete, onToggleActiv
       </div>
       <div className="p-4">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-xl font-semibold">{activity.name}</h3>
+          <h3 className="text-xl font-semibold">{activity.title}</h3>
         </div>
         <p className="text-gray-600 mb-4">{activity.description}</p>
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           <span
             className={`px-2 py-1 rounded-full text-xs ${
               activity.isActive ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
@@ -87,7 +87,7 @@ export default function ActivityCard({ activity, onEdit, onDelete, onToggleActiv
               `}
             />
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

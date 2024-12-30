@@ -1,5 +1,6 @@
 import Header from '@/components/__Header';
 import Image from 'next/image';
+import Link from 'next/link';
 const scheduleItems = [
   { id: 1, title: 'Pendaftaran', date: '18 Januari - 6 Februari 2025' },
   { id: 2, title: 'Seleksi', date: '8 Februari 2025' },
@@ -87,9 +88,12 @@ export default function PpdbPage() {
         </div>
 
         <div className="text-center">
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-4 px-8 rounded-full text-lg transition-colors">
+          <Link
+            href="/ppdb/l/auth"
+            className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-4 px-8 rounded-full text-lg transition-colors"
+          >
             DAFTAR SEKARANG
-          </button>
+          </Link>
         </div>
       </div>
 

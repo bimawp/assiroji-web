@@ -5,17 +5,18 @@ import ActivityCard from './ActivityCard';
 import AddEditActivityModal from './AddEditActivityModal';
 import PreviewModal from './PreviewModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
-
-export default function Dashboard({ activities, setActivities }) {
+import { useSession } from 'next-auth/react';
+export default function Dashboard({ activities, setActivities, onRefresh }) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [currentActivity, setCurrentActivity] = useState(null);
   const [sortBy, setSortBy] = useState('name');
   const [filterActive, setFilterActive] = useState('all');
   const [hasChanges, setHasChanges] = useState(false);
-
+  const { data: session } = useSession();
   const handleAddActivity = (newActivity) => {
     setActivities([...activities, { ...newActivity, id: Date.now() }]);
     setHasChanges(true);
@@ -30,9 +31,22 @@ export default function Dashboard({ activities, setActivities }) {
     setHasChanges(true);
   };
 
-  const handleDeleteActivity = (id) => {
-    setActivities(activities.filter((activity) => activity.id !== id));
-    setHasChanges(true);
+  const handleDeleteActivity = async (id) => {
+    setIsLoadingDelete(true);
+    try {
+      await fetch(`/api/v1.0.0/auth/page/home/ekstrakulikuler/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    } finally {
+      setIsLoadingDelete(true);
+      onRefresh();
+      setHasChanges(true);
+    }
   };
 
   const handleSort = () => {
@@ -62,7 +76,7 @@ export default function Dashboard({ activities, setActivities }) {
             <Plus className="inline-block mr-2 h-4 w-4" />
             Add Activity
           </button>
-          <button
+          {/* <button
             onClick={handleSort}
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
@@ -79,13 +93,13 @@ export default function Dashboard({ activities, setActivities }) {
             <option value="all">All Activities</option>
             <option value="active">Active Only</option>
             <option value="inactive">Inactive Only</option>
-          </select>
+          </select> */}
         </div>
       </div>
       <div className="grid mt-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredActivities.map((activity) => (
           <ActivityCard
-            key={activity.id}
+            key={activity['id_ekstrakurikuler']}
             activity={activity}
             onEdit={() => {
               setCurrentActivity(activity);
@@ -109,7 +123,7 @@ export default function Dashboard({ activities, setActivities }) {
           <Eye className="w-4 h-4 mr-2" />
           Preview Landing Page
         </button>
-        <button
+        {/* <button
           onClick={() => {
             // Di sini Anda akan menambahkan logika untuk menyimpan perubahan ke backend
             setHasChanges(false);
@@ -124,27 +138,31 @@ export default function Dashboard({ activities, setActivities }) {
         >
           <RefreshCw className="w-4 h-4 mr-2" />
           save changes
-        </button>
+        </button> */}
       </div>
       <AddEditActivityModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSave={handleAddActivity}
+        onRefresh={onRefresh}
       />
       <AddEditActivityModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleEditActivity}
         activity={currentActivity}
+        onRefresh={onRefresh}
       />
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={() => {
-          handleDeleteActivity(currentActivity.id);
+          console.log('asdasdf', currentActivity['id_ekstrakurikuler']);
+          handleDeleteActivity(currentActivity['id_ekstrakurikuler']);
           setIsDeleteModalOpen(false);
         }}
         activityName={currentActivity?.name}
+        isLoading={isLoadingDelete}
       />
       <PreviewModal
         isOpen={isPreviewModalOpen}

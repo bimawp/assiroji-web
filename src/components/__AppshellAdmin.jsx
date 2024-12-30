@@ -6,6 +6,7 @@ import {
   Building2,
   ChevronDown,
   ChevronRight,
+  ClipboardList,
   Contact,
   Contact2,
   FolderOpen,
@@ -50,7 +51,7 @@ const navItems = [
         icon: Users,
       },
       {
-        name: 'Page Sarana',
+        name: 'Page Sarana dan prasarana',
         link: '/admin/manajement-content/sarana',
         icon: Building2,
       },
@@ -92,9 +93,26 @@ const navItems = [
     ],
   },
   {
-    name: 'Article Management',
-    link: '/admin/artikel',
-    icon: Newspaper,
+    name: 'Kelola PPDB',
+    link: '/admin/ppdb',
+    icon: ClipboardList,
+    subItems: [
+      {
+        name: '1 sub',
+        link: '/admin/manajement-content/home',
+        icon: UserPlus,
+      },
+      {
+        name: '2 sub',
+        link: '/admin/manajement-content/home',
+        icon: Building2,
+      },
+      {
+        name: '3 sub',
+        link: '/admin/manajement-content/home',
+        icon: Trophy,
+      },
+    ],
   },
   // {
   //   name: 'Student Admission',
@@ -149,7 +167,7 @@ export default function AppshellAdmin({ children }) {
       <div className="relative bg-[#1D564F]">
         <div className="flex">
           <aside
-            className={`fixed top-0 left-0 h-screen bg-[#1D564F] text-white transition-all duration-300 ease-in-out ${
+            className={`fixed z-20 top-0 left-0 h-screen bg-[#1D564F] text-white transition-all duration-300 ease-in-out ${
               isCollapsed ? 'w-20' : 'w-[300px]'
             } `}
           >
@@ -262,7 +280,7 @@ export default function AppshellAdmin({ children }) {
           >
             <div className="bg-gray-50 rounded-lg min-h-screen">
               <button
-                className={`fixed top-1/2 -translate-y-1/2 p-1 rounded-full text-white bg-[#F7B118] border-4 border-white hover:bg-orange-400 transition-all duration-300 ease-in-out ${
+                className={`fixed top-1/2 z-[22] -translate-y-1/2 p-1 rounded-full text-white bg-[#F7B118] border-4 border-white hover:bg-orange-400 transition-all duration-300 ease-in-out ${
                   isCollapsed ? 'left-[60px] rotate-0' : 'left-[276px] rotate-180'
                 }`}
                 onClick={toggleSidebar}

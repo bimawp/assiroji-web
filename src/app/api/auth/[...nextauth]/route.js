@@ -1,7 +1,8 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { createClient } from '@supabase/supabase-js';
-
+import bcrypt from 'bcrypt';
+import { prisma } from '@/lib/prisma';
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -21,11 +22,48 @@ const authOptions = {
       },
       authorize: async (credentials) => {
         const { email, password } = credentials;
-        // if(email){
-        //   return {
-        //     id: 'sdfdf',email: email, role: 'admin', access_token: '3f3f'
-        //   }
-        // }
+        const user = await prisma.user.findUnique({
+          where: {
+            email: email,
+          },
+        });
+        if (user.role === 'peserta') {
+          const isPasswordValid = await bcrypt.compare(password, user.password);
+
+          if (!isPasswordValid) {
+            throw new Error('password tidak valid');
+          }
+
+          const ppdbWithPendaftar = await prisma.pPDB.findMany({
+            where: {
+              status: 'dibuka',
+            },
+            include: {
+              dataPendaftar: {
+                where: {
+                  id_user: user.id_user,
+                },
+              },
+            },
+          });
+
+          const result = ppdbWithPendaftar.map((ppdb) => ({
+            idPPDB: ppdb.id_ppdb,
+            namaPPDB: ppdb.namaPPDB,
+            tahunAjaran: ppdb.tahunAjaran,
+            jumlahKuota: ppdb.jumlahKuota,
+            dataPendaftar: ppdb.dataPendaftar.statusPendaftaran,
+          }));
+
+          console.log('result user ppdb : ', result);
+
+          return {
+            id: user.id_user,
+            email,
+            name: user.name,
+            role: user.role,
+          };
+        }
 
         const { data, error } = await supabase.auth.signInWithPassword(
           {
@@ -33,28 +71,30 @@ const authOptions = {
             password,
           },
           {
-            expiresIn: 864000, // Token berlaku selama 10 hari
+            expires_in: 7 * 24 * 60 * 60,
           }
         );
 
         if (error) throw new Error(error.message);
-
         return {
           id: data.user.id,
           email: data.user.email,
           name: data.user.user_metadata.name,
-          role: data.user.user_metadata.role || 'admin',
+          role: data.user.user_metadata.role,
           access_token: data.session.access_token,
         };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile, isNewUser }) {
+      // if (account?.provider === 'credentials') {
+      //   token.name = user.name;
+      //   // token.expires = Date.now() + 1000 * 60 * 60 * 12;
+      //   // token.exp = Date.now() + 1000 * 60;
+      // }
       if (user) {
         token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
         token.role = user.role;
         token.access_token = user.access_token;
       }
@@ -62,8 +102,6 @@ const authOptions = {
     },
     async session({ session, token }) {
       session.user.id = token.id;
-      session.user.email = token.email;
-      session.user.name = token.name;
       session.user.role = token.role;
       session.user.access_token = token.access_token;
       return session;

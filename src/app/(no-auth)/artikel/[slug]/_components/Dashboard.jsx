@@ -67,7 +67,7 @@ export default function ArticleDetailPage({ data: article }) {
   if (!article) {
     return <div className="container mx-auto p-4">Article not found</div>;
   }
-  console.log(article)
+  console.log(article);
 
   return (
     <div className="bg-gradient-to-b from-teal-200 to-teal-400 min-h-screen">

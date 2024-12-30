@@ -6,7 +6,7 @@ import PreviewModal from './PreviewModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import AddEditGalleryModal from './AddEditGalleryModal';
 
-export default function Dashboard({ gallery, setGallery }) {
+export default function Dashboard({ gallery, setGallery, onRefresh }) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -60,7 +60,7 @@ export default function Dashboard({ gallery, setGallery }) {
             <Plus className="inline-block mr-2 h-4 w-4" />
             Add Gallery
           </button>
-          <button
+          {/* <button
             onClick={handleSort}
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
@@ -77,13 +77,13 @@ export default function Dashboard({ gallery, setGallery }) {
             <option value="all">All gallery</option>
             <option value="active">Active Only</option>
             <option value="inactive">Inactive Only</option>
-          </select>
+          </select> */}
         </div>
       </div>
       <div className="grid mt-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredgallery.map((gallery) => (
           <GalleryCard
-            key={gallery.id}
+            key={gallery['id_gallery']}
             gallery={gallery}
             onEdit={() => {
               setCurrentGallery(gallery);
@@ -107,7 +107,7 @@ export default function Dashboard({ gallery, setGallery }) {
           <Eye className="w-4 h-4 mr-2" />
           Preview Landing Page
         </button>
-        <button
+        {/* <button
           onClick={() => {
             // Di sini Anda akan menambahkan logika untuk menyimpan perubahan ke backend
             setHasChanges(false);
@@ -122,18 +122,20 @@ export default function Dashboard({ gallery, setGallery }) {
         >
           <RefreshCw className="w-4 h-4 mr-2" />
           save changes
-        </button>
+        </button> */}
       </div>
       <AddEditGalleryModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSave={handleAddgallery}
+        onRefresh={onRefresh}
       />
       <AddEditGalleryModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleEditgallery}
         gallery={currentGallery}
+        onRefresh={onRefresh}
       />
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}

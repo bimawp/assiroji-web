@@ -15,6 +15,7 @@ export default function PageBerita() {
     category: '',
     tags: [],
     headerImage: '',
+    description: '',
     content: '',
   });
   const [currentTag, setCurrentTag] = useState('');
@@ -23,6 +24,7 @@ export default function PageBerita() {
   const [showCategoryInput, setShowCategoryInput] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [content, setEditorContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const onHandleOpenModal = () => setOpenModal(!openModal);
   const handleInputChange = (e) => {
@@ -91,6 +93,7 @@ export default function PageBerita() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const sendformData = new FormData(e.target);
 
     const title = sendformData.get('title') || '';
@@ -102,20 +105,15 @@ export default function PageBerita() {
     sendformData.append('slug', slug);
 
     const authorId = session.user.id;
+    console.log('authorId', authorId);
     if (!authorId) {
       console.error('User not authenticated');
       return;
     }
-    // slug: '',
-    // title: '',
-    // category: '',
-    // tags: [],
-    // headerImage: '',
-    // content: '',
-
     sendformData.append('authorId', authorId);
     sendformData.append('category', formData.category);
     sendformData.append('headerImage', formData.headerImage);
+    sendformData.append('description', formData.description);
     sendformData.append('tags', formData.tags);
     sendformData.append('content', formData.content);
 
@@ -136,6 +134,8 @@ export default function PageBerita() {
       }
     } catch (error) {
       console.error('Error creating article:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -163,6 +163,20 @@ export default function PageBerita() {
             type="text"
             name="title"
             value={formData.title}
+            onChange={handleInputChange}
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="block">
+            <span className=" font-extralight text-gray-900 ">Deskripsi Artikel</span>
+            <span className="ml-1 text-sm text-gray-500">(Required)</span>
+          </label>
+          <input
+            type="text"
+            name="description"
+            value={formData.description}
             onChange={handleInputChange}
             className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
             required
@@ -299,9 +313,35 @@ export default function PageBerita() {
             <button
               type="submit"
               className="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700"
+              disabled={isLoading}
             >
-              Publish
-              <ChevronDown className="ml-2 h-4 w-4" />
+              {isLoading ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              ) : (
+                <>
+                  Publish
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </>
+              )}
             </button>
           </div>
         </div>

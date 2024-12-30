@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-export default function Berita() {
+export default function Berita({ data }) {
   return (
     <Swiper
       spaceBetween={30}
@@ -36,7 +36,7 @@ export default function Berita() {
         },
       }}
     >
-      {Array.from({ length: 4 }, (_, index) => (
+      {data.map((item, index) => (
         <SwiperSlide key={index}>
           <div className="w-full  mb-30 py-12 pb-20">
             <div className="bg-[#039685] rounded-xl text-white w-full h-full">

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ArrowRight, Search } from 'lucide-react';
 import Header from '@/components/__Header';
 
-const categories = ['All', 'Technology', 'Science', 'Health', 'Business', 'Entertainment'];
+// const categories = ['All', 'Technology', 'Science', 'Health', 'Business', 'Entertainment'];
 
 const articles = [
   {
@@ -67,15 +67,18 @@ const articles = [
   },
 ];
 
-export default function ArticlePage({ data }) {
+export default function ArticlePage({ data, categories }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  console.log(data);
+
   const filteredArticles = data.filter(
     (article) =>
-      (selectedCategory === 'All' || article.categories.includes(selectedCategory)) &&
+      (selectedCategory === 'All' || article.category.includes(selectedCategory)) &&
       (article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         article.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+  const newestData = data.reduce((latest, current) =>
+    new Date(current.createdAt).getTime() > new Date(latest.createdAt).getTime() ? current : latest
   );
 
   return (
@@ -124,23 +127,22 @@ export default function ArticlePage({ data }) {
           </div>
         </div>
 
-        {/* Latest Article */}
         <div className="bg-white/80 backdrop-blur-sm shadow-lg rounded-2xl overflow-hidden mb-8 transition-transform ">
           <div className="p-6 md:p-8">
             <h2 className="text-2xl font-semibold mb-4 text-teal-800">Latest Article</h2>
             <div className="flex flex-col md:flex-row gap-6">
               <Image
-                src={data[0].headerImage}
-                alt={data[0].title}
+                src={newestData.headerImage}
+                alt={newestData.title}
                 width={400}
                 height={300}
                 className="rounded-lg object-cover w-full md:w-1/3 h-64 md:h-auto"
               />
               <div className="md:w-2/3">
-                <h3 className="text-xl font-semibold mb-2 text-teal-700">{data[0].title}</h3>
-                <p className="text-gray-600 mb-4">{data[0].content}</p>
+                <h3 className="text-xl font-semibold mb-2 text-teal-700">{newestData.title}</h3>
+                <p className="text-gray-600 mb-4">{newestData.content}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {data[0].tags.map((category) => (
+                  {newestData.tags.map((category) => (
                     <span
                       key={category}
                       className="bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full"
@@ -157,7 +159,6 @@ export default function ArticlePage({ data }) {
           </div>
         </div>
 
-        {/* Article List */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredArticles.map((article) => (
             <div

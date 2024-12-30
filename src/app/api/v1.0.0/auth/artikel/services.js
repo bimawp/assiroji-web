@@ -8,11 +8,11 @@ import {
 } from '@/service';
 import { z } from 'zod';
 
-// Validasi skema untuk Artikel
 const artikelSchema = z
   .object({
     slug: z.string().nonempty({ message: 'Slug is required' }),
     title: z.string().nonempty({ message: 'Title is required' }),
+    description: z.string().nonempty({ message: 'Description is required' }),
     category: z.string().nonempty({ message: 'Category is required' }),
     tags: z.array(z.string()).nonempty({ message: 'Tags must contain at least one tag' }),
     headerImage: z.string().nonempty({ message: 'Header image is required' }),
@@ -21,7 +21,6 @@ const artikelSchema = z
   })
   .strict();
 
-// Handle Create Artikel
 export const handleCreateArtikel = async (body) => {
   const parsedBody = artikelSchema.safeParse(body);
   if (!parsedBody.success) {
@@ -48,7 +47,6 @@ export const handleCreateArtikel = async (body) => {
   return await createRecord('Artikel', newArtikel);
 };
 
-// Handle Get Artikel by ID
 export const handleGetArtikel = async (id) => {
   const artikel = await getRecordById('Artikel', { id_artikel: id });
   if (!artikel) {
