@@ -20,10 +20,12 @@ const achievements = [
       'Alhamdulillah, kabar baik datang dari Madrasah Aliyah (MA) kita! Dengan penuh rasa syukur dan bangga, kami sampaikan bahwa Madrasah Aliyah [Nama Sekolah] berhasil meraih JUARA 4 Kompetisi Sains Madrasah (KSM) untuk Mata Pelajaran Ekonomi tingkat Provinsi Jawa Barat.',
   },
 ];
-
+export const dynamic = 'force-dynamic';
 export default async function PrestasiPage() {
   try {
-    const ress = await fetch('http://localhost:3000/api/v1.0.0/auth/prestasi');
+    const ress = await fetch('api/v1.0.0/auth/prestasi', {
+      cache: 'no-store',
+    });
     if (!ress) {
       notFound();
     }

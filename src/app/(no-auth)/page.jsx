@@ -1,9 +1,9 @@
 import React from 'react';
 import HomePage from './_components/Index';
-
+export const dynamic = 'force-dynamic';
 export default async function Page() {
   try {
-    const ress = await fetch('http://localhost:3000/api/landingpage/home');
+    const ress = await fetch('/api/landingpage/home', { cache: 'no-store' });
     if (!ress) {
       notFound();
     }
