@@ -1,6 +1,5 @@
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-
 
 export async function GET(request, { params }) {
   try {
@@ -16,7 +15,6 @@ export async function GET(request, { params }) {
   }
 }
 
-
 export async function PUT(request, { params }) {
   try {
     const body = await request.json();
@@ -29,7 +27,6 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ error: 'Error updating PPDB' }, { status: 500 });
   }
 }
-
 
 export async function DELETE(request, { params }) {
   try {
