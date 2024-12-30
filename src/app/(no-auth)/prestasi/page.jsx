@@ -23,7 +23,7 @@ const achievements = [
 export const dynamic = 'force-dynamic';
 export default async function PrestasiPage() {
   try {
-    const ress = await fetch('api/v1.0.0/auth/prestasi', {
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + 'api/v1.0.0/auth/prestasi', {
       cache: 'no-store',
     });
     if (!ress) {

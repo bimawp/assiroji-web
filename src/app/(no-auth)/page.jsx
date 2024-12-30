@@ -3,7 +3,9 @@ import HomePage from './_components/Index';
 export const dynamic = 'force-dynamic';
 export default async function Page() {
   try {
-    const ress = await fetch('/api/landingpage/home', { cache: 'no-store' });
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/landingpage/home', {
+      cache: 'no-store',
+    });
     if (!ress) {
       notFound();
     }
