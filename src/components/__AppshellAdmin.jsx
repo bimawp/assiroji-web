@@ -94,36 +94,25 @@ const navItems = [
   },
   {
     name: 'Kelola PPDB',
-    link: '/admin/ppdb',
     icon: ClipboardList,
     subItems: [
       {
-        name: '1 sub',
-        link: '/admin/manajement-content/home',
+        name: 'New Student Enrollment',
+        link: '/admin/ppdb/l',
         icon: UserPlus,
       },
       {
-        name: '2 sub',
-        link: '/admin/manajement-content/home',
+        name: 'Selection Process',
+        link: '/admin/ppdb/seleksi-ppdb',
         icon: Building2,
       },
       {
-        name: '3 sub',
-        link: '/admin/manajement-content/home',
+        name: 'Admission Log',
+        link: '/admin/ppdb/riwayat-ppdb',
         icon: Trophy,
       },
     ],
   },
-  // {
-  //   name: 'Student Admission',
-  //   link: '/admin/student-admision',
-  //   icon: UserPlus,
-  // },
-  // {
-  //   name: 'System Setting',
-  //   link: '/admin/setting',
-  //   icon: Settings,
-  // },
 ];
 
 export default function AppshellAdmin({ children }) {
@@ -133,8 +122,6 @@ export default function AppshellAdmin({ children }) {
   const [openSubmenu, setOpenSubmenu] = useState(1);
   const pathname = usePathname();
   const { data: session, status } = useSession();
-  console.log('session', session);
-  console.log(openSubmenu);
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   const toggleSubmenu = (index) => {

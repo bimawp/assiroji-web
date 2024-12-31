@@ -7,7 +7,7 @@ export default function Page() {
   console.log(session);
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      {/* Header */}
+    
       <div className="bg-white border-b border-gray-200">
         <div className="flex items-center justify-between px-6 py-3">
           <div className="flex items-center">

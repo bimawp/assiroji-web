@@ -45,3 +45,33 @@ export async function GET(req, { params }) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export async function PUT(req, { params }) {
+  try {
+    const { id_user: id_data_pendaftar } = await params;
+    console.log('id user', id_data_pendaftar);
+    if (!id_data_pendaftar) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    }
+    const body = await req.json();
+    const { statusPendaftaran } = body;
+
+    // console.log('statusPendaftaran:', statusPendaftaran);
+    // console.log('id_data_pendaftar:', statusPendaftaran);
+    const updatedPendaftar = await prisma.dataPendaftar.update({
+      where: {
+        id_data_pendaftar: id_data_pendaftar,
+      },
+      data: {
+        statusPendaftaran: statusPendaftaran,
+      },
+    });
+    if (!updatedPendaftar) {
+      return NextResponse.json({ message: 'user belum daftar' }, { status: 200 });
+    }
+
+    return NextResponse.json(updatedPendaftar, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
