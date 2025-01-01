@@ -88,9 +88,8 @@ export default function EditPPDBModal({ ppdb, isOpen, onClose, onSave }) {
                 onChange={(e) => setStatusPendaftaran(e.target.value)}
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#039786]"
               >
-                <option value="proses">Proses</option>
-                <option value="diterima">Diterima</option>
-                <option value="ditolak">Ditolak</option>
+                <option value="konfirmasi">konfirmasi</option>
+                <option value="validasi">validasi</option>
               </select>
             </div>
           </div>

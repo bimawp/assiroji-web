@@ -12,7 +12,7 @@ export async function GET() {
         status: 'dibuka',
       },
     });
-    console.log(latestPpdb.id_ppdb);
+
     const dataPendaftar = await prisma.dataPendaftar.findMany({
       where: {
         id_ppdb: latestPpdb.id_ppdb,
@@ -48,12 +48,12 @@ export async function GET() {
       },
     });
     const dataPendaftarFormatted = dataPendaftar.map((item) => {
-      const formulir = item.user.formulirPendaftaran[0] || null; // Ambil item pertama atau null jika kosong
+      const formulir = item.user.formulirPendaftaran[0] || null;
       return {
         ...item,
         user: {
           ...item.user,
-          formulirPendaftaran: formulir, // Ubah array menjadi objek tunggal
+          formulirPendaftaran: formulir, //
         },
       };
     });

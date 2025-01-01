@@ -1,26 +1,37 @@
 'use client';
 
 import { ClipboardList, Settings, UserPlus, Users } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { ModalEditPPDB } from './_components/ModalEditPpdb';
 
 export default function KelolaPPDB() {
+  const router = useRouter();
   const [currentPPDB, setCurrentPPDB] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [registrationStats, setRegistrationStats] = useState({
     total: 0,
     unvalidated: 0,
     accepted: 0,
   });
-
+  const fetchPPDBData = async () => {
+    try {
+      const response = await fetch('/api/v1.0.0/auth/ppdb');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const ppdb = await response.json();
+      setCurrentPPDB(ppdb);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const openModal = async () => {
+    setIsModalOpen(true);
+  };
   useEffect(() => {
-    setCurrentPPDB({
-      namaPPDB: 'PPDB 2024/2025',
-      tahunAjaran: '2024/2025',
-      status: 'dibuka',
-      biayaPendaftaran: 500000,
-      biayaBulanan: 750000,
-      biayaSeragam: 1000000,
-      jumlahKuota: 100,
-    });
+    fetchPPDBData();
+
     setRegistrationStats({
       total: 75,
       unvalidated: 25,
@@ -29,92 +40,114 @@ export default function KelolaPPDB() {
   }, []);
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-gray-100">
-      <div className="bg-white border-b border-gray-200">
-        <div className="px-6 py-3">
-          <h1 className="text-2xl font-semibold text-[#1D564F]">Kelola PPDB</h1>
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-auto min-h-[94vh] p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <SummaryCard
-            title="Total Pendaftar"
-            value={registrationStats.total}
-            icon="👥"
-            color="blue"
-          />
-          <SummaryCard
-            title="Belum Divalidasi"
-            value={registrationStats.unvalidated}
-            icon="⏳"
-            color="yellow"
-          />
-          <SummaryCard
-            title="Lolos Seleksi"
-            value={registrationStats.accepted}
-            icon="✅"
-            color="green"
-          />
-          <SummaryCard
-            title="Kuota Tersisa"
-            value={currentPPDB ? currentPPDB.jumlahKuota - registrationStats.accepted : 0}
-            icon="🎟️"
-            color="purple"
-          />
+    <>
+      <ModalEditPPDB
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        ppdbData={currentPPDB || ''}
+      />
+      <div className="flex-1 flex flex-col overflow-hidden bg-gray-100">
+        <div className="bg-white border-b border-gray-200">
+          <div className="px-6 py-3">
+            <h1 className="text-2xl font-semibold text-[#1D564F]">Kelola PPDB</h1>
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow mb-6">
-          <div className="p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Aksi Cepat</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <QuickActionButton
-                title="Validasi Pendaftar"
-                icon={<ClipboardList className="w-6 h-6" />}
-              />
-              <QuickActionButton
-                title="Lihat Semua Pendaftar"
-                icon={<Users className="w-6 h-6" />}
-              />
-              <QuickActionButton title="Pengaturan PPDB" icon={<Settings className="w-6 h-6" />} />
-              {!currentPPDB && (
-                <QuickActionButton
-                  title="Buat PPDB Baru"
-                  icon={<UserPlus className="w-6 h-6" />}
-                  onClick={() => alert('oke')}
-                />
+        <div className="flex-1 overflow-auto min-h-[94vh] p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <SummaryCard
+              title="Total Pendaftar"
+              value={registrationStats.total}
+              icon="👥"
+              color="blue"
+            />
+            <SummaryCard
+              title="Belum Divalidasi"
+              value={registrationStats.unvalidated}
+              icon="⏳"
+              color="yellow"
+            />
+            <SummaryCard
+              title="Lolos Seleksi"
+              value={registrationStats.accepted}
+              icon="✅"
+              color="green"
+            />
+            <SummaryCard
+              title="Kuota Tersisa"
+              value={currentPPDB ? currentPPDB.jumlahKuota - registrationStats.accepted : 0}
+              icon="🎟️"
+              color="purple"
+            />
+          </div>
+
+          <div className="bg-white rounded-lg shadow mb-6">
+            <div className="p-6">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Aksi Cepat</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {currentPPDB && (
+                  <>
+                    <QuickActionButton
+                      title="Validasi Pendaftar"
+                      icon={<ClipboardList className="w-6 h-6" />}
+                      onClick={() => router.push('/admin/ppdb/seleksi-ppdb')}
+                    />
+                    <QuickActionButton
+                      title="Lihat Semua Pendaftar"
+                      icon={<Users className="w-6 h-6" />}
+                      onClick={() => router.push('/admin/ppdb/l/pendaftar-masuk')}
+                    />
+                    <QuickActionButton
+                      title="Pengaturan PPDB"
+                      icon={<Settings className="w-6 h-6" />}
+                      onClick={() => openModal()}
+                    />
+                  </>
+                )}
+
+                {!currentPPDB && (
+                  <QuickActionButton
+                    title="Buat PPDB Baru"
+                    icon={<UserPlus className="w-6 h-6" />}
+                    onClick={() => router.push('/admin/ppdb/l/buat-ppdb')}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow mb-6">
+            <div className="p-6">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Detail PPDB Saat Ini</h2>
+              {currentPPDB ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <DetailItem label="Nama PPDB" value={currentPPDB.namaPPDB} />
+                  <DetailItem label="Tahun Ajaran" value={currentPPDB.tahunAjaran} />
+                  <DetailItem label="Status" value={currentPPDB.status} />
+                  <DetailItem
+                    label="Biaya Pendaftaran"
+                    value={`Rp ${currentPPDB.biayaPendaftaran.toLocaleString()}`}
+                  />
+                  <DetailItem
+                    label="Biaya Bulanan"
+                    value={`Rp ${currentPPDB.biayaBulanan.toLocaleString()}`}
+                  />
+                  <DetailItem
+                    label="Biaya Seragam"
+                    value={`Rp ${currentPPDB.biayaSeragam.toLocaleString()}`}
+                  />
+                  <DetailItem label="Jumlah Kuota" value={currentPPDB.jumlahKuota} />
+                </div>
+              ) : (
+                <>
+                  <p className="text-center">Belum ada PPDB</p>
+                </>
               )}
             </div>
           </div>
         </div>
-
-        {currentPPDB && (
-          <div className="bg-white rounded-lg shadow mb-6">
-            <div className="p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Detail PPDB Saat Ini</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <DetailItem label="Nama PPDB" value={currentPPDB.namaPPDB} />
-                <DetailItem label="Tahun Ajaran" value={currentPPDB.tahunAjaran} />
-                <DetailItem label="Status" value={currentPPDB.status} />
-                <DetailItem
-                  label="Biaya Pendaftaran"
-                  value={`Rp ${currentPPDB.biayaPendaftaran.toLocaleString()}`}
-                />
-                <DetailItem
-                  label="Biaya Bulanan"
-                  value={`Rp ${currentPPDB.biayaBulanan.toLocaleString()}`}
-                />
-                <DetailItem
-                  label="Biaya Seragam"
-                  value={`Rp ${currentPPDB.biayaSeragam.toLocaleString()}`}
-                />
-                <DetailItem label="Jumlah Kuota" value={currentPPDB.jumlahKuota} />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 }
 

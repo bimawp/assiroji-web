@@ -26,7 +26,7 @@ export default function ConfirmationPage() {
       </p>
 
       <Link
-        href="/registration"
+        href="/ppdb/l"
         className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
       >
         Kembali ke Beranda

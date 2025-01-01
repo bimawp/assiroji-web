@@ -24,6 +24,7 @@ export async function GET(req, { params }) {
         },
       },
     });
+
     const dataUser = await getRecordById('formulirPendaftaran', { id_user });
     const status = ppdbWithPendaftar.dataPendaftar[0]?.statusPendaftaran || null;
     const tanggalPendaftaran = ppdbWithPendaftar.dataPendaftar[0]?.tanggalPendaftaran || null;
@@ -56,8 +57,8 @@ export async function PUT(req, { params }) {
     const body = await req.json();
     const { statusPendaftaran } = body;
 
-    // console.log('statusPendaftaran:', statusPendaftaran);
-    // console.log('id_data_pendaftar:', statusPendaftaran);
+    console.log('statusPendaftaran:', statusPendaftaran);
+    console.log('id_data_pendaftar:', statusPendaftaran);
     const updatedPendaftar = await prisma.dataPendaftar.update({
       where: {
         id_data_pendaftar: id_data_pendaftar,

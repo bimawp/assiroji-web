@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 export async function GET(request, { params }) {
   try {
     const ppdb = await prisma.pPDB.findUnique({
-      where: { id_ppdb: params.id_ppdb },
+      where: { id_ppdb: params.id },
     });
     if (!ppdb) {
       return NextResponse.json({ error: 'PPDB not found' }, { status: 404 });
@@ -18,8 +18,10 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const body = await request.json();
+    console.log('body', body);
+
     const updatedPPDB = await prisma.pPDB.update({
-      where: { id_ppdb: params.id_ppdb },
+      where: { id_ppdb: params.id },
       data: body,
     });
     return NextResponse.json(updatedPPDB);
@@ -31,7 +33,7 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     await prisma.pPDB.delete({
-      where: { id_ppdb: params.id_ppdb },
+      where: { id_ppdb: params.id },
     });
     return NextResponse.json({ message: 'PPDB deleted successfully' });
   } catch (error) {

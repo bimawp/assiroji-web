@@ -7,6 +7,7 @@ import {
   DollarSignIcon,
   UserIcon,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 import { z } from 'zod';
 
@@ -28,7 +29,7 @@ const fields = [
     placeholder: 'Masukkan tahun ajaran',
     icon: CalendarIcon,
   },
-  { name: 'status', label: 'Status', placeholder: 'Pilih status', icon: CheckCircleIcon },
+
   {
     name: 'biayaPendaftaran',
     label: 'Biaya Pendaftaran',
@@ -145,7 +146,16 @@ export default function BuatPPDB() {
 
   return (
     <>
-      <div className="flex w-full justify-between items-center bg-white border-b border-gray-200 h-16 p-4"></div>
+      <div className="flex w-full justify-between items-center bg-white border-b border-gray-200 p-4">
+        <div className="flex gap-1 rounded-full bg-emerald-100 p-1">
+          <Link href="/admin/ppdb/l" className={`rounded-full px-6 py-2 text-sm text-emerald-600`}>
+            PPDB
+          </Link>
+          <div className={`rounded-full px-6 py-2 text-sm bg-emerald-600 text-white`}>
+            Buat ppdb
+          </div>
+        </div>
+      </div>
 
       <div className="w-full p-4">
         <div className="">
@@ -161,32 +171,21 @@ export default function BuatPPDB() {
                     <field.icon className="h-4 w-4" />
                     {field.label}
                   </label>
-                  {field.name === 'status' ? (
-                    <select
-                      id={field.name}
-                      name={field.name}
-                      value={formData[field.name]}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1F4D3D] focus:border-transparent"
-                    >
-                      <option value="dibuka">Dibuka</option>
-                      <option value="ditutup">Ditutup</option>
-                    </select>
-                  ) : (
-                    <input
-                      id={field.name}
-                      name={field.name}
-                      type={
-                        field.name.includes('biaya') || field.name === 'jumlahKuota'
-                          ? 'number'
-                          : 'text'
-                      }
-                      placeholder={field.placeholder}
-                      value={formData[field.name]}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1F4D3D] focus:border-transparent"
-                    />
-                  )}
+
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    type={
+                      field.name.includes('biaya') || field.name === 'jumlahKuota'
+                        ? 'number'
+                        : 'text'
+                    }
+                    placeholder={field.placeholder}
+                    value={formData[field.name]}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1F4D3D] focus:border-transparent"
+                  />
+
                   {errors[field.name] && (
                     <p className="mt-1 text-sm text-red-600">{errors[field.name][0]}</p>
                   )}

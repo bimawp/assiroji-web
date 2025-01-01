@@ -14,8 +14,8 @@ import ErrorState from './_components/ErrorState';
 const steps = [
   { id: 1, name: 'Registrasi Awal', status: 'registrasi', path: '/ppdb/register' },
   { id: 2, name: 'Pembayaran', status: 'proses', path: '/ppdb/payment' },
-  { id: 3, name: 'Validasi', status: 'lunas', path: '/ppdb/validation' },
-  { id: 4, name: 'Konfirmasi', status: 'selesai', path: '/ppdb/confirmation' },
+  { id: 3, name: 'Validasi', status: 'validasi', path: '/ppdb/validation' },
+  { id: 4, name: 'Konfirmasi', status: 'konfirmasi', path: '/ppdb/confirmation' },
 ];
 
 export default function Page() {
@@ -110,9 +110,9 @@ function DaftarBaru({ status, onRefresh, ppdbData, id_user, jenisPendaftaran }) 
       return <RegistrationPage {...commonProps} />;
     case 'proses':
       return <PaymentPage {...commonProps} />;
-    case 'lunas':
+    case 'validasi':
       return <ValidationPage />;
-    case 'selesai':
+    case 'konfirmasi':
       return <ConfirmationPage />;
     default:
       return null;

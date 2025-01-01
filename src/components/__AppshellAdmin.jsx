@@ -119,7 +119,7 @@ export default function AppshellAdmin({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [openSubmenu, setOpenSubmenu] = useState(1);
+  const [openSubmenu, setOpenSubmenu] = useState(0);
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);

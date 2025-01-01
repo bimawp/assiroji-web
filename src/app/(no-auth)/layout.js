@@ -10,7 +10,7 @@ export const metadata = {
 };
 async function getFooterData() {
   const ress = await getAllRecords('Contact');
-  console.log(ress);
+
   if (!ress) {
     notFound();
   }
