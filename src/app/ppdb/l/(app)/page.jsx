@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import ConfirmationModal from './_components/ModalConfirm';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function WelcomePage({ nama }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: session, status } = useSession();
   const router = useRouter();
   const handleClick = () => {
     setIsModalOpen(true);
@@ -21,10 +23,10 @@ export default function WelcomePage({ nama }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#E0EEE9] flex flex-col items-center justify-center p-4">
+    <div className="min-h-[87vh] bg-[#E0EEE9] flex flex-col items-center justify-center p-4">
       <div className="text-center max-w-2xl mx-auto space-y-4">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-          Selamat Datang{nama ? `, ${nama}` : ''}
+          Selamat Datang{session?.user?.name ? `, ${session?.user?.name}` : ''}
         </h1>
         <p className="text-lg md:text-xl text-gray-700">
           Senang sekali bisa bergabung di PPDB MA As-Siroji

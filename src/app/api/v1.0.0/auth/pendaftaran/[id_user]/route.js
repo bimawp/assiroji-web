@@ -50,7 +50,7 @@ export async function GET(req, { params }) {
 export async function PUT(req, { params }) {
   try {
     const { id_user: id_data_pendaftar } = await params;
-    console.log('id user', id_data_pendaftar);
+
     if (!id_data_pendaftar) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }

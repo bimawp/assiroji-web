@@ -38,3 +38,6 @@ export const getRecordByColumn = async (tableName, column, value) => {
     where: whereCondition,
   });
 };
+export const deleteAllRecords = async (tableName) => {
+  return await prisma[tableName].deleteMany();
+};

@@ -11,8 +11,6 @@ export async function GET(req, { params }) {
     }
     const dataUser = await getRecordById('formulirPendaftar', { id_user: id });
 
-    console.log('Formulir Pendaftaran:', dataUser);
-
     return NextResponse.json(dataUser, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

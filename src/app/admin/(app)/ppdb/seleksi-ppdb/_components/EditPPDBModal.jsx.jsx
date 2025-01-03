@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 export default function EditPPDBModal({ ppdb, isOpen, onClose, onSave }) {
-  const [statusPendaftaran, setStatusPendaftaran] = useState('proses');
+  const [statusPendaftaran, setStatusPendaftaran] = useState('');
   const router = useRouter();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -13,10 +13,11 @@ export default function EditPPDBModal({ ppdb, isOpen, onClose, onSave }) {
   useEffect(() => {
     if (ppdb) {
       setStatusPendaftaran(ppdb.statusPendaftaran);
-    } else {
-      setStatusPendaftaran('proses');
     }
   }, [ppdb]);
+  useEffect(() => {
+    console.log(statusPendaftaran);
+  }, [statusPendaftaran]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

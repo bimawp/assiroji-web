@@ -46,8 +46,8 @@ const navItems = [
         icon: Home,
       },
       {
-        name: 'Page Guru',
-        link: '/admin/manajement-content/guru',
+        name: 'Page Profile',
+        link: '/admin/manajement-content/profile/guru',
         icon: Users,
       },
       {
@@ -119,7 +119,7 @@ export default function AppshellAdmin({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [openSubmenu, setOpenSubmenu] = useState(0);
+  const [openSubmenu, setOpenSubmenu] = useState(1);
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);

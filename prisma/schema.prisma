@@ -63,7 +63,13 @@ model Contact {
   tiktok     String
   youtube    String
   createdAt  DateTime  @default(now())
- updatedAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+}
+model Kurikulum {
+  id_kurikulum String    @id @default(cuid())
+  deskripsi    String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime @default(now())
 }
 model Ekstrakurikuler {
   id_ekstrakurikuler String    @id @default(cuid())
