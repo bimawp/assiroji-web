@@ -28,7 +28,6 @@ export default function Page() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log('data : ', data);
       setTahunPPDB(data.latestPpdb);
       setPPDBData(data.dataPendaftar);
     } catch (error) {

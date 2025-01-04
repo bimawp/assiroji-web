@@ -13,7 +13,7 @@ export default function Navbar() {
         onConfirm={async () => {
           try {
             setIsLoading(true);
-            await signOut({ redirect: true, callbackUrl: '/ppdb/auth' });
+            await signOut({ redirect: true, callbackUrl: '/ppdb/l/auth' });
             setLogoutModal(false);
           } catch (error) {
             console.error('Error during logout:', error);

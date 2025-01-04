@@ -97,7 +97,7 @@ export default function PpdbPage() {
         </div>
       </div>
 
-      {/* end */}
+
     </div>
   );
 }

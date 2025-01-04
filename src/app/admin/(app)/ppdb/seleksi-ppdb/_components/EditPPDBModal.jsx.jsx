@@ -16,7 +16,7 @@ export default function EditPPDBModal({ ppdb, isOpen, onClose, onSave }) {
     }
   }, [ppdb]);
   useEffect(() => {
-    console.log(statusPendaftaran);
+    console.log('statusPendaftaran :', statusPendaftaran);
   }, [statusPendaftaran]);
 
   const handleSubmit = async (e) => {
@@ -89,8 +89,9 @@ export default function EditPPDBModal({ ppdb, isOpen, onClose, onSave }) {
                 onChange={(e) => setStatusPendaftaran(e.target.value)}
                 className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#039786]"
               >
-                <option value="konfirmasi">konfirmasi</option>
+                <option value="proses">proses</option>
                 <option value="validasi">validasi</option>
+                <option value="konfirmasi">konfirmasi</option>
               </select>
             </div>
           </div>
