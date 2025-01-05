@@ -60,11 +60,10 @@ export async function POST(req) {
       email: 'contact@example.com',
       phone: '+1 (123) 456-7890',
     };
-    // console.log(contactData);
+
     await prisma['Contact'].create({
       data: { ...contoh },
     });
-    // console.log(newContact);
 
     return NextResponse.json('newContact', { status: 201 });
   } catch (error) {

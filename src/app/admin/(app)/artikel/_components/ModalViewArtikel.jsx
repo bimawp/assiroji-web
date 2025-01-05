@@ -63,13 +63,7 @@ const ModalViewArtikel = ({ open, handleOpen, className, data }) => {
           >
             Close
           </button>
-          <button
-            className="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200"
-            onClick={() => {
-              // Add logic to open full article page
-              console.log(`Opening full article: ${data['id-artikel']}`);
-            }}
-          >
+          <button className="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200">
             Read More
           </button>
         </div>

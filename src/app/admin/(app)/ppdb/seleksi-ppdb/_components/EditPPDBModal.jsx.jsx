@@ -15,9 +15,6 @@ export default function EditPPDBModal({ ppdb, isOpen, onClose, onSave }) {
       setStatusPendaftaran(ppdb.statusPendaftaran);
     }
   }, [ppdb]);
-  useEffect(() => {
-    console.log('statusPendaftaran :', statusPendaftaran);
-  }, [statusPendaftaran]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { PrismaClient } from '@prisma/client';
-import { createRecord } from '@/service';
+
 
 const prisma = new PrismaClient();
 
@@ -52,7 +52,7 @@ export async function POST(req) {
           role,
         },
       });
-      console.log(createdUser);
+
       return new Response(
         JSON.stringify({
           message: 'User registered successfully',
@@ -62,8 +62,6 @@ export async function POST(req) {
         { status: 201 }
       );
     }
-
-    // createRecord('User', createdUser);
   } catch (error) {
     console.error('Error in register API:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
@@ -92,25 +90,20 @@ const fetchAllUsers = async () => {
 };
 export const DELETE = async () => {
   try {
-   
     const users = await fetchAllUsers();
 
     if (!users || users.length === 0) {
-      console.log('Tidak ada pengguna yang ditemukan.');
-      return;
+      throw new Error('User not found');
     }
 
-    // Hapus setiap pengguna berdasarkan ID
     for (const user of users) {
       const { error } = await supabaseAdmin.auth.admin.deleteUser(user.id);
       if (error) {
-        console.error(`Gagal menghapus pengguna dengan ID: ${user.id}`, error.message);
+        throw new Error(`Gagal menghapus pengguna dengan ID: ${user.id}`, error.message);
       } else {
-        console.log(`Berhasil menghapus pengguna dengan ID: ${user.id}`);
+        throw new Error(`Berhasil menghapus pengguna dengan ID: ${user.id}`);
       }
     }
-
-    console.log('Semua pengguna berhasil dihapus.');
   } catch (err) {
     console.error('Terjadi kesalahan:', err.message);
   }

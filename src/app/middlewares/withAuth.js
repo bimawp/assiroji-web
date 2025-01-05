@@ -10,23 +10,22 @@ export default function withAuth(middleware, requireAuth) {
       secret: process.env.NEXTAUTH_SECRET,
     });
 
-    // Halaman login khusus untuk admin dan peserta
+ 
     if (pathname === '/admin/login') {
       if (token?.role === 'admin') {
         return NextResponse.redirect(new URL('/admin', req.url));
       }
-      return middleware(req, next); // Biarkan akses tanpa login
+      return middleware(req, next); 
     }
     if (pathname === '/ppdb/l/auth') {
       if (token?.role === 'peserta') {
-        console.log(token?.role);
+  
         return NextResponse.redirect(new URL('/ppdb/l/kq', req.url));
       }
-      return middleware(req, next); // Biarkan akses tanpa login
+      return middleware(req, next); 
     }
 
-    // Validasi akses untuk rute yang memerlukan autentikasi
-    console.log('masuk');
+
     if (requireAuth.some((route) => pathname.startsWith(route))) {
       if (!token) {
         if (pathname.startsWith('/admin')) {
@@ -49,8 +48,8 @@ export default function withAuth(middleware, requireAuth) {
         return NextResponse.redirect(new URL('/ppdb/l/auth', req.url));
       }
     }
-    console.log('oke');
+    ('oke');
 
-    return middleware(req, next); // Lanjutkan ke middleware berikutnya
+    return middleware(req, next); 
   };
 }

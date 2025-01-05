@@ -57,8 +57,6 @@ export async function PUT(req, { params }) {
     const body = await req.json();
     const { statusPendaftaran } = body;
 
-    console.log('statusPendaftaran:', statusPendaftaran);
-    console.log('id_data_pendaftar:', statusPendaftaran);
     const updatedPendaftar = await prisma.dataPendaftar.update({
       where: {
         id_data_pendaftar: id_data_pendaftar,

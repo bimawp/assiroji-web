@@ -14,7 +14,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const dataKurikulum = await createRecord('Kurikulum', body);
-    console.log(body);
+
 
     return NextResponse.json(
       {

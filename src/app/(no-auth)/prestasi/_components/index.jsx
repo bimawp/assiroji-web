@@ -1,9 +1,9 @@
 import Header from '@/components/__Header';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
 export default function PagePrestasiLanding({ data }) {
-  console.log(data);
   return (
     <div className="bg-gradient-to-b from-teal-200 to-teal-400 p-4 md:p-0 text-black">
       <Header
@@ -28,7 +28,7 @@ export default function PagePrestasiLanding({ data }) {
               key={index}
               className="bg-white/20 backdrop-blur-sm rounded-lg overflow-hidden transition-transform hover:scale-[1.02]"
             >
-              <div className="p-4 md:p-6">
+              <Link href={'/artikel/' + achievement.slug} className="p-4 md:p-6 block">
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="w-full md:w-1/3">
                     <Image
@@ -51,7 +51,7 @@ export default function PagePrestasiLanding({ data }) {
                     </p> */}
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>

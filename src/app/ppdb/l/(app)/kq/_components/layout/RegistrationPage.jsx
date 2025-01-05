@@ -29,7 +29,7 @@ export default function RegistrationPage({
   const [errors, setErrors] = useState({});
   useEffect(() => {
     if (ppdbData?.dataUser) setFormData(ppdbData?.dataUser);
-    console.log('registran ulang: ', ppdbData);
+  
   }, [ppdbData]);
   const handleChange = (e) => {
     const { name, value } = e.target;

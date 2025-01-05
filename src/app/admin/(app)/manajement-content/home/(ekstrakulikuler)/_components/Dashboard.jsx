@@ -76,24 +76,6 @@ export default function Dashboard({ activities, setActivities, onRefresh }) {
             <Plus className="inline-block mr-2 h-4 w-4" />
             Add Activity
           </button>
-          {/* <button
-            onClick={handleSort}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            <ArrowUpDown className="inline-block mr-2 h-4 w-4" />
-            Sort by {sortBy === 'name' ? 'Date' : 'Name'}
-          </button>
-          <select
-            onChange={(e) => {
-              setFilterActive(e.target.value);
-              setHasChanges(true);
-            }}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            <option value="all">All Activities</option>
-            <option value="active">Active Only</option>
-            <option value="inactive">Inactive Only</option>
-          </select> */}
         </div>
       </div>
       <div className="grid mt-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -123,22 +105,6 @@ export default function Dashboard({ activities, setActivities, onRefresh }) {
           <Eye className="w-4 h-4 mr-2" />
           Preview Landing Page
         </button>
-        {/* <button
-          onClick={() => {
-            // Di sini Anda akan menambahkan logika untuk menyimpan perubahan ke backend
-            setHasChanges(false);
-            alert('Changes saved to landing page!');
-          }}
-          className={`px-6 py-2  text-white rounded-lg  transition-colors inline-flex items-center ${
-            hasChanges
-              ? 'bg-gray-900 hover:bg-gray-800 focus:ring-blue-500'
-              : 'bg-gray-400 cursor-not-allowed'
-          }`}
-          disabled={!hasChanges}
-        >
-          <RefreshCw className="w-4 h-4 mr-2" />
-          save changes
-        </button> */}
       </div>
       <AddEditActivityModal
         isOpen={isAddModalOpen}
@@ -157,7 +123,6 @@ export default function Dashboard({ activities, setActivities, onRefresh }) {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={() => {
-          console.log('asdasdf', currentActivity['id_ekstrakurikuler']);
           handleDeleteActivity(currentActivity['id_ekstrakurikuler']);
           setIsDeleteModalOpen(false);
         }}

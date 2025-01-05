@@ -9,7 +9,7 @@ export default async function Page() {
     if (!categories.includes('All')) {
       categories.unshift('All');
     }
-    console.log('category : ', categories);
+
     if (!artikels) {
       notFound();
     }

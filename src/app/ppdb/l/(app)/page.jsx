@@ -21,7 +21,7 @@ export default function WelcomePage({ nama }) {
         const userResponse = await fetch(`/api/v1.0.0/auth/pendaftaran/${session.user.id}`);
         if (!userResponse.ok) throw new Error('Failed to fetch user data');
         const userData = await userResponse.json();
-        console.log('status : ', userData?.status);
+       
         setStatusUser(userData?.status || null);
         setDataFetched(true);
       } catch (error) {

@@ -2,7 +2,6 @@ import Header from '@/components/__Header';
 import Image from 'next/image';
 
 export default function KurikulumPage({ data }) {
-  console.log('kurikulum :', data);
   return (
     <div className="bg-gradient-to-b from-teal-200 to-teal-400 p-4 md:p-0 text-black">
       <Header

@@ -37,11 +37,11 @@ export async function POST(req) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
-    console.log('asdf', { name, quantity, condition });
+ 
     const oke = await prisma['Prasarana'].create({
       data: { name, quantity: Number(quantity), condition: Number(condition) },
     });
-    console.log('oke', oke);
+
     return NextResponse.json(oke, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

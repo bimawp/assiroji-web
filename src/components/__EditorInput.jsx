@@ -31,7 +31,7 @@ const EditorComponent = ({ initialContent = '', onContentChange, toolbarConfig =
       const content = state.getCurrentContent();
       const htmlContent = stateToHTML(content);
       const rawContent = JSON.stringify(convertToRaw(content));
-      console.log(htmlContent);
+    
       if (onContentChange) {
         onContentChange(htmlContent, rawContent);
       }

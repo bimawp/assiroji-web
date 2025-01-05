@@ -105,7 +105,7 @@ export default function PageBerita() {
     sendformData.append('slug', slug);
 
     const authorId = session.user.id;
-    console.log('authorId', authorId);
+
     if (!authorId) {
       console.error('User not authenticated');
       return;
@@ -127,7 +127,6 @@ export default function PageBerita() {
       });
 
       if (response.ok) {
-        console.log('Article created successfully');
         router.push('/admin/artikel');
       } else {
         console.error('Failed to create article');

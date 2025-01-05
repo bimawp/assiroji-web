@@ -1,6 +1,5 @@
 export async function addSarana(formData, token) {
   try {
-    console.log(formData);
     const response = await fetch('/api/v1.0.0/auth/sarana', {
       method: 'POST',
       body: formData,

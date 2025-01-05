@@ -117,7 +117,6 @@ export default function MyCalendar() {
   };
   const handleConfirmDelete = async () => {
     if (selectedDate) {
-      console.log('Deleting guru:', selectedDate);
       try {
         await fetch(`/api/v1.0.0/auth/kalender/${selectedDate['id_tgl_kalender']}`, {
           method: 'DELETE',

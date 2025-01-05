@@ -9,8 +9,6 @@ export default async function Page() {
       notFound();
     }
 
-    console.log(contacts);
-
     return <ContactPage data={contacts[0]} />;
   } catch (error) {
     return (

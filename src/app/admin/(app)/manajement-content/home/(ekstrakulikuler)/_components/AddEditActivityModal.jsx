@@ -8,7 +8,6 @@ import { addActivity, updateActivity } from './actions';
 import { useSession } from 'next-auth/react';
 
 export default function AddEditActivityModal({ isOpen, onClose, activity = null, onRefresh }) {
-  console.log(activity);
   const [formData, setFormData] = useState({
     id: '',
     title: '',

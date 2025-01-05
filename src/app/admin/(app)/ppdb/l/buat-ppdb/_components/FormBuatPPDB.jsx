@@ -118,8 +118,6 @@ export default function BuatPPDB() {
       });
 
       if (response.ok) {
-        console.log('PPDB data submitted successfully');
-
         setFormData({
           namaPPDB: '',
           tahunAjaran: '',
@@ -129,8 +127,6 @@ export default function BuatPPDB() {
           biayaSeragam: '',
           jumlahKuota: '',
         });
-      } else {
-        console.log('Failed to submit PPDB data');
       }
     } catch (error) {
       if (error instanceof z.ZodError) {

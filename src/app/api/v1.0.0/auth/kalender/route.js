@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const kalenderData = await getAllRecords('kalender');
-    console.log(kalenderData);
 
     if (!kalenderData) {
       return NextResponse.json({ message: 'No open PPDB found' }, { status: 404 });

@@ -142,7 +142,7 @@ export default function PageUpdatePrestasi() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('oke', session.user.access_token);
+
     setIsLoading(true);
     try {
       const sendFormData = new FormData();
@@ -162,10 +162,8 @@ export default function PageUpdatePrestasi() {
           hasChanges = true;
         }
       });
-      console.log(formData.headerImage);
 
       if (!hasChanges) {
-        console.log('No changes detected');
         setIsLoading(false);
         return;
       }
@@ -186,7 +184,6 @@ export default function PageUpdatePrestasi() {
         sendFormData.append('authorId', authorId);
       }
 
-      console.log('Sending updated data', sendFormData);
       const response = await fetch(`/api/v1.0.0/auth/artikel/${slug}`, {
         method: 'PUT',
         body: sendFormData,
@@ -199,12 +196,9 @@ export default function PageUpdatePrestasi() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // Handle successful update
-      console.log('Article updated successfully');
       router.push('/admin/manajement-content/prestasi');
 
       setOriginalData(formData);
-      // You might want to redirect to the article list or show a success message
     } catch (error) {
       console.error('Error updating article:', error);
       setError('Failed to update article. Please try again later.');

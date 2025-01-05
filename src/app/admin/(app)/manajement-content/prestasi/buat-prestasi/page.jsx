@@ -103,7 +103,7 @@ export default function PagePrestasi() {
     sendformData.append('slug', slug);
 
     const authorId = session.user.id;
-    console.log('authorId', authorId);
+
     if (!authorId) {
       console.error('User not authenticated');
       return;
@@ -125,7 +125,6 @@ export default function PagePrestasi() {
       });
 
       if (response.ok) {
-        console.log('Article created successfully');
         router.push('/admin/manajement-content/prestasi');
       } else {
         console.error('Failed to create article');

@@ -13,7 +13,7 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const body = await req.json();
-    const kalender = await await createRecord('Kalender', body);
+    const kalender = await await handleCreateUser(body);
     return NextResponse.json(kalender, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });

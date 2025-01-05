@@ -12,7 +12,7 @@ export default function ExtracurricularCMS() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
+
       setGallery(data);
     } catch (error) {
       console.error('Error fetching articles:', error);

@@ -24,12 +24,6 @@ const artikelSchema = z
 export const handleCreateArtikel = async (body) => {
   const parsedBody = artikelSchema.safeParse(body);
   if (!parsedBody.success) {
-    console.log(
-      parsedBody.error.errors.map((e) => ({
-        path: e.path,
-        message: e.message,
-      }))
-    );
     throw new Error(parsedBody.error.errors.map((e) => `${e.path} is ${e.message}`).join(', '));
   }
 

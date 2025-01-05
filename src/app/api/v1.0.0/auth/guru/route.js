@@ -40,8 +40,7 @@ export async function POST(req) {
     const name = formData.get('name');
     const position = formData.get('position');
     const file = formData.get('itemImage');
-    // console.log(isActive);
-    console.log('file', file);
+
     if (!file || !file.name) {
       throw new Error('Header image is required and must have a valid name.');
     }
@@ -64,7 +63,7 @@ export async function POST(req) {
     const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
 
     const itemImage = publicUrlData.publicUrl;
-    console.log('asdf', { name, position, itemImage });
+
     await prisma['Guru'].create({
       data: { name, itemImage, position },
     });

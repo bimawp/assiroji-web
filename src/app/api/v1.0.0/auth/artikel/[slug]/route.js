@@ -54,7 +54,7 @@ export async function PUT(req, context) {
   });
   try {
     const formData = await req.formData();
-    console.log('supabase', slug);
+
     const id = formData.get('id');
     const headerImage = formData.get('headerImage');
     const title = formData.get('title');
@@ -71,16 +71,10 @@ export async function PUT(req, context) {
     let publicUrl = formData.get('currentHeaderImage');
     const updateData = {};
 
-    // if (authorId) updateData.authorId = authorId;
-
-    console.log('updateData', headerImage?.name);
-
-    // console.log(publicUrl);
     if (headerImage instanceof Blob && headerImage?.name) {
       const { headerImage: relativePath } = await handleGetArtikelBySlug(slug);
       const oldDataImage = relativePath.split(`${bucket}/`)[1];
 
-      console.log('OLDATA:', oldDataImage);
       if (oldDataImage) {
         const { data: deleteOldData, error: errorDeleteOldData } = await supabase.storage
           .from(bucket)
@@ -89,8 +83,7 @@ export async function PUT(req, context) {
         if (errorDeleteOldData) {
           throw new Error(`Error uploading image: ${errorDeleteOldData.message}`);
         }
-        console.log('oldDataImage', oldDataImage);
-        console.log('deleteOldData', deleteOldData);
+
         const date = new Date();
         const folderPath = `artikel/${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
           2,
@@ -109,7 +102,6 @@ export async function PUT(req, context) {
         if (uploadError) {
           throw new Error(`Error uploading image: ${uploadError.message}`);
         }
-        console.log('ieu hasil uploade', uploadData);
 
         const { data: publicUrlData, error: publicUrlError } = supabase.storage
           .from(bucket)
@@ -118,7 +110,6 @@ export async function PUT(req, context) {
         if (publicUrlError) {
           throw new Error(`Error getting public URL: ${publicUrlError.message}`);
         }
-        console.log('ieu hasil ngambil data', publicUrlData);
 
         publicUrl = publicUrlData.publicUrl;
       }
@@ -173,14 +164,14 @@ export async function DELETE(req, context) {
       return NextResponse.json({ error: 'data tidak ada' }, { status: 400 });
     }
     const oldDataImage = relativePath.split(`${bucket}/`)[1];
-    console.log('DATA LAMA : ', oldDataImage);
+
     const { data: deleteOldData, error: errorDeleteOldData } = await supabaseAuth.storage
       .from(bucket)
       .remove([oldDataImage]);
     if (errorDeleteOldData) {
       throw new Error(`Error uploading image: ${errorDeleteOldData.message}`);
     }
-    console.log('BERHASIL DI HAPUS : ', deleteOldData);
+
     await handleDeleteArtikel(slug);
     return NextResponse.json({ message: 'Artikel deleted successfully' }, { status: 200 });
   } catch (error) {

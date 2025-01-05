@@ -16,7 +16,7 @@ export default function SocialMediaSettings() {
     try {
       const response = await fetch('/api/v1.0.0/auth/kurikulum');
       const data = await response.json();
-      console.log('data', data);
+
       if (data && data.deskripsi) {
         setEditorContent(data.deskripsi);
         setKurikulumId(data.id_kurikulum);
@@ -52,8 +52,7 @@ export default function SocialMediaSettings() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Data saved successfully:', result);
-        // Update the kurikulumId if it was a POST request
+
         if (!kurikulumId) {
           setKurikulumId(result.id_kurikulum);
         }

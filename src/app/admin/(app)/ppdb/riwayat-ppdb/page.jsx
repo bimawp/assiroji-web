@@ -19,7 +19,7 @@ export default function Page() {
       const data = await response.json();
       setPPDBData(data);
     } catch (error) {
-      console.log('Error fetching PPDB log data:', error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

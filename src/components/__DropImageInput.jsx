@@ -36,8 +36,7 @@ const ImageUploader = React.memo(({ onImageUpload, initialState = '' }) => {
       setImagePreview(previewUrl);
       onImageUpload(file);
 
-      console.log('file : ', file);
-      console.log('blob : ', previewUrl);
+  
       return () => {
         URL.revokeObjectURL(previewUrl);
       };

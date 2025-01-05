@@ -14,7 +14,6 @@ export default async function Page() {
       sarana,
       prasarana,
     };
-    console.log(data);
 
     return <SaranaDanPrasaranaPage data={data} />;
   } catch (error) {

@@ -103,7 +103,6 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
     }
 
     if (Object.keys(changedData).length === 0 && !isEndingPPDB) {
-      console.log('No changes detected');
       setIsLoading(false);
       return;
     }
@@ -118,7 +117,6 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
       });
 
       if (response.ok) {
-        console.log(isEndingPPDB ? 'PPDB ended successfully' : 'PPDB data updated successfully');
         onClose();
       } else {
         console.log(isEndingPPDB ? 'Failed to end PPDB' : 'Failed to update PPDB data');

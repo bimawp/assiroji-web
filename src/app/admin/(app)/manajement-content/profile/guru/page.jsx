@@ -15,7 +15,6 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Modal states
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
@@ -33,7 +32,7 @@ export default function Page() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
+
       setGurus(data);
     } catch (error) {
       console.error('Error fetching guru:', error);
@@ -71,14 +70,12 @@ export default function Page() {
   };
 
   const handleSaveGuru = async (guruData) => {
-    console.log('Saving guru:', guruData);
     await fetchGurus();
     setIsAddEditModalOpen(false);
   };
 
   const handleConfirmDelete = async () => {
     if (selectedGuru) {
-      console.log('Deleting guru:', selectedGuru);
       try {
         await fetch(`/api/v1.0.0/auth/guru/${selectedGuru['id_guru']}`, {
           method: 'DELETE',

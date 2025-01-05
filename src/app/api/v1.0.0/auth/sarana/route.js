@@ -42,8 +42,7 @@ export async function POST(req) {
     const volume = formData.get('volume');
     const condition = formData.get('condition');
     const file = formData.get('itemImage');
-    // console.log(isActive);
-    console.log('file', file);
+  
     if (!file || !file.name) {
       throw new Error('Header image is required and must have a valid name.');
     }
@@ -69,11 +68,11 @@ export async function POST(req) {
     const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
 
     const itemImage = publicUrlData.publicUrl;
-    console.log('asdf', { name, quantity, volume, itemImage, condition });
+   
     const oke = await prisma['Sarana'].create({
       data: { name, quantity: Number(quantity), volume, itemImage, condition: Number(condition) },
     });
-    console.log('oke', oke);
+
     return NextResponse.json(itemImage, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

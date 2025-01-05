@@ -31,7 +31,7 @@ export default function Page() {
       setTahunPPDB(data.latestPpdb);
       setPPDBData(data.dataPendaftar);
     } catch (error) {
-      console.log('Error fetching PPDB data:', error);
+      'Error fetching PPDB data:', error;
     } finally {
       setIsLoading(false);
     }

@@ -8,7 +8,6 @@ export default async function Page() {
     if (!guru) {
       notFound();
     }
-    console.log(guru);
 
     return <GuruKaryawanPage guru={guru} />;
   } catch (error) {

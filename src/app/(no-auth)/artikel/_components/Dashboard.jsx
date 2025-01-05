@@ -140,7 +140,7 @@ export default function ArticlePage({ data, categories }) {
               />
               <div className="md:w-2/3">
                 <h3 className="text-xl font-semibold mb-2 text-teal-700">{newestData.title}</h3>
-                <p className="text-gray-600 mb-4">{newestData.content}</p>
+                <p className="text-gray-600 mb-4">{newestData.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {newestData.tags.map((category) => (
                     <span
@@ -151,9 +151,12 @@ export default function ArticlePage({ data, categories }) {
                     </span>
                   ))}
                 </div>
-                <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-full transition-colors">
+                <Link
+                  href={`/artikel/${newestData.slug}`}
+                  className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-full transition-colors"
+                >
                   Read More
-                </button>
+                </Link>
               </div>
             </div>
           </div>

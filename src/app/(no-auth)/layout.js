@@ -14,6 +14,7 @@ async function getFooterData() {
   if (!ress) {
     notFound();
   }
+
   return ress[0];
 }
 export default async function Layout({ children }) {

@@ -17,8 +17,7 @@ export default function AddEventModal({ isOpen, onClose, onSubmit, selectedDate,
       const year = d.getFullYear();
       return `${day}-${month}-${year}`;
     };
-    console.log('edit : ', eventToEdit);
-    console.log('selectedDate : ', selectedDate);
+
     if (eventToEdit) {
       setDate(formatToDDMMYYYY(new Date(eventToEdit?.date)));
       setDescription(eventToEdit.deskripsi);
@@ -44,7 +43,6 @@ export default function AddEventModal({ isOpen, onClose, onSubmit, selectedDate,
       date: formattedDate,
     };
 
-    console.log('eventData : ', eventData);
     try {
       const fethc = eventToEdit
         ? '/api/v1.0.0/auth/kalender/' + eventToEdit.id_tgl_kalender
@@ -62,7 +60,6 @@ export default function AddEventModal({ isOpen, onClose, onSubmit, selectedDate,
       }
 
       const result = await response.json();
-      console.log('Event saved:', result);
 
       setDescription('');
       setColor('blue');

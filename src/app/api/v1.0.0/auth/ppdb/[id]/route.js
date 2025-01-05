@@ -18,7 +18,6 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const body = await request.json();
-    console.log('body', body);
 
     const updatedPPDB = await prisma.pPDB.update({
       where: { id_ppdb: params.id },

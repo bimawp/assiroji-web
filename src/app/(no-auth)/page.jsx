@@ -1,11 +1,10 @@
 import React from 'react';
 import HomePage from './_components/Index';
 export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 export default async function Page() {
   try {
-    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/landingpage/home', {
-      cache: 'no-store',
-    });
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/landingpage/home');
     if (!ress) {
       notFound();
     }

@@ -5,7 +5,7 @@ export async function GET(req, { params }) {
   try {
     if (params.id) {
       const user = await handleGetUser(params.id);
-      console.log('user id', user);
+ 
       return NextResponse.json(user, { status: 200 });
     }
   } catch (error) {

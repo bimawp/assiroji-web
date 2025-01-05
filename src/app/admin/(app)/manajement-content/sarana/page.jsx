@@ -67,7 +67,6 @@ export default function Page() {
   };
 
   const handleSaveSarana = async (saranaData) => {
-    console.log('Saving sarana:', saranaData);
     await fetchSaranas();
     setIsAddEditModalOpen(false);
   };
@@ -75,7 +74,7 @@ export default function Page() {
   const handleConfirmDelete = async () => {
     if (selectedSarana) {
       setIsLoadingDelete(true);
-      console.log('Deleting sarana:', selectedSarana);
+
       try {
         await fetch(`/api/v1.0.0/auth/sarana/${selectedSarana['id_sarana']}`, {
           method: 'DELETE',

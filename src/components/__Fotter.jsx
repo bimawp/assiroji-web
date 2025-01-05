@@ -1,26 +1,17 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
-  Phone,
-  Mail,
-  MapPin,
-  ExternalLink,
-} from 'lucide-react';
+import { Facebook, Instagram, Youtube, Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
 
 export default function Footer({ data }) {
   const currentYear = new Date().getFullYear();
-
+  'sosial medai', data;
   const menuItems = [
     { name: 'Home', href: '/' },
-    { name: 'Profil', href: '/profil' },
+    { name: 'Profil', href: '/profile/visi-misi' },
     { name: 'Sarana', href: '/sarana' },
     { name: 'Prestasi', href: '/prestasi' },
     { name: 'PPDB', href: '/ppdb' },
-    { name: 'Kontak', href: '/kontak' },
+    { name: 'Kontak', href: '/contact' },
   ];
 
   return (
@@ -48,7 +39,7 @@ export default function Footer({ data }) {
                 <MapPin className="w-5 h-5 text-[#F7B118] mt-1 flex-shrink-0" />
                 <div>
                   <p className="font-semibold">Address:</p>
-                  <p className="text-gray-300">JL.Toblong Rt 01 Rw 02</p>
+                  <p className="text-gray-300">{data.address}</p>
                   <p className="text-gray-300">Ds. Mekar Jaya Kec. Pacet Kab. Bandung</p>
                 </div>
               </div>
@@ -85,17 +76,14 @@ export default function Footer({ data }) {
             </nav>
           </div>
 
-
           <div className="space-y-4">
             <h3 className="text-lg font-semibold border-l-4 border-[#F7B118] pl-3">Social Media</h3>
             <div className="flex space-x-4">
-              <SocialIcon href="#" icon={Facebook} label="Facebook" />
-              <SocialIcon href="#" icon={Instagram} label="Instagram" />
-              <SocialIcon href="#" icon={Twitter} label="Twitter" />
-              <SocialIcon href="#" icon={Youtube} label="YouTube" />
+              <SocialIcon href={data.facebook} icon={Facebook} label="Facebook" />
+              <SocialIcon href={data.instagram} icon={Instagram} label="Instagram" />
+              <SocialIcon href={data.youtube} icon={Youtube} label="YouTube" />
             </div>
           </div>
-
 
           <div className="space-y-4">
             <h3 className="text-lg font-semibold border-l-4 border-[#F7B118] pl-3">Newsletter</h3>

@@ -55,8 +55,6 @@ const authOptions = {
             dataPendaftar: ppdb.dataPendaftar.statusPendaftaran,
           }));
 
-          console.log('result user ppdb : ', result);
-
           return {
             id: user.id_user,
             email,

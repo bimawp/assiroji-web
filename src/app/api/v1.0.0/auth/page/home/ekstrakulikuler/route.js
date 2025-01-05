@@ -41,8 +41,7 @@ export async function POST(req) {
     const description = formData.get('description');
     const file = formData.get('itemImage');
     const isActive = formData.get('isActive');
-    console.log(isActive);
-    console.log('file', file);
+
     if (!file || !file.name) {
       throw new Error('Header image is required and must have a valid name.');
     }
@@ -67,7 +66,7 @@ export async function POST(req) {
     const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
 
     const itemImage = publicUrlData.publicUrl;
-    console.log('asdf', { title, itemImage, description, isActive });
+    'asdf', { title, itemImage, description, isActive };
     await prisma['Ekstrakurikuler'].create({
       data: { title, itemImage, description },
     });

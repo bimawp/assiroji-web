@@ -11,7 +11,7 @@ export async function GET() {
         status: 'dibuka',
       },
     });
-    console.log(latestPpdb);
+
 
     if (!latestPpdb) {
       return NextResponse.json({ message: 'No open PPDB found' }, { status: 404 });
@@ -32,7 +32,6 @@ export async function POST(request) {
     const dataPPDB = await prisma.pPDB.create({
       data: body,
     });
-    console.log(body);
 
     return NextResponse.json(
       {
@@ -63,7 +62,7 @@ export async function PUT(request) {
       data: body,
     });
 
-    console.log('Updated PPDB:', updatedPPDB);
+ 
 
     return NextResponse.json(
       {

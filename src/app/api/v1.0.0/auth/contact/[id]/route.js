@@ -29,7 +29,7 @@ export async function GET(context) {
 export async function PUT(req, context) {
   try {
     const { id } = context.params;
-    console.log('IDDD', id);
+
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
@@ -74,11 +74,7 @@ export async function PUT(req, context) {
       }
     });
 
-    console.log('Updates:', updates);
-
     const newData = await updateRecord('Contact', { id_contact: id }, updates);
-
-    console.log('Updated data:', newData);
 
     return NextResponse.json(
       { message: 'Social media links updated successfully', newData },
