@@ -4,7 +4,7 @@ import PpdbPage from './_components';
 
 export default async function Page() {
   try {
-    const ress = await fetch('http://localhost:3000/api/v1.0.0/auth/ppdb');
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/auth/ppdb');
     if (!ress) {
       notFound();
     }
