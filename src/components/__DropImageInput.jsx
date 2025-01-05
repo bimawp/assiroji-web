@@ -30,19 +30,28 @@ const ImageUploader = React.memo(({ onImageUpload, initialState = '' }) => {
   };
 
   const validateAndSetFile = (file) => {
-    if (file && file.type.startsWith('image/')) {
-      setImage(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-      onImageUpload(file);
-
-  
-      return () => {
-        URL.revokeObjectURL(previewUrl);
-      };
-    } else {
-      alert('Hanya file gambar yang diperbolehkan!');
+    if (!file) {
+      return;
     }
+
+    if (!file.type.startsWith('image/')) {
+      alert('Hanya file gambar yang diperbolehkan!');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Ukuran gambar tidak boleh lebih dari 2 MB!');
+      return;
+    }
+
+    setImage(file);
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
+    onImageUpload(file);
+
+    return () => {
+      URL.revokeObjectURL(previewUrl);
+    };
   };
 
   const handleClick = () => {

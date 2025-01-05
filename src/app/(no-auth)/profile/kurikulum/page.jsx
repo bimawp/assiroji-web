@@ -1,7 +1,7 @@
 import React from 'react';
 import { getAllRecords } from '@/service';
 import KurikulumPage from './_components';
-
+export const revalidate = 3600;
 export default async function Page() {
   try {
     const Kurikulum = await getAllRecords('Kurikulum');

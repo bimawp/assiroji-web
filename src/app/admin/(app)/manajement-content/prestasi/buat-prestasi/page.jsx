@@ -67,25 +67,6 @@ export default function PagePrestasi() {
     }));
   };
 
-  // const handleCategoryChange = (category) => {
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     category,
-  //   }));
-  //   setShowDropdown(false);
-  // };
-
-  // const handleAddCategory = () => {
-  //   if (newCategory.trim()) {
-  //     setCategories((prevCategories) => [...prevCategories, newCategory.trim()]);
-  //     setFormData((prevData) => ({
-  //       ...prevData,
-  //       category: newCategory.trim(),
-  //     }));
-  //     setNewCategory('');
-  //     setShowCategoryInput(false);
-  //   }
-  // };
   const router = useRouter();
   const { data: session } = useSession();
 

@@ -23,7 +23,7 @@ export default function KelolaPPDB() {
       const ppdb = await response.json();
       setCurrentPPDB(ppdb);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
   const openModal = async () => {

@@ -1,4 +1,6 @@
-import { prisma } from '@/lib/prisma';
+import { bucket, prisma, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma';
+import { createRecord, updateRecord } from '@/service';
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 export async function GET(request, { params }) {
@@ -15,27 +17,101 @@ export async function GET(request, { params }) {
   }
 }
 
-export async function PUT(request, { params }) {
+export async function PUT(req, context) {
   try {
-    const body = await request.json();
+    const { id } = await context.params;
 
-    const updatedPPDB = await prisma.pPDB.update({
-      where: { id_ppdb: params.id },
-      data: body,
-    });
-    return NextResponse.json(updatedPPDB);
-  } catch (error) {
-    return NextResponse.json({ error: 'Error updating PPDB' }, { status: 500 });
-  }
-}
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    }
 
-export async function DELETE(request, { params }) {
-  try {
-    await prisma.pPDB.delete({
-      where: { id_ppdb: params.id },
+    const authHeader = req.headers.get('Authorization');
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+    }
+
+    const token = authHeader.split(' ')[1];
+    const isValidToken = await verifyToken(token);
+
+    if (!isValidToken) {
+      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
     });
-    return NextResponse.json({ message: 'PPDB deleted successfully' });
+
+    const formData = await req.formData();
+    const updates = {};
+
+    const headerImage = formData.get('brosur');
+    if (headerImage && headerImage.name) {
+      const date = new Date();
+      const folderPath = `ppdb/${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        2,
+        '0'
+      )}`;
+      const fileName = `${Date.now()}_${headerImage.name}`;
+      const filePath = `${folderPath}/${fileName}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from(bucket)
+        .upload(filePath, headerImage);
+
+      if (uploadError) {
+        throw new Error(`Error uploading image: ${uploadError.message}`);
+      }
+
+      const { data: publicUrlData, error: publicUrlError } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(filePath);
+
+      if (publicUrlError) {
+        throw new Error(`Error getting public URL: ${publicUrlError.message}`);
+      }
+
+      updates.brosur = publicUrlData.publicUrl;
+    }
+
+    const fields = [
+      'namaPPDB',
+      'tahunAjaran',
+      'status',
+      'biayaPendaftaran',
+      'biayaBulanan',
+      'biayaSeragam',
+      'jumlahKuota',
+      'noWa',
+      'noRekBRI',
+    ];
+
+    fields.forEach((field) => {
+      const value = formData.get(field);
+      if (value !== null && value !== undefined) {
+        if (field === 'biayaPendaftaran' || field === 'biayaBulanan' || field === 'biayaSeragam') {
+          updates[field] = parseFloat(value);
+        } else if (field === 'jumlahKuota') {
+          updates[field] = parseInt(value, 10);
+        } else {
+          updates[field] = value;
+        }
+      }
+    });
+
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json({ error: 'No updates provided' }, { status: 400 });
+    }
+
+    const newData = await updateRecord('pPDB', { id_ppdb: id }, updates);
+
+    return NextResponse.json({ message: 'Updated successfully', newData }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: 'Error deleting PPDB' }, { status: 500 });
+    console.error('Error:', error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -168,7 +168,6 @@ export default function PageUpdatePrestasi() {
         return;
       }
 
-      // Ensure slug is included if title has changed
       if (sendFormData.has('title')) {
         const title = sendFormData.get('title');
         const slug = title
@@ -178,7 +177,6 @@ export default function PageUpdatePrestasi() {
         sendFormData.set('slug', slug);
       }
 
-      // Include authorId if it's not already in the form data
       const authorId = session.user.id;
       if (authorId && !sendFormData.has('authorId')) {
         sendFormData.append('authorId', authorId);

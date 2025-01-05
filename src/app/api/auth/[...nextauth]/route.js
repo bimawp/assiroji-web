@@ -34,27 +34,6 @@ const authOptions = {
             throw new Error('password tidak valid');
           }
 
-          const ppdbWithPendaftar = await prisma.pPDB.findMany({
-            where: {
-              status: 'dibuka',
-            },
-            include: {
-              dataPendaftar: {
-                where: {
-                  id_user: user.id_user,
-                },
-              },
-            },
-          });
-
-          const result = ppdbWithPendaftar.map((ppdb) => ({
-            idPPDB: ppdb.id_ppdb,
-            namaPPDB: ppdb.namaPPDB,
-            tahunAjaran: ppdb.tahunAjaran,
-            jumlahKuota: ppdb.jumlahKuota,
-            dataPendaftar: ppdb.dataPendaftar.statusPendaftaran,
-          }));
-
           return {
             id: user.id_user,
             email,

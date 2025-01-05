@@ -5,6 +5,6 @@ export function mainMiddleware(req) {
   const res = NextResponse.next();
   return res;
 }
-export default withAuth(mainMiddleware, ['/admin', '/ppdb/l/kq']);
+export default withAuth(mainMiddleware, ['/admin', '/ppdb/l']);
 
-export const config = { matcher: ['/(admin|ppdb/l/kq|admin/login|ppdb/l/auth)'] };
+export const config = { matcher: ['/(admin|ppdb/l|admin/login|ppdb/l/auth)'] };

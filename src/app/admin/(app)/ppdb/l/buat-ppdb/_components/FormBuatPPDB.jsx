@@ -1,15 +1,11 @@
 'use client';
 
-import {
-  BookOpenIcon,
-  CalendarIcon,
-  CheckCircleIcon,
-  DollarSignIcon,
-  UserIcon,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { z } from 'zod';
+import { useSession } from 'next-auth/react';
+import { BookOpenIcon, CalendarIcon, DollarSignIcon, UserIcon } from 'lucide-react';
+import ImageUploader from '@/components/__DropImageInput';
 
 const PPDBSchema = z.object({
   namaPPDB: z.string().min(1, 'Nama PPDB is required'),
@@ -19,6 +15,8 @@ const PPDBSchema = z.object({
   biayaBulanan: z.number().positive('Biaya Bulanan must be positive'),
   biayaSeragam: z.number().positive('Biaya Seragam must be positive'),
   jumlahKuota: z.number().int().positive('Jumlah Kuota must be a positive integer').optional(),
+  noWa: z.string().min(1, 'Nomor WhatsApp is required'),
+  noRekBRI: z.string().min(1, 'Nomor Rekening BRI is required'),
 });
 
 const fields = [
@@ -29,7 +27,6 @@ const fields = [
     placeholder: 'Masukkan tahun ajaran',
     icon: CalendarIcon,
   },
-
   {
     name: 'biayaPendaftaran',
     label: 'Biaya Pendaftaran',
@@ -54,9 +51,18 @@ const fields = [
     placeholder: 'Masukkan jumlah kuota',
     icon: BookOpenIcon,
   },
+  { name: 'noWa', label: 'Nomor WhatsApp', placeholder: 'Masukkan nomor WhatsApp', icon: UserIcon },
+  {
+    name: 'noRekBRI',
+    label: 'Nomor Rekening BRI',
+    placeholder: 'Masukkan nomor rekening BRI',
+    icon: DollarSignIcon,
+  },
 ];
 
-export default function BuatPPDB() {
+export default function PPDBForm() {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     namaPPDB: '',
@@ -66,9 +72,11 @@ export default function BuatPPDB() {
     biayaBulanan: '',
     biayaSeragam: '',
     jumlahKuota: '',
+    noWa: '',
+    noRekBRI: '',
   });
   const [errors, setErrors] = useState({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [brosur, setBrosur] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -78,27 +86,12 @@ export default function BuatPPDB() {
     }));
   };
 
-  const openConfirmationModal = (e) => {
-    e.preventDefault();
-    try {
-      PPDBSchema.parse({
-        ...formData,
-        biayaPendaftaran: parseFloat(formData.biayaPendaftaran),
-        biayaBulanan: parseFloat(formData.biayaBulanan),
-        biayaSeragam: parseFloat(formData.biayaSeragam),
-        jumlahKuota: formData.jumlahKuota ? parseInt(formData.jumlahKuota) : undefined,
-      });
-      setIsModalOpen(true);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        setErrors(error.flatten().fieldErrors);
-      } else {
-        console.error('An unexpected error occurred', error);
-      }
-    }
+  const handleImageUpload = (file) => {
+    setBrosur(file);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setIsLoading(true);
     try {
       const validatedData = PPDBSchema.parse({
@@ -109,24 +102,24 @@ export default function BuatPPDB() {
         jumlahKuota: formData.jumlahKuota ? parseInt(formData.jumlahKuota) : undefined,
       });
 
+      const formDataToSend = new FormData();
+      Object.entries(validatedData).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+      if (brosur) {
+        formDataToSend.append('brosur', brosur);
+      }
+
       const response = await fetch('/api/v1.0.0/auth/ppdb', {
         method: 'POST',
+        body: formDataToSend,
         headers: {
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.user.access_token}`,
         },
-        body: JSON.stringify(validatedData),
       });
 
       if (response.ok) {
-        setFormData({
-          namaPPDB: '',
-          tahunAjaran: '',
-          status: 'dibuka',
-          biayaPendaftaran: '',
-          biayaBulanan: '',
-          biayaSeragam: '',
-          jumlahKuota: '',
-        });
+        router.push('/admin/ppdb/l');
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -137,103 +130,48 @@ export default function BuatPPDB() {
     } finally {
       setIsLoading(false);
     }
-    setIsModalOpen(false);
   };
 
   return (
-    <>
-      <div className="flex w-full justify-between items-center bg-white border-b border-gray-200 p-4">
-        <div className="flex gap-1 rounded-full bg-emerald-100 p-1">
-          <Link href="/admin/ppdb/l" className={`rounded-full px-6 py-2 text-sm text-emerald-600`}>
-            PPDB
-          </Link>
-          <div className={`rounded-full px-6 py-2 text-sm bg-emerald-600 text-white`}>
-            Buat ppdb
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full p-4">
-        <div className="">
-          <div className="mx-auto px-2 rounded-lg shadow">
-            <h1 className="text-2xl font-bold  mb-6">Buat PPDB</h1>
-            <form onSubmit={openConfirmationModal} className="space-y-6 mx-auto">
-              {fields.map((field) => (
-                <div key={field.name}>
-                  <label
-                    htmlFor={field.name}
-                    className="flex items-center gap-2 text-sm font-medium text-gray-700"
-                  >
-                    <field.icon className="h-4 w-4" />
-                    {field.label}
-                  </label>
-
-                  <input
-                    id={field.name}
-                    name={field.name}
-                    type={
-                      field.name.includes('biaya') || field.name === 'jumlahKuota'
-                        ? 'number'
-                        : 'text'
-                    }
-                    placeholder={field.placeholder}
-                    value={formData[field.name]}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1F4D3D] focus:border-transparent"
-                  />
-
-                  {errors[field.name] && (
-                    <p className="mt-1 text-sm text-red-600">{errors[field.name][0]}</p>
-                  )}
-                </div>
-              ))}
-              <button
-                type="submit"
-                className="w-full px-4 py-2 text-white bg-[#1F4D3D] rounded-md hover:bg-[#2C7A5F] focus:outline-none focus:ring-2 focus:ring-[#1F4D3D] focus:ring-offset-2"
+    <div className="w-full p-4">
+      <div className="mx-auto px-2 rounded-lg shadow">
+        <h1 className="text-2xl font-bold mb-6">Buat PPDB</h1>
+        <form onSubmit={handleSubmit} className="space-y-6 mx-auto">
+          <ImageUploader onImageUpload={handleImageUpload} />
+          {fields.map((field) => (
+            <div key={field.name}>
+              <label
+                htmlFor={field.name}
+                className="flex items-center gap-2 text-sm font-medium text-gray-700"
               >
-                Submit PPDB
-              </button>
-            </form>
-          </div>
-
-          {isModalOpen && (
-            <div
-              className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-              id="my-modal"
-            >
-              <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                <div className="mt-3 text-center">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    Konfirmasi Pengajuan PPDB
-                  </h3>
-                  <div className="mt-2 px-7 py-3">
-                    <p className="text-sm text-gray-500">
-                      Apakah Anda yakin ingin mengajukan PPDB ini?
-                    </p>
-                  </div>
-                  <div className="items-center px-4 py-3">
-                    <button
-                      id="ok-btn"
-                      className="px-4 py-2 bg-[#1F4D3D] text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-[#2C7A5F] focus:outline-none focus:ring-2 focus:ring-[#1F4D3D]"
-                      disabled={isLoading}
-                      onClick={handleSubmit}
-                    >
-                      Ya, Ajukan
-                    </button>
-                    <button
-                      id="cancel-btn"
-                      className="mt-3 px-4 py-2 bg-white text-[#1F4D3D] text-base font-medium rounded-md w-full shadow-sm border border-[#1F4D3D] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#1F4D3D]"
-                      onClick={() => setIsModalOpen(false)}
-                    >
-                      Batal
-                    </button>
-                  </div>
-                </div>
-              </div>
+                <field.icon className="h-4 w-4" />
+                {field.label}
+              </label>
+              <input
+                id={field.name}
+                name={field.name}
+                type={
+                  field.name.includes('biaya') || field.name === 'jumlahKuota' ? 'number' : 'text'
+                }
+                placeholder={field.placeholder}
+                value={formData[field.name]}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1F4D3D] focus:border-transparent"
+              />
+              {errors[field.name] && (
+                <p className="mt-1 text-sm text-red-600">{errors[field.name][0]}</p>
+              )}
             </div>
-          )}
-        </div>
+          ))}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full px-4 py-2 text-white bg-[#1F4D3D] rounded-md hover:bg-[#2C7A5F] focus:outline-none focus:ring-2 focus:ring-[#1F4D3D] focus:ring-offset-2 disabled:opacity-50"
+          >
+            {isLoading ? 'Submitting...' : 'Submit PPDB'}
+          </button>
+        </form>
       </div>
-    </>
+    </div>
   );
 }

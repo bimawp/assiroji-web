@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
   BookOpenIcon,
@@ -5,7 +7,11 @@ import {
   CheckCircleIcon,
   DollarSignIcon,
   UserIcon,
+  PhoneIcon,
+  CreditCardIcon,
 } from 'lucide-react';
+import ImageUploader from '@/components/__DropImageInput';
+import { useSession } from 'next-auth/react';
 
 const fields = [
   { name: 'namaPPDB', label: 'Nama PPDB', placeholder: 'Masukkan nama PPDB', icon: UserIcon },
@@ -39,10 +45,23 @@ const fields = [
     placeholder: 'Masukkan jumlah kuota',
     icon: BookOpenIcon,
   },
+  {
+    name: 'noWa',
+    label: 'Nomor WhatsApp',
+    placeholder: 'Masukkan nomor WhatsApp',
+    icon: PhoneIcon,
+  },
+  {
+    name: 'noRekBRI',
+    label: 'Nomor Rekening BRI',
+    placeholder: 'Masukkan nomor rekening BRI',
+    icon: CreditCardIcon,
+  },
 ];
 
 export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
     namaPPDB: '',
     tahunAjaran: '',
@@ -51,12 +70,16 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
     biayaSeragam: '',
     jumlahKuota: '',
     status: '',
+    noWa: '',
+    noRekBRI: '',
+    brosur: null,
   });
   const [errors, setErrors] = useState({});
   const [showEndPPDBConfirmation, setShowEndPPDBConfirmation] = useState(false);
   const [isEndingPPDB, setIsEndingPPDB] = useState(false);
 
   useEffect(() => {
+    console.log('ppdbData :', ppdbData);
     if (ppdbData) {
       setFormData(ppdbData);
     }
@@ -67,6 +90,13 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+  };
+
+  const handleImageUpload = (file) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      brosur: file,
     }));
   };
 
@@ -91,18 +121,23 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
     if (!validateForm() && !isEndingPPDB) return;
 
     setIsLoading(true);
-    const changedData = {};
+    const formDataToSend = new FormData();
+
     for (const key in formData) {
       if (formData[key] !== ppdbData[key]) {
-        changedData[key] = formData[key];
+        if (key === 'brosur' && formData[key] instanceof File) {
+          formDataToSend.append('brosur', formData[key]);
+        } else if (key !== 'brosur') {
+          formDataToSend.append(key, formData[key]);
+        }
       }
     }
 
     if (isEndingPPDB) {
-      changedData.status = 'ditutup';
+      formDataToSend.append('status', 'ditutup');
     }
 
-    if (Object.keys(changedData).length === 0 && !isEndingPPDB) {
+    if (formDataToSend.entries().next().done && !isEndingPPDB) {
       setIsLoading(false);
       return;
     }
@@ -110,10 +145,10 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
     try {
       const response = await fetch(`/api/v1.0.0/auth/ppdb/${ppdbData.id_ppdb}`, {
         method: 'PUT',
+        body: formDataToSend,
         headers: {
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.user.access_token}`,
         },
-        body: JSON.stringify(changedData),
       });
 
       if (response.ok) {
@@ -134,9 +169,10 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
 
   return (
     <div className="fixed z-[99] inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Update PPDB</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <ImageUploader onImageUpload={handleImageUpload} initialState={ppdbData.brosur} />
           {fields.map((field) => (
             <div key={field.name}>
               <label

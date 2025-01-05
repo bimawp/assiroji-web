@@ -108,7 +108,10 @@ model PPDB {
   biayaPendaftaran  Decimal  @db.Decimal(10, 2)
   biayaBulanan      Decimal  @db.Decimal(10, 2)
   biayaSeragam      Decimal  @db.Decimal(10, 2)
-  jumlahKuota       Int?            
+  jumlahKuota       Int?       
+  brosur            String
+  noWa              String
+  noRekBRI          String
   dataPendaftar     DataPendaftar[] 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime @default(now())

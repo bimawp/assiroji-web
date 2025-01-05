@@ -106,7 +106,7 @@ export default function RegistrationPage({
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
       <h2 className="text-2xl font-bold mb-4">
-        {jenisPendaftaran == 'baru' ? 'Daftar mahasiswa baru' : 'Daftar ulang'}
+        {jenisPendaftaran == 'baru' ? 'Daftar siswa baru' : 'Daftar ulang'}
       </h2>
       <p className="text-gray-600 mb-6">
         Silakan lengkapi data diri Anda untuk melanjutkan proses pendaftaran

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 export default function PaymentPage({ onRefresh, ppdbData, id_user, fetching }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
-
+  console.log('ppdbData : ', ppdbData);
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsModalOpen(true);
@@ -13,7 +13,7 @@ export default function PaymentPage({ onRefresh, ppdbData, id_user, fetching }) 
     const message = encodeURIComponent(
       `Halo, saya ingin mengirim bukti pembayaran untuk metode ${paymentMethod}. Mohon informasi lebih lanjut.`
     );
-    window.open(`https://wa.me/+6283825702000?text=${message}`, '_blank');
+    window.open(`https://wa.me/${ppdbData.noWa}?text=${message}`, '_blank');
   };
   return (
     <>
@@ -35,11 +35,7 @@ export default function PaymentPage({ onRefresh, ppdbData, id_user, fetching }) 
                 <span className="text-gray-600 px-2">:</span>
                 <span className="font-medium">{ppdbData?.dataUser?.namaLengkap}</span>
               </div>
-              <div className="flex">
-                <span className="text-gray-600 w-40">Jenjang</span>
-                <span className="text-gray-600 px-2">:</span>
-                <span className="font-medium">{ppdbData?.jenjang}</span>
-              </div>
+
               {/* <div className="flex">
                 <span className="text-gray-600 w-40">Penanggung Biaya</span>
                 <span className="text-gray-600 px-2">:</span>
@@ -93,9 +89,7 @@ export default function PaymentPage({ onRefresh, ppdbData, id_user, fetching }) 
             <div className="space-y-4">
               <p className="font-semibold">Nomor Rekening:</p>
               <ul className="list-disc list-inside pl-4">
-                <li>BCA: 1234567890</li>
-                <li>Mandiri: 0987654321</li>
-                <li>BNI: 1122334455</li>
+                <li>BRI: {ppdbData.noRekBRI}</li>
               </ul>
               <p className="font-semibold mt-4">Instruksi Pengiriman Bukti Pembayaran:</p>
               <ol className="list-decimal list-inside pl-4">
