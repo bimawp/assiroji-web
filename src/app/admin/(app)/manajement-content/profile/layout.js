@@ -11,6 +11,10 @@ const navListItem = [
     name: 'Section kurikulum',
     link: '/admin/manajement-content/profile/kurikulum',
   },
+  {
+    name: 'Section Kalender',
+    link: '/admin/manajement-content/profile/kalender',
+  },
 ];
 export default function Layout({ children }) {
   const pathname = usePathname();
