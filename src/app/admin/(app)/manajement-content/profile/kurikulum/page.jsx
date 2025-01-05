@@ -7,6 +7,7 @@ export default function SocialMediaSettings() {
   const [content, setEditorContent] = useState('');
   const [kurikulumId, setKurikulumId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetchLoading, setFetchLoading] = useState(false);
 
   useEffect(() => {
     fetchKurikulumData();
@@ -34,12 +35,18 @@ export default function SocialMediaSettings() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFetchLoading(true);
     const url = '/api/v1.0.0/auth/kurikulum';
     const method = kurikulumId ? 'PUT' : 'POST';
-    const body = JSON.stringify({
-      id_kurikulum: kurikulumId,
-      deskripsi: content,
-    });
+    const data = kurikulumId
+      ? {
+          id_kurikulum: kurikulumId,
+          deskripsi: content,
+        }
+      : {
+          deskripsi: content,
+        };
+    const body = JSON.stringify(data);
 
     try {
       const response = await fetch(url, {
@@ -59,8 +66,11 @@ export default function SocialMediaSettings() {
       } else {
         console.error('Failed to save data');
       }
+      setFetchLoading(false);
     } catch (error) {
       console.error('Error saving data:', error);
+    } finally {
+      setFetchLoading(false);
     }
   };
 
@@ -98,8 +108,34 @@ export default function SocialMediaSettings() {
             <button
               type="submit"
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300"
+              disabled={isFetchLoading}
             >
-              {kurikulumId ? 'Update' : 'Save'}
+              {isFetchLoading ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              ) : kurikulumId ? (
+                'Update'
+              ) : (
+                'Save'
+              )}
             </button>
           </form>
         </div>
