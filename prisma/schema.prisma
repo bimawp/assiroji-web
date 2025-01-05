@@ -158,3 +158,11 @@ model RiwayatPPDB {
   updatedAt          DateTime     @updatedAt @default(now()) 
   user               User         @relation(fields: [id_user], references: [id_user])
 }
+model Kalender {
+  id_tgl_kalender          String          @id @default(cuid())
+  deskripsi           String
+  date            String
+  color               String
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt @default(now()) 
+}

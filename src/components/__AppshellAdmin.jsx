@@ -9,6 +9,7 @@ import {
   ClipboardList,
   Contact,
   Contact2,
+  FileText,
   FolderOpen,
   GalleryHorizontal,
   Home,
@@ -35,7 +36,11 @@ const navItems = [
     link: '/admin',
     icon: LayoutDashboard,
   },
-
+  {
+    name: 'Artikel',
+    link: '/admin/artikel',
+    icon: FileText,
+  },
   {
     name: 'Content Management',
     icon: LayoutTemplate,

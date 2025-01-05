@@ -93,6 +93,20 @@ body {
   border-bottom: 1px solid #ccc;
 }
 
+.sunday-highlight {
+  color: black !important;
+  font-weight: bold;
+}
+
+.special-highlight-red {
+  color: red !important;
+  font-weight: bold;
+}
+.special-highlight-blue {
+  color: blue !important;
+  font-weight: bold;
+}
+
 @media only screen and (max-width: 600px) {
   .swiper-pagination {
     width: 200px !important;

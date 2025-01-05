@@ -55,9 +55,11 @@ export default function PageUpdateArtikel() {
           tags: data.tags,
           headerImage: data.headerImage,
           content: data.content,
+          description: data.description,
         };
+
         setFormData(formattedData);
-        setOriginalData(formattedData); // Set originalData
+        setOriginalData(formattedData);
         setEditorContent(data.content);
       } catch (error) {
         console.error('Error fetching article:', error);
@@ -168,7 +170,6 @@ export default function PageUpdateArtikel() {
         return;
       }
 
-      // Ensure slug is included if title has changed
       if (sendFormData.has('title')) {
         const title = sendFormData.get('title');
         const slug = title
@@ -178,7 +179,6 @@ export default function PageUpdateArtikel() {
         sendFormData.set('slug', slug);
       }
 
-      // Include authorId if it's not already in the form data
       const authorId = session.user.id;
       if (authorId && !sendFormData.has('authorId')) {
         sendFormData.append('authorId', authorId);

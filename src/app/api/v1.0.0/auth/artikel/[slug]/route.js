@@ -17,7 +17,7 @@ export async function GET(req, context) {
   try {
     if (params.slug) {
       const artikel = await handleGetArtikelBySlug(params.slug);
-      console.log('Artikel slug:', artikel);
+
       return NextResponse.json(artikel, { status: 200 });
     }
     return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
@@ -27,13 +27,13 @@ export async function GET(req, context) {
 }
 
 export async function PUT(req, context) {
-  const { slug } = context.params;
+  const { slug } = await context.params;
 
   if (!slug) {
     return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
   }
   const authHeader = req.headers.get('Authorization');
-  console.log('authHeader', authHeader);
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
   }
@@ -54,7 +54,7 @@ export async function PUT(req, context) {
   });
   try {
     const formData = await req.formData();
-    console.log('supabase', formData);
+    console.log('supabase', slug);
     const id = formData.get('id');
     const headerImage = formData.get('headerImage');
     const title = formData.get('title');

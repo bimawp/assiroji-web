@@ -11,10 +11,9 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Berita({ data }) {
-  console.log('data', data);
   return (
     <Swiper
-      spaceBetween={30}
+      spaceBetween={1}
       loop={true}
       pagination={{
         clickable: true,
@@ -24,7 +23,7 @@ export default function Berita({ data }) {
         delay: 2500,
         disableOnInteraction: false,
       }}
-      modules={[Pagination, Navigation, Autoplay]}
+      modules={[Pagination, Navigation]}
       className="mySwiper"
       breakpoints={{
         // Untuk perangkat mobile
@@ -42,8 +41,8 @@ export default function Berita({ data }) {
       }}
     >
       {data.map((item, index) => (
-        <SwiperSlide key={index}>
-          <div className="w-full  mb-30 py-12 pb-20">
+        <SwiperSlide key={index} className='p-5'>
+          <div className="w-full mb-30 py-12 pb-20">
             <div className="bg-[#039685] rounded-xl text-white w-full h-full">
               <div className="relative p-4">
                 <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl">
