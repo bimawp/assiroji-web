@@ -5,7 +5,9 @@ import PPDBBelumDibuka from './_components/notFound';
 
 export default async function Page() {
   try {
-    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/auth/ppdb');
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/auth/ppdb', {
+      cache: 'no-store',
+    });
     if (!ress) {
       notFound();
     }
