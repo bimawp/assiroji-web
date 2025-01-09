@@ -18,10 +18,6 @@ export default function PagePrestasi() {
     content: '',
   });
   const [currentTag, setCurrentTag] = useState('');
-  // const [showDropdown, setShowDropdown] = useState(false);
-  // const [categories, setCategories] = useState(['Teknologi', 'Kesehatan', 'Olahraga', 'Bisnis']);
-  // const [showCategoryInput, setShowCategoryInput] = useState(false);
-  // const [newCategory, setNewCategory] = useState('');
   const [content, setEditorContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);

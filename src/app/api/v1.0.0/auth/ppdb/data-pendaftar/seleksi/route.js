@@ -12,12 +12,13 @@ export async function GET() {
         status: 'dibuka',
       },
     });
-    if (!latestPpdb) {
-      return NextResponse.json({ message: 'No open PPDB found' }, { status: 404 });
-    }
+
     const dataPendaftar = await prisma.dataPendaftar.findMany({
       where: {
         id_ppdb: latestPpdb.id_ppdb,
+        statusPendaftaran: {
+          not: 'konfirmasi',
+        },
       },
       select: {
         id_data_pendaftar: true,
@@ -59,6 +60,10 @@ export async function GET() {
         },
       };
     });
+
+    if (!latestPpdb) {
+      return NextResponse.json({ message: 'No open PPDB found' }, { status: 404 });
+    }
 
     return NextResponse.json({
       latestPpdb: latestPpdb.tahunAjaran,

@@ -1,3 +1,4 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { bucket, supabase, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma';
 import { deleteRecord, getRecordByColumn, updateRecord } from '@/service';
 import { createClient } from '@supabase/supabase-js';
@@ -29,19 +30,15 @@ export async function PUT(req, context) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    const authHeader = req.headers.get('Authorization');
-  
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-    }
+    const tokenValidation = await jwtAuthToken(req);
 
-    const token = authHeader.split(' ')[1];
-    const isValidToken = await verifyToken(token);
-  
-    if (!isValidToken) {
-      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
     }
-
+    const { token } = tokenValidation;
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {
@@ -58,7 +55,6 @@ export async function PUT(req, context) {
     const file = formData.get('itemImage');
     let publicUrl = formData.get('currentHeaderImage');
 
- 
     if (file instanceof Blob && file?.name) {
       const { itemImage: relativePath } = await getRecordByColumn('Sarana', 'id_sarana', id);
       const oldDataImage = relativePath.split(`${bucket}/`)[1];
@@ -71,7 +67,6 @@ export async function PUT(req, context) {
         if (errorDeleteOldData) {
           throw new Error(`Error uploading image: ${errorDeleteOldData.message}`);
         }
-
 
         const date = new Date();
         const folderPath = `sarana/${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
@@ -103,9 +98,7 @@ export async function PUT(req, context) {
         publicUrl = publicUrlData.publicUrl;
       }
     }
-    // const quantity = formData.get('quantity');
-    // const volume = formData.get('volume ');
-    // const file = formData.get('itemImage');
+
     const updates = {};
     if (name) updates.name = name;
     if (file instanceof Blob) updates.itemImage = publicUrl;
@@ -113,10 +106,7 @@ export async function PUT(req, context) {
     if (quantity) updates.quantity = Number(quantity);
     if (condition) updates.condition = Number(condition);
 
-    
     const newData = await updateRecord('Sarana', { id_sarana: id }, updates);
-
-
 
     return NextResponse.json({ message: 'Updated successfully', newData }, { status: 200 });
   } catch (error) {
@@ -131,19 +121,15 @@ export async function DELETE(req, context) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    const authHeader = req.headers.get('Authorization');
+    const tokenValidation = await jwtAuthToken(req);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
     }
-
-    const token = authHeader.split(' ')[1];
-    const isValidToken = await verifyToken(token);
-
-    if (!isValidToken) {
-      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-    }
-
+    const { token } = tokenValidation;
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {
@@ -157,7 +143,6 @@ export async function DELETE(req, context) {
     if (!oldDataImage) {
       return NextResponse.json({ error: 'data tidak ada' }, { status: 400 });
     }
-
 
     const { data: deleteOldData, error: errorDeleteOldData } = await supabaseAuth.storage
       .from(bucket)

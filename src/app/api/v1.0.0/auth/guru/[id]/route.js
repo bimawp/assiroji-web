@@ -1,3 +1,4 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { bucket, supabase, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma';
 import { deleteRecord, getRecordByColumn, updateRecord } from '@/service';
 import { createClient } from '@supabase/supabase-js';
@@ -29,19 +30,15 @@ export async function PUT(req, context) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    const authHeader = req.headers.get('Authorization');
+    const tokenValidation = await jwtAuthToken(req);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
     }
-
-    const token = authHeader.split(' ')[1];
-    const isValidToken = await verifyToken(token);
-
-    if (!isValidToken) {
-      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-    }
-
+    const { token } = tokenValidation;
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {
@@ -119,19 +116,15 @@ export async function DELETE(req, context) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    const authHeader = req.headers.get('Authorization');
+    const tokenValidation = await jwtAuthToken(req);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
     }
-
-    const token = authHeader.split(' ')[1];
-    const isValidToken = await verifyToken(token);
-
-    if (!isValidToken) {
-      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-    }
-
+    const { token } = tokenValidation;
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {

@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Stepper } from './_components/Stepper';
 
 export const metadata = {
   title: 'Home Page',

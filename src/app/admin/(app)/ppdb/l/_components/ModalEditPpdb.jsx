@@ -59,7 +59,7 @@ const fields = [
   },
 ];
 
-export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
+export function ModalEditPPDB({ isOpen, onClose, ppdbData, onReset }) {
   const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
   const [formData, setFormData] = useState({
@@ -79,7 +79,6 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
   const [isEndingPPDB, setIsEndingPPDB] = useState(false);
 
   useEffect(() => {
-    console.log('ppdbData :', ppdbData);
     if (ppdbData) {
       setFormData(ppdbData);
     }
@@ -115,9 +114,13 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  useEffect(() => {
+    handleSubmit(new Event('submit'));
+  }, [isEndingPPDB]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateForm() && !isEndingPPDB) return;
 
     setIsLoading(true);
@@ -141,7 +144,6 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
       setIsLoading(false);
       return;
     }
-
     try {
       const response = await fetch(`/api/v1.0.0/auth/ppdb/${ppdbData.id_ppdb}`, {
         method: 'PUT',
@@ -162,6 +164,7 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
       setIsLoading(false);
       setIsEndingPPDB(false);
       setShowEndPPDBConfirmation(false);
+      window.location.reload();
     }
   };
 
@@ -242,7 +245,6 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData }) {
               <button
                 onClick={() => {
                   setIsEndingPPDB(true);
-                  handleSubmit(new Event('submit'));
                 }}
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
               >

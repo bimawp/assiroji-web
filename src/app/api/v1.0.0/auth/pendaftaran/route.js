@@ -11,7 +11,6 @@ export async function GET() {
         status: 'dibuka',
       },
     });
-  
 
     if (!latestPpdb) {
       return NextResponse.json({ message: 'No open PPDB found' }, { status: 404 });
@@ -30,8 +29,6 @@ export async function POST(request) {
     const body = await request.json();
     const { id_user, id_ppdb, formData, jenisPendaftaran, jenjang } = body;
 
-
-
     const dataPendaftar = await prisma.dataPendaftar.create({
       data: {
         id_user: id_user,
@@ -42,12 +39,11 @@ export async function POST(request) {
       },
     });
 
-
     if (jenisPendaftaran === 'ulang') {
       const existingFormulir = await getRecordById('formulirPendaftaran', {
         id_user,
       });
-    
+
       if (existingFormulir) {
         const updatedFormulir = await prisma.formulirPendaftaran.update({
           where: {

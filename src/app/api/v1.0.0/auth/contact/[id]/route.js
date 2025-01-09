@@ -1,3 +1,4 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { bucket, supabase, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma';
 import { deleteRecord, getRecordByColumn, updateRecord } from '@/service';
 import { createClient } from '@supabase/supabase-js';
@@ -34,24 +35,14 @@ export async function PUT(req, context) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
 
-    // const authHeader = req.headers.get('Authorization');
-    // if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    //   return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-    // }
+    const tokenValidation = await jwtAuthToken(req);
 
-    // const token = authHeader.split(' ')[1];
-    // const isValidToken = await verifyToken(token);
-    // if (!isValidToken) {
-    //   return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-    // }
-
-    // const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
-    //   global: {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   },
-    // });
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
+    }
 
     const formData = await req.formData();
     const updates = {};
@@ -94,18 +85,15 @@ export async function DELETE(req, context) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
 
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+    const tokenValidation = await jwtAuthToken(req);
+
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
     }
 
-    const token = authHeader.split(' ')[1];
-    const isValidToken = await verifyToken(token);
-    if (!isValidToken) {
-      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-    }
-
-    // Assuming 'Contact' is the table name for social media links
     const existingRecord = await getRecordByColumn('Contact', 'id_contact', id);
     if (!existingRecord) {
       return NextResponse.json({ error: 'Contact record not found' }, { status: 404 });

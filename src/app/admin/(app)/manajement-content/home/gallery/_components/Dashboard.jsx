@@ -107,22 +107,6 @@ export default function Dashboard({ gallery, setGallery, onRefresh }) {
           <Eye className="w-4 h-4 mr-2" />
           Preview Landing Page
         </button>
-        {/* <button
-          onClick={() => {
-            // Di sini Anda akan menambahkan logika untuk menyimpan perubahan ke backend
-            setHasChanges(false);
-            alert('Changes saved to landing page!');
-          }}
-          className={`px-6 py-2  text-white rounded-lg  transition-colors inline-flex items-center ${
-            hasChanges
-              ? 'bg-gray-900 hover:bg-gray-800 focus:ring-blue-500'
-              : 'bg-gray-400 cursor-not-allowed'
-          }`}
-          disabled={!hasChanges}
-        >
-          <RefreshCw className="w-4 h-4 mr-2" />
-          save changes
-        </button> */}
       </div>
       <AddEditGalleryModal
         isOpen={isAddModalOpen}

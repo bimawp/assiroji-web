@@ -1,3 +1,4 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { bucket, prisma, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma';
 import { getAllRecords } from '@/service';
 import { createClient } from '@supabase/supabase-js';
@@ -13,19 +14,12 @@ export async function GET() {
 }
 
 export async function POST(req) {
-  const authHeader = req.headers.get('Authorization');
+  const tokenValidation = await jwtAuthToken(req);
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
   }
-
-  const token = authHeader.split(' ')[1];
-  const isValidToken = await verifyToken(token);
-
-  if (!isValidToken) {
-    return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-  }
-
+  const { token } = tokenValidation;
   const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     global: {
       headers: {
@@ -42,7 +36,7 @@ export async function POST(req) {
     const volume = formData.get('volume');
     const condition = formData.get('condition');
     const file = formData.get('itemImage');
-  
+
     if (!file || !file.name) {
       throw new Error('Header image is required and must have a valid name.');
     }
@@ -68,7 +62,7 @@ export async function POST(req) {
     const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
 
     const itemImage = publicUrlData.publicUrl;
-   
+
     const oke = await prisma['Sarana'].create({
       data: { name, quantity: Number(quantity), volume, itemImage, condition: Number(condition) },
     });

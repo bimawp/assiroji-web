@@ -2,14 +2,15 @@ import { prisma } from '@/lib/prisma';
 import { getRecordByColumn } from '@/service';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request, { params }) {
   try {
+    const { id: id_ppdb } = await params;
     const latestPpdb = await prisma.pPDB.findFirst({
       orderBy: {
         createdAt: 'desc',
       },
       where: {
-        status: 'dibuka',
+        id_ppdb,
       },
     });
     if (!latestPpdb) {
@@ -51,17 +52,18 @@ export async function GET() {
     });
     const dataPendaftarFormatted = dataPendaftar.map((item) => {
       const formulir = item.user.formulirPendaftaran[0] || null;
+      delete item.user;
       return {
         ...item,
-        user: {
-          ...item.user,
-          formulirPendaftaran: formulir,
-        },
+        user: { ...item.user, ...formulir },
+        // user: {
+        //   ...item.user,
+        // },
       };
     });
 
     return NextResponse.json({
-      latestPpdb: latestPpdb.tahunAjaran,
+      dataPPDB: latestPpdb,
       dataPendaftar: dataPendaftarFormatted,
     });
   } catch (error) {

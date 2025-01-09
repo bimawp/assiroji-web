@@ -1,45 +1,94 @@
-import { bucket, prisma, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma';
+import { jwtAuthToken } from '@/lib/jwt';
+import { bucket, prisma, supabaseAnonKey, supabaseUrl } from '@/lib/prisma';
 import { createRecord } from '@/service';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(req) {
+  // const tokenValidation = await jwtAuthToken(req);
+
+  // if (tokenValidation.error) {
+  //   return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  // }
+
   try {
-    const latestPpdb = await prisma.pPDB.findFirst({
+    // const latestPpdb = await prisma.pPDB.findFirst({
+    //   orderBy: {
+    //     createdAt: 'desc',
+    //   },
+    //   where: {
+    //     status: 'dibuka',
+    //   },
+    // });
+
+    // if (!latestPpdb) {
+    //   return NextResponse.json({ message: 'No open PPDB found' }, { status: 404 });
+    // }
+    const ppdbWithJumlahDaftar = await prisma.pPDB.findFirst({
       orderBy: {
         createdAt: 'desc',
       },
       where: {
         status: 'dibuka',
       },
+      select: {
+        id_ppdb: true,
+        namaPPDB: true,
+        tahunAjaran: true,
+        status: true,
+        biayaPendaftaran: true,
+        biayaBulanan: true,
+        biayaSeragam: true,
+        jumlahKuota: true,
+        brosur: true,
+        noWa: true,
+        noRekBRI: true,
+        createdAt: true,
+        updatedAt: true,
+        dataPendaftar: {
+          select: {
+            id_data_pendaftar: true,
+            jenisPendaftaran: true,
+            statusPendaftaran: true,
+          },
+        },
+      },
     });
 
-    if (!latestPpdb) {
-      return NextResponse.json({ message: 'No open PPDB found' }, { status: 404 });
-    }
+    const totalPendaftar = ppdbWithJumlahDaftar.dataPendaftar.filter(
+      (pendaftar) => pendaftar.jenisPendaftaran === 'baru'
+    ).length;
 
-    return NextResponse.json(latestPpdb);
+    const belumDiKonfirmasi = ppdbWithJumlahDaftar.dataPendaftar.filter(
+      (pendaftar) => pendaftar.statusPendaftaran !== 'konfirmasi'
+    ).length;
+    const sudahDiKonfirmasi = ppdbWithJumlahDaftar.dataPendaftar.filter(
+      (pendaftar) => pendaftar.statusPendaftaran === 'konfirmasi'
+    ).length;
+
+    const ppdbWithJumlahDaftarProcessed = {
+      ...ppdbWithJumlahDaftar,
+      totalPendaftar,
+      belumDiKonfirmasi,
+      sudahDiKonfirmasi,
+    };
+
+    delete ppdbWithJumlahDaftarProcessed.dataPendaftar;
+
+    return NextResponse.json(ppdbWithJumlahDaftarProcessed);
   } catch (error) {
     console.error('Error fetching latest PPDB:', error);
     return NextResponse.json({ error: 'Error fetching latest PPDB' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 export async function POST(req) {
-  const authHeader = req.headers.get('Authorization');
+  const tokenValidation = await jwtAuthToken(req);
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
   }
 
-  const token = authHeader.split(' ')[1];
-  const isValidToken = await verifyToken(token);
-
-  if (!isValidToken) {
-    return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-  }
-
+  const { token } = tokenValidation;
   const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     global: {
       headers: {
@@ -123,121 +172,3 @@ export async function POST(req) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
-
-// export async function PUT(req) {
-//   const authHeader = req.headers.get('Authorization');
-
-//   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-//     return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-//   }
-
-//   const token = authHeader.split(' ')[1];
-//   const isValidToken = await verifyToken(token);
-
-//   if (!isValidToken) {
-//     return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-//   }
-
-//   const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-//   try {
-//     const formData = await req.formData();
-//     const id = formData.get('id');
-//     const namaPPDB = formData.get('namaPPDB');
-//     const tahunAjaran = formData.get('tahunAjaran');
-//     const status = formData.get('status');
-//     const biayaPendaftaran = parseFloat(formData.get('biayaPendaftaran'));
-//     const biayaBulanan = parseFloat(formData.get('biayaBulanan'));
-//     const biayaSeragam = parseFloat(formData.get('biayaSeragam'));
-//     const jumlahKuota = formData.get('jumlahKuota')
-//       ? parseInt(formData.get('jumlahKuota'), 10)
-//       : null;
-//     const brosur = formData.getAll('brosur');
-//     const noWa = formData.get('noWa');
-//     const noRekBRI = formData.get('noRekBRI');
-
-//     if (!id) {
-//       throw new Error('ID is required for updating.');
-//     }
-
-//     const { data, error } = await supabase
-//       .from('ppdb')
-//       .update({
-//         namaPPDB,
-//         tahunAjaran,
-//         status,
-//         biayaPendaftaran,
-//         biayaBulanan,
-//         biayaSeragam,
-//         jumlahKuota,
-//         brosur,
-//         noWa,
-//         noRekBRI,
-//       })
-//       .eq('id', id);
-
-//     if (error) {
-//       throw new Error(`Error updating data: ${error.message}`);
-//     }
-
-//     return NextResponse.json({ success: true, data }, { status: 200 });
-//   } catch (error) {
-//     console.error('Error:', error.message);
-//     return NextResponse.json({ error: error.message }, { status: 400 });
-//   }
-// }
-
-// export async function POST(request) {
-//   try {
-//     const body = await request.json();
-//     const dataPPDB = await prisma.pPDB.create({
-//       data: body,
-//     });
-
-//     return NextResponse.json(
-//       {
-//         dataPPDB,
-//       },
-//       { status: 201 }
-//     );
-//   } catch (error) {
-//     console.error('Error creating PPDB:', error);
-//     return NextResponse.json({ error: 'Error creating PPDB' }, { status: 500 });
-//   } finally {
-//     await prisma.$disconnect();
-//   }
-// }
-
-// export async function PUT(request) {
-//   try {
-//     const url = new URL(request.url);
-//     const id = url.searchParams.get('id');
-
-//     if (!id) {
-//       return NextResponse.json({ error: 'PPDB ID is required' }, { status: 400 });
-//     }
-
-//     const body = await request.json();
-//     const updatedPPDB = await prisma.pPDB.update({
-//       where: { id: parseInt(id) },
-//       data: body,
-//     });
-
-//     console.log('Updated PPDB:', updatedPPDB);
-
-//     return NextResponse.json(
-//       {
-//         updatedPPDB,
-//       },
-//       { status: 200 }
-//     );
-//   } catch (error) {
-//     console.error('Error updating PPDB:', error);
-//     if (error.code === 'P2025') {
-//       return NextResponse.json({ error: 'PPDB not found' }, { status: 404 });
-//     }
-//     return NextResponse.json({ error: 'Error updating PPDB' }, { status: 500 });
-//   } finally {
-//     await prisma.$disconnect();
-//   }
-// }

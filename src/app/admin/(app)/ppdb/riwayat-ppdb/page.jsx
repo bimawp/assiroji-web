@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Page() {
   const [ppdbData, setPPDBData] = useState([]);
@@ -62,11 +63,12 @@ export default function Page() {
           <table className="w-full border-collapse bg-white">
             <thead>
               <tr className="bg-[#039786] text-white">
-                <th className="px-6 py-4 text-left">No</th>
-                <th className="px-6 py-4 text-left">Nama PPDB</th>
-                <th className="px-6 py-4 text-left">Tahun Ajaran</th>
-                <th className="px-6 py-4 text-center">Status</th>
-                <th className="px-6 py-4 text-right">Jumlah Kuota</th>
+                <th className="px-6 py-4 ">No</th>
+                <th className="px-6 py-4 ">Nama PPDB</th>
+                <th className="px-6 py-4 ">Tahun Ajaran</th>
+                <th className="px-6 py-4 ">Status</th>
+                <th className="px-6 py-4 ">Jumlah daftar</th>
+                <th className="px-6 py-4 ">action</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -88,16 +90,27 @@ export default function Page() {
                     <td className="px-6 py-4">
                       <div className="h-4 w-1/4 animate-pulse rounded bg-gray-300" />
                     </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 w-1/4 animate-pulse rounded bg-gray-300" />
+                    </td>
                   </tr>
                 ))
               ) : currentPPDBData.length > 0 ? (
                 currentPPDBData.map((item, index) => (
                   <tr key={item.id_ppdb} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">{indexOfFirstItem + index + 1}</td>
-                    <td className="px-6 py-4">{item.namaPPDB}</td>
-                    <td className="px-6 py-4">{item.tahunAjaran}</td>
+                    <td className="px-6 py-4 text-center">{indexOfFirstItem + index + 1}</td>
+                    <td className="px-6 py-4 text-center">{item.namaPPDB}</td>
+                    <td className="px-6 py-4 text-center">{item.tahunAjaran}</td>
                     <td className="px-6 py-4 text-center">{item.status}</td>
-                    <td className="px-6 py-4 text-right">{item.jumlahKuota}</td>
+                    <td className="px-6 py-4 text-center">{item.jumlahDaftar}</td>
+                    <td className="px-6 py-4 text-center">
+                      <Link
+                        className="text-blue-600 hover:text-blue-800"
+                        href={`/admin/ppdb/riwayat-ppdb/${item.id_ppdb}`}
+                      >
+                        detail
+                      </Link>
+                    </td>
                   </tr>
                 ))
               ) : (

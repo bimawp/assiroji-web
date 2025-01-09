@@ -6,67 +6,6 @@ import Link from 'next/link';
 import { ArrowRight, Search } from 'lucide-react';
 import Header from '@/components/__Header';
 
-// const categories = ['All', 'Technology', 'Science', 'Health', 'Business', 'Entertainment'];
-
-const articles = [
-  {
-    id: 1,
-    title: 'The Future of AI in Healthcare',
-    description:
-      'Exploring how artificial intelligence is revolutionizing the healthcare industry with predictive analytics and personalized treatment plans.',
-    categories: ['Technology', 'Health'],
-    image: "/image/KEGIATAN DO'A BERSAMA.jpeg",
-  },
-  {
-    id: 2,
-    title: 'Breakthrough in Quantum Computing',
-    description:
-      'Scientists achieve a major milestone in quantum computing, bringing us closer to solving complex problems at unprecedented speeds.',
-    categories: ['Technology', 'Science'],
-    image: "/image/KEGIATAN DO'A BERSAMA.jpeg",
-  },
-  {
-    id: 3,
-    title: 'The Rise of Sustainable Business Practices',
-    description:
-      'How companies are adopting eco-friendly strategies to reduce their carbon footprint and appeal to environmentally conscious consumers.',
-    categories: ['Business', 'Science'],
-    image: "/image/KEGIATAN DO'A BERSAMA.jpeg",
-  },
-  {
-    id: 4,
-    title: 'Advancements in Gene Therapy',
-    description:
-      'Recent breakthroughs in gene therapy offer hope for treating previously incurable genetic disorders.',
-    categories: ['Health', 'Science'],
-    image: "/image/KEGIATAN DO'A BERSAMA.jpeg",
-  },
-  {
-    id: 5,
-    title: 'The Impact of Social Media on Mental Health',
-    description:
-      'Examining the double-edged sword of social media and its effects on mental well-being in the digital age.',
-    categories: ['Health', 'Technology'],
-    image: "/image/KEGIATAN DO'A BERSAMA.jpeg",
-  },
-  {
-    id: 6,
-    title: 'Innovations in Renewable Energy',
-    description:
-      'Exploring the latest technologies in solar, wind, and other renewable energy sources that are shaping a sustainable future.',
-    categories: ['Science', 'Technology'],
-    image: "/image/KEGIATAN DO'A BERSAMA.jpeg",
-  },
-  {
-    id: 7,
-    title: 'The Evolution of E-commerce',
-    description:
-      'How online shopping has transformed the retail landscape and what the future holds for digital commerce.',
-    categories: ['Business', 'Technology'],
-    image: "/image/KEGIATAN DO'A BERSAMA.jpeg",
-  },
-];
-
 export default function ArticlePage({ data, categories }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');

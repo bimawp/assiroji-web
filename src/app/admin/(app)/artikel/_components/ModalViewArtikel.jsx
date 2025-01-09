@@ -9,7 +9,6 @@ const ModalViewArtikel = ({ open, handleOpen, className, data }) => {
       const objectUrl = URL.createObjectURL(data.headerImage);
       setImageSrc(objectUrl);
 
-      // Clean up function to revoke the object URL
       return () => URL.revokeObjectURL(objectUrl);
     } else if (typeof data.headerImage === 'string') {
       setImageSrc(data.headerImage);

@@ -5,7 +5,6 @@ import Dashboard from './_components/Dashboard';
 export default function ExtracurricularCMS() {
   const [gallery, setGallery] = useState([]);
   const fetchGallery = async () => {
-    // setIsLoading(true);
     try {
       const response = await fetch('/api/v1.0.0/auth/page/home/gallery');
       if (!response.ok) {

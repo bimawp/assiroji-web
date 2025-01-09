@@ -9,6 +9,7 @@ export default function withAuth(middleware, requireAuth) {
       req,
       secret: process.env.NEXTAUTH_SECRET,
     });
+    console.log('token : ', token);
 
     if (pathname === '/admin/login') {
       if (token?.role === 'admin') {
@@ -37,7 +38,6 @@ export default function withAuth(middleware, requireAuth) {
         }
       }
 
-      // Validasi akses berdasarkan role
       if (pathname.startsWith('/admin') && token.role !== 'admin') {
         return NextResponse.redirect(new URL('/admin/login', req.url));
       }

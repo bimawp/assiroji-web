@@ -1,12 +1,14 @@
-import { bucket, prisma, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma';
-import { createRecord, updateRecord } from '@/service';
+import { jwtAuthToken } from '@/lib/jwt';
+import { bucket, prisma, supabaseAnonKey, supabaseUrl } from '@/lib/prisma';
+import { updateRecord } from '@/service';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 export async function GET(request, { params }) {
   try {
+    const { id } = await params;
     const ppdb = await prisma.pPDB.findUnique({
-      where: { id_ppdb: params.id },
+      where: { id_ppdb: id },
     });
     if (!ppdb) {
       return NextResponse.json({ error: 'PPDB not found' }, { status: 404 });
@@ -24,19 +26,16 @@ export async function PUT(req, context) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
+    const tokenValidation = await jwtAuthToken(req);
 
-    const authHeader = req.headers.get('Authorization');
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
     }
 
-    const token = authHeader.split(' ')[1];
-    const isValidToken = await verifyToken(token);
-
-    if (!isValidToken) {
-      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-    }
+    const { token } = tokenValidation;
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {

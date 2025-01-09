@@ -1,24 +1,16 @@
 'use client';
 
+import { formatTanggal } from '@/lib/date';
 import {
-  Activity,
-  Building,
   Building2,
   ChevronDown,
   ChevronRight,
   ClipboardList,
-  Contact,
-  Contact2,
   FileText,
-  FolderOpen,
-  GalleryHorizontal,
   Home,
   LayoutDashboard,
   LayoutTemplate,
-  LogOut,
   LogOutIcon,
-  Newspaper,
-  Settings,
   Trophy,
   User,
   UserPlus,
@@ -65,36 +57,6 @@ const navItems = [
         link: '/admin/manajement-content/prestasi',
         icon: Trophy,
       },
-      // {
-      //   name: 'Ekstrakulikuler',
-      //   link: '/admin/manajement-content/ekstrakulikuler',
-      //   icon: Activity,
-      // },
-      // {
-      //   name: 'Gallery',
-      //   link: '/admin/manajement-content/gallery',
-      //   icon: GalleryHorizontal,
-      // },
-      // {
-      //   name: 'Contact',
-      //   link: '/admin/manajement-content/contact',
-      //   icon: Contact2,
-      // },
-      // {
-      //   name: 'Guru',
-      //   link: '/admin/manajement-content/guru',
-      //   icon: Users,
-      // },
-      // {
-      //   name: 'Sarana',
-      //   link: '/admin/manajement-content/sarana',
-      //   icon: Building2,
-      // },
-      // {
-      //   name: 'Prestasi',
-      //   link: '/admin/manajement-content/prestasi',
-      //   icon: Trophy,
-      // },
     ],
   },
   {
@@ -127,6 +89,8 @@ export default function AppshellAdmin({ children }) {
   const [openSubmenu, setOpenSubmenu] = useState(1);
   const pathname = usePathname();
   const { data: session, status } = useSession();
+  // console.log('expire session : ', formatTanggal(session?.expires));
+  // console.log('session : ', session);
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   const toggleSubmenu = (index) => {

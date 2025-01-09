@@ -23,7 +23,7 @@ export default function Page() {
   const fetchPPDBData = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/v1.0.0/auth/ppdb/data-pendaftar');
+      const response = await fetch('/api/v1.0.0/auth/ppdb/data-pendaftar/seleksi');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

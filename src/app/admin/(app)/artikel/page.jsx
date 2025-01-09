@@ -85,7 +85,7 @@ export default function Page() {
                 <th className="px-6 py-4 text-left text-sm font-medium text-white">category</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-white">Update</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-white">Author</th>
-                <th className="px-6 py-4 text-left text-sm font-medium text-white">Status</th>
+                {/* <th className="px-6 py-4 text-left text-sm font-medium text-white">Status</th> */}
                 <th className="px-6 py-4 text-right text-sm font-medium text-white">Action</th>
               </tr>
             </thead>

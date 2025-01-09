@@ -1,3 +1,4 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { supabase, verifyToken } from '@/lib/prisma';
 import { deleteRecord, getRecordById, updateRecord } from '@/service';
 import { NextResponse } from 'next/server';
@@ -10,7 +11,7 @@ export async function GET(req, context) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
     const data = await getRecordById('Prasarana', { id_prasarana: id });
- 
+
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -24,17 +25,13 @@ export async function PUT(req, context) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    const authHeader = req.headers.get('Authorization');
+    const tokenValidation = await jwtAuthToken(req);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-    }
-
-    const token = authHeader.split(' ')[1];
-    const isValidToken = await verifyToken(token);
-    
-    if (!isValidToken) {
-      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
     }
 
     const formData = await req.formData();
@@ -47,10 +44,7 @@ export async function PUT(req, context) {
     if (quantity) updates.quantity = Number(quantity);
     if (condition) updates.condition = Number(condition);
 
-   
     const newData = await updateRecord('Prasarana', { id_prasarana: id }, updates);
-
-
 
     return NextResponse.json({ message: 'Updated successfully', newData }, { status: 200 });
   } catch (error) {
@@ -65,17 +59,13 @@ export async function DELETE(req, context) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    const authHeader = req.headers.get('Authorization');
+    const tokenValidation = await jwtAuthToken(req);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-    }
-
-    const token = authHeader.split(' ')[1];
-    const isValidToken = await verifyToken(token);
-
-    if (!isValidToken) {
-      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
     }
 
     await deleteRecord('Prasarana', { id_prasarana: id });

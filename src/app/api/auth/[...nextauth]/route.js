@@ -48,7 +48,7 @@ const authOptions = {
             password,
           },
           {
-            expires_in: 7 * 24 * 60 * 60,
+            exp: 7 * 24 * 60 * 60,
           }
         );
 
@@ -65,11 +65,11 @@ const authOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account, profile, isNewUser }) {
-      // if (account?.provider === 'credentials') {
-      //   token.name = user.name;
-      //   // token.expires = Date.now() + 1000 * 60 * 60 * 12;
-      //   // token.exp = Date.now() + 1000 * 60;
-      // }
+      if (account?.provider === 'credentials') {
+        token.name = user.name;
+        // token.expires = Date.now() + 1000 * 60 * 60 * 12;
+        token.exp = Date.now() + 1000 * 60 * 60 * 12;
+      }
       if (user) {
         token.id = user.id;
         token.role = user.role;

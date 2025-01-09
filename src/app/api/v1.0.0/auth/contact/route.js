@@ -1,3 +1,4 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { prisma, verifyToken } from '@/lib/prisma';
 import { getAllRecords } from '@/service';
 import { NextResponse } from 'next/server';
@@ -13,17 +14,10 @@ export async function GET() {
 }
 
 export async function POST(req) {
-  const authHeader = req.headers.get('Authorization');
+  const tokenValidation = await jwtAuthToken(req);
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-  }
-
-  const token = authHeader.split(' ')[1];
-  const isValidToken = await verifyToken(token);
-
-  if (!isValidToken) {
-    return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
   }
 
   try {
@@ -63,17 +57,10 @@ export async function POST(req) {
 }
 
 export async function PUT(req) {
-  const authHeader = req.headers.get('Authorization');
+  const tokenValidation = await jwtAuthToken(req);
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-  }
-
-  const token = authHeader.split(' ')[1];
-  const isValidToken = await verifyToken(token);
-
-  if (!isValidToken) {
-    return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
   }
 
   try {
@@ -122,17 +109,10 @@ export async function PUT(req) {
 }
 
 export async function DELETE(req) {
-  const authHeader = req.headers.get('Authorization');
+  const tokenValidation = await jwtAuthToken(req);
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
-  }
-
-  const token = authHeader.split(' ')[1];
-  const isValidToken = await verifyToken(token);
-
-  if (!isValidToken) {
-    return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
   }
 
   try {

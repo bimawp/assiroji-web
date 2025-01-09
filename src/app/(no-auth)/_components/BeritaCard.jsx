@@ -26,22 +26,21 @@ export default function Berita({ data }) {
       modules={[Pagination, Navigation]}
       className="mySwiper"
       breakpoints={{
-        // Untuk perangkat mobile
         0: {
           slidesPerView: 1,
         },
-        // Untuk perangkat tablet
+
         640: {
           slidesPerView: 2,
         },
-        // Untuk perangkat PC
+
         1024: {
           slidesPerView: 3,
         },
       }}
     >
       {data.map((item, index) => (
-        <SwiperSlide key={index} className='p-5'>
+        <SwiperSlide key={index} className="p-5">
           <div className="w-full mb-30 py-12 pb-20">
             <div className="bg-[#039685] rounded-xl text-white w-full h-full">
               <div className="relative p-4">

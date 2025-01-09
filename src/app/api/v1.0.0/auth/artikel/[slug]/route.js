@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { handleDeleteArtikel, handleGetArtikelBySlug, handleUpdateArtikel } from '../services.js';
 import { createClient } from '@supabase/supabase-js';
-import { bucket, verifyToken } from '@/lib/prisma/index.js';
+import { bucket } from '@/lib/prisma/index.js';
 import { getRecordByColumn } from '@/service/index.js';
+import { jwtAuthToken } from '@/lib/jwt/index.js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -32,18 +33,13 @@ export async function PUT(req, context) {
   if (!slug) {
     return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
   }
-  const authHeader = req.headers.get('Authorization');
+  const tokenValidation = await jwtAuthToken(req);
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
   }
 
-  const token = authHeader.split(' ')[1];
-  const isValidToken = await verifyToken(token);
-
-  if (!isValidToken) {
-    return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-  }
+  const { token } = tokenValidation;
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     global: {
@@ -137,19 +133,15 @@ export async function DELETE(req, context) {
     if (!slug) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    const authHeader = req.headers.get('Authorization');
+    const tokenValidation = await jwtAuthToken(req);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+    if (tokenValidation.error) {
+      return NextResponse.json(
+        { error: tokenValidation.error },
+        { status: tokenValidation.status }
+      );
     }
-
-    const token = authHeader.split(' ')[1];
-    const isValidToken = await verifyToken(token);
-
-    if (!isValidToken) {
-      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
-    }
-
+    const { token } = tokenValidation;
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
         headers: {

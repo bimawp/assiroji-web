@@ -14,13 +14,11 @@ export async function DELETE(req, { params }) {
       return new Response(JSON.stringify({ error: 'User ID is required.' }), { status: 400 });
     }
 
-    // Hapus pengguna dari Supabase
     const { error: supabaseError } = await supabaseAdmin.auth.admin.deleteUser(params.id);
     if (supabaseError) {
       return new Response(JSON.stringify({ error: supabaseError.message }), { status: 400 });
     }
 
-    // Hapus pengguna dari database Prisma
     await prisma.user.delete({
       where: { id_user: params.id },
     });
@@ -33,13 +31,12 @@ export async function DELETE(req, { params }) {
 
 export async function PUT(req, { params }) {
   try {
-    const { email, password, name, role } = await req.json(); // Ambil data dari body request
+    const { email, password, name, role } = await req.json();
 
     if (!id_user) {
       return new Response(JSON.stringify({ error: 'User ID is required.' }), { status: 400 });
     }
 
-    // Update di Supabase
     const { data: supabaseData, error: supabaseError } =
       await supabaseAdmin.auth.admin.updateUserById(params.id, {
         email,
@@ -50,14 +47,13 @@ export async function PUT(req, { params }) {
       return new Response(JSON.stringify({ error: supabaseError.message }), { status: 400 });
     }
 
-    // Update di Prisma
     const updatedUser = await prisma.user.update({
       where: { id_user: params.id },
       data: {
         email,
         password,
-        name, // Memperbarui nama pengguna
-        role, // Memperbarui role pengguna
+        name,
+        role,
       },
     });
 
