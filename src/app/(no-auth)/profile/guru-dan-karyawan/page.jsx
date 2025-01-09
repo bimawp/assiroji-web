@@ -1,6 +1,7 @@
 import React from 'react';
 import { getAllRecords } from '@/service';
 import GuruKaryawanPage from './_components';
+import { prisma } from '@/lib/prisma';
 
 export default async function Page() {
   try {
