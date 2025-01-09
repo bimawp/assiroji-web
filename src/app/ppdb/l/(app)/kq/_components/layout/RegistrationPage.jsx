@@ -276,7 +276,7 @@ export default function RegistrationPage({
 
         {/* Nomor Telepon */}
         <div>
-          <label className="block text-sm font-medium mb-1">Nomor Telepon</label>
+          <label className="block text-sm font-medium mb-1">Nomor Telepon </label>
           <input
             type="tel"
             name="noTelepon"

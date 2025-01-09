@@ -11,7 +11,7 @@ export default function PaymentPage({ onRefresh, ppdbData, id_user, fetching }) 
 
   const openWhatsApp = () => {
     const message = encodeURIComponent(
-      `Halo, saya ingin mengirim bukti pembayaran untuk metode ${paymentMethod}. Mohon informasi lebih lanjut.`
+      `Halo, saya ${ppdbData?.dataUser?.namaLengkap} ingin mengirim bukti pembayaran untuk biaya penerimaan peserta didik baru . Mohon informasi lebih lanjut.`
     );
     window.open(`https://wa.me/${ppdbData.noWa}?text=${message}`, '_blank');
   };
