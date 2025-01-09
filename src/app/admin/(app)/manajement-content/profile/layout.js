@@ -4,6 +4,10 @@ import { usePathname } from 'next/navigation';
 import React from 'react';
 const navListItem = [
   {
+    name: 'Section profile',
+    link: '/admin/manajement-content/profile',
+  },
+  {
     name: 'Section guru',
     link: '/admin/manajement-content/profile/guru',
   },

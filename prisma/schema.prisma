@@ -52,6 +52,38 @@ model Gallery {
   createdAt   DateTime  @default(now())
   updatedAt  DateTime @default(now())
 }
+model Profile {
+  id_profile     String    @id @default(cuid())
+  namaYayasan    String
+  namaMadrasah   String
+  nomorStatistik String
+  npsn           String
+  akreditasi     String
+  alamat         String
+  rt             String
+  rw             String
+  desa           String
+  kecamatan      String
+  kabupaten      String
+  provinsi       String
+  noTelp         String
+  email          String
+  namaKepala     String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  siswaTahunan   SiswaTahunan[]
+}
+
+model SiswaTahunan {
+ id_siswaTahunan String    @id @default(cuid())
+ tahun          Int
+ jumlahSiswa    Int
+ profile        Profile  @relation(fields: [id_profile], references: [id_profile])
+ id_profile     String
+ createdAt      DateTime @default(now())
+ updatedAt      DateTime @updatedAt
+}
+
 model Contact {
   id_contact String    @id @default(cuid())
   address    String
