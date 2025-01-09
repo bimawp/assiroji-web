@@ -46,7 +46,10 @@ export default function EditPPDBModal({ ppdb, isOpen, onClose, onSave }) {
 
   const handleWhatsAppClick = () => {
     const phoneNumber = ppdb.user.formulirPendaftaran.noTelepon;
-    const whatsappUrl = `https://wa.me/${phoneNumber.replace(/\D/g, '')}`;
+    const message = encodeURIComponent(
+      `Halo, saya admin MA ASSIROJI ingin mengkonfirmasi apakah benar sodara ${ppdb.user.formulirPendaftaran.namaLengkap} yang beralamat di ${ppdb.user.formulirPendaftaran.alamatLengkap} mendaftar sebagai pendaftar ${ppdb.jenisPendaftaran} Jika benar mohon konfirmasinya `
+    );
+    const whatsappUrl = `https://wa.me/${phoneNumber.replace(/\D/g, '')}?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
 
