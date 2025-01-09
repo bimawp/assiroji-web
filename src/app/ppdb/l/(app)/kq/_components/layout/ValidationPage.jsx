@@ -4,7 +4,7 @@ export default function ValidationPage() {
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
       <h2 className="text-2xl font-bold mb-4">Validasi</h2>
-      <p className="text-gray-600 mb-6">Upload dokumen yang diperlukan untuk validasi</p>
+      <p className="text-gray-600 mb-6">Tunggu validasi dari admin</p>
 
       {/* <form className="space-y-4">
         <div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { getAllRecords } from '@/service';
 import KurikulumPage from './_components';
+import { prisma } from '@/lib/prisma';
 export const revalidate = 3600;
 export default async function Page() {
   try {
@@ -17,5 +18,7 @@ export default async function Page() {
         <p>{error.message}</p>
       </div>
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }

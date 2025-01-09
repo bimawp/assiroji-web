@@ -1,6 +1,7 @@
 import React from 'react';
 import { getAllRecords } from '@/service';
 import SaranaDanPrasaranaPage from './_components';
+import { prisma } from '@/lib/prisma';
 
 export default async function Page() {
   try {
@@ -23,5 +24,7 @@ export default async function Page() {
         <p>{error.message}</p>
       </div>
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }

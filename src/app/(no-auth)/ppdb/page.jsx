@@ -1,6 +1,7 @@
 import React from 'react';
 
 import PpdbPage from './_components';
+import PPDBBelumDibuka from './_components/notFound';
 
 export default async function Page() {
   try {
@@ -9,6 +10,9 @@ export default async function Page() {
       notFound();
     }
     const data = await ress.json();
+    if (data?.error) {
+      return <PPDBBelumDibuka data={data} />;
+    }
     return <PpdbPage data={data || {}} />;
   } catch (error) {
     return (

@@ -17,5 +17,7 @@ export default async function Page() {
         <p>{error.message}</p>
       </div>
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }

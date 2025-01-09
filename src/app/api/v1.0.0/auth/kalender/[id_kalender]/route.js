@@ -19,6 +19,8 @@ export async function GET(req, { params }) {
     return NextResponse.json(kalender, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -40,6 +42,8 @@ export async function PUT(req, { params }) {
     return NextResponse.json(updateData, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -54,5 +58,7 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ message: 'Date deleted successfully' }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

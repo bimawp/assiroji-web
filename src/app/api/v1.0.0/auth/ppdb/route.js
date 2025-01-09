@@ -55,14 +55,18 @@ export async function GET(req) {
       },
     });
 
-    const totalPendaftar = ppdbWithJumlahDaftar.dataPendaftar.filter(
+    console.log('ppdbWithJumlahDaftar : ', ppdbWithJumlahDaftar);
+    if (!ppdbWithJumlahDaftar) {
+      return NextResponse.json({ message: 'PPDB belum dibuka', error: true }, { status: 200 });
+    }
+    const totalPendaftar = ppdbWithJumlahDaftar?.dataPendaftar.filter(
       (pendaftar) => pendaftar.jenisPendaftaran === 'baru'
     ).length;
 
-    const belumDiKonfirmasi = ppdbWithJumlahDaftar.dataPendaftar.filter(
+    const belumDiKonfirmasi = ppdbWithJumlahDaftar?.dataPendaftar.filter(
       (pendaftar) => pendaftar.statusPendaftaran !== 'konfirmasi'
     ).length;
-    const sudahDiKonfirmasi = ppdbWithJumlahDaftar.dataPendaftar.filter(
+    const sudahDiKonfirmasi = ppdbWithJumlahDaftar?.dataPendaftar.filter(
       (pendaftar) => pendaftar.statusPendaftaran === 'konfirmasi'
     ).length;
 
@@ -77,8 +81,10 @@ export async function GET(req) {
 
     return NextResponse.json(ppdbWithJumlahDaftarProcessed);
   } catch (error) {
-    console.error('Error fetching latest PPDB:', error);
-    return NextResponse.json({ error: 'Error fetching latest PPDB' }, { status: 500 });
+    console.error('PPDB:', error);
+    return NextResponse.json({ error: 'PPDB belum di buka' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 export async function POST(req) {
@@ -170,5 +176,7 @@ export async function POST(req) {
   } catch (error) {
     console.error('Error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 400 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

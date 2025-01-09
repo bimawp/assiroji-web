@@ -10,6 +10,8 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching contacts:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -53,6 +55,8 @@ export async function POST(req) {
   } catch (error) {
     console.error('Error creating contact:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 

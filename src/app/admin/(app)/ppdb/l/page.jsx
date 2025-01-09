@@ -19,6 +19,7 @@ export default function KelolaPPDB() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const ppdb = await response.json();
+      console.log(ppdb);
       setCurrentPPDB(ppdb);
     } catch (error) {
       console.log(error);
@@ -93,7 +94,7 @@ export default function KelolaPPDB() {
                     <SkeletonButton />
                     <SkeletonButton />
                   </>
-                ) : currentPPDB ? (
+                ) : !currentPPDB?.error ? (
                   <>
                     <QuickActionButton
                       title="Validasi Pendaftar"
@@ -135,22 +136,22 @@ export default function KelolaPPDB() {
                   <SkeletonDetail />
                   <SkeletonDetail />
                 </div>
-              ) : currentPPDB ? (
+              ) : !currentPPDB?.error ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <DetailItem label="Nama PPDB" value={currentPPDB.namaPPDB} />
                   <DetailItem label="Tahun Ajaran" value={currentPPDB.tahunAjaran} />
                   <DetailItem label="Status" value={currentPPDB.status} />
                   <DetailItem
                     label="Biaya Pendaftaran"
-                    value={`Rp ${currentPPDB.biayaPendaftaran.toLocaleString()}`}
+                    value={`Rp ${currentPPDB?.biayaPendaftaran?.toLocaleString()}` || 0}
                   />
                   <DetailItem
                     label="Biaya Bulanan"
-                    value={`Rp ${currentPPDB.biayaBulanan.toLocaleString()}`}
+                    value={`Rp ${currentPPDB?.biayaBulanan?.toLocaleString()}` || 0}
                   />
                   <DetailItem
                     label="Biaya Seragam"
-                    value={`Rp ${currentPPDB.biayaSeragam.toLocaleString()}`}
+                    value={`Rp ${currentPPDB?.biayaSeragam?.toLocaleString()}` || 0}
                   />
                   <DetailItem label="Jumlah Kuota" value={currentPPDB.jumlahKuota} />
                 </div>

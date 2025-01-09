@@ -10,6 +10,8 @@ export async function GET() {
     return NextResponse.json(galeri, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -68,5 +70,7 @@ export async function POST(req) {
     return NextResponse.json(itemImage, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

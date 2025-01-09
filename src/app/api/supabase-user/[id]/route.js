@@ -1,12 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY
 );
-
-const prisma = new PrismaClient();
 
 export async function DELETE(req, { params }) {
   try {
@@ -26,6 +24,8 @@ export async function DELETE(req, { params }) {
     return new Response(JSON.stringify({ message: 'User deleted successfully' }), { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -63,5 +63,7 @@ export async function PUT(req, { params }) {
     );
   } catch (error) {
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

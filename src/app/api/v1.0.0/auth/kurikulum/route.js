@@ -1,3 +1,4 @@
+import { prisma } from '@/lib/prisma';
 import { createRecord, deleteAllRecords, getAllRecords, updateRecord } from '@/service';
 import { NextResponse } from 'next/server';
 
@@ -7,6 +8,8 @@ export async function GET() {
     return NextResponse.json(ekstrakurikulers[0], { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -23,6 +26,8 @@ export async function POST(request) {
   } catch (error) {
     console.error('Error creating PPDB:', error);
     return NextResponse.json({ error: 'Error creating PPDB' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 export async function PUT(request) {
@@ -46,6 +51,8 @@ export async function PUT(request) {
   } catch (error) {
     console.error('Error updating record:', error);
     return NextResponse.json({ error: 'Error updating record' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 export async function DELETE() {
@@ -55,5 +62,7 @@ export async function DELETE() {
   } catch (error) {
     console.error('Error deleting rows:', error);
     return NextResponse.json({ error: 'Error deleting rows' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

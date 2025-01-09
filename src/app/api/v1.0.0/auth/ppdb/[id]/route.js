@@ -16,6 +16,8 @@ export async function GET(request, { params }) {
     return NextResponse.json(ppdb);
   } catch (error) {
     return NextResponse.json({ error: 'Error fetching PPDB' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -112,5 +114,7 @@ export async function PUT(req, context) {
   } catch (error) {
     console.error('Error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

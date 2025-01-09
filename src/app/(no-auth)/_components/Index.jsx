@@ -68,7 +68,6 @@ export default function HomePage({ data }) {
           </Link>
         </div>
       </div>
-      {/* ekstrakulikuler */}
       <div className="p-4 md:py-10 w-full lg:px-14">
         <div className="rounded-md bg-[#039685] text-white shadow-xl w-full p-6">
           <h2 className="text-2xl md:text-4xl font-bold mb-4 text-center ">EKSTRAKULIKULER</h2>
@@ -82,7 +81,7 @@ export default function HomePage({ data }) {
           </div>
         </div>
       </div>
-      {/* gallery */}
+
       <div className="container mx-auto px-4 py-10">
         <h2 className="text-2xl md:text-4xl font-bold  pb-5 text-center ">GALERY</h2>
         <hr className="bg-[#1D564F] mb-4 w-full rounded-md h-1" />
@@ -95,7 +94,6 @@ export default function HomePage({ data }) {
         </div>
       </div>
 
-      {/* Map Section */}
       <div className=" bg-[#e0f2f1] p-4 md:p-8">
         <div className="max-w-6xl mx-auto grid gap-4 md:grid-cols-2">
           <div>
@@ -121,7 +119,7 @@ export default function HomePage({ data }) {
               <div className="p-6">
                 <h2 className="text-2xl font-bold text-[#ffc107] mb-4">LOCATION</h2>
                 <p className="text-lg">
-                  JL.Tobiong Rt 01 Rw 02
+                  JL.Toblong Rt 01 Rw 02
                   <br />
                   Ds. Mekar Jaya Kec. Pacet Kab.
                   <br />

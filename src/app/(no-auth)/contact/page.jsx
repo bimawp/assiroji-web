@@ -1,6 +1,7 @@
 import React from 'react';
 import ContactPage from './_components/Dashboard';
 import { getAllRecords } from '@/service';
+import { prisma } from '@/lib/prisma';
 
 export default async function Page() {
   try {
@@ -17,5 +18,7 @@ export default async function Page() {
         <p>{error.message}</p>
       </div>
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }

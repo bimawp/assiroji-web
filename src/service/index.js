@@ -1,6 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export const createRecord = async (tableName, data) => {
   return await prisma[tableName].create({

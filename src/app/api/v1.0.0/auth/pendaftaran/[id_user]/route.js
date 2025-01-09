@@ -44,6 +44,8 @@ export async function GET(req, { params }) {
     return NextResponse.json(updatedPpdb, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -72,5 +74,7 @@ export async function PUT(req, { params }) {
     return NextResponse.json(updatedPendaftar, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

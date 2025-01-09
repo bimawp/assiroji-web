@@ -1,5 +1,5 @@
 import { jwtAuthToken } from '@/lib/jwt';
-import { supabase, verifyToken } from '@/lib/prisma';
+import { prisma, supabase, verifyToken } from '@/lib/prisma';
 import { deleteRecord, getRecordById, updateRecord } from '@/service';
 import { NextResponse } from 'next/server';
 
@@ -15,6 +15,8 @@ export async function GET(req, context) {
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -74,5 +76,7 @@ export async function DELETE(req, context) {
   } catch (error) {
     console.error('Error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 400 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
