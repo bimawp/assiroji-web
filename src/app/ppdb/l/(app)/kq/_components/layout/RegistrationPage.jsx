@@ -29,7 +29,6 @@ export default function RegistrationPage({
   const [errors, setErrors] = useState({});
   useEffect(() => {
     if (ppdbData?.dataUser) setFormData(ppdbData?.dataUser);
-  
   }, [ppdbData]);
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -285,7 +284,7 @@ export default function RegistrationPage({
             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
               errors.noTelepon ? 'border-red-500' : 'focus:ring-blue-500'
             }`}
-            placeholder="Masukkan nomor telepon"
+            placeholder="Masukkan nomor telepon contoh 628*********"
           />
           {errors.noTelepon && <p className="text-red-500 text-sm">{errors.noTelepon}</p>}
         </div>
