@@ -15,10 +15,10 @@ function EkstrakulikulerCard({ data }) {
           </div>
 
           <div className="relative h-[200px] md:h-[240px] rounded-2xl overflow-hidden">
-            {/* Image */}
             <Image
               src={data.itemImage}
               alt={data.title}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               fill
               className="object-cover transition-transform hover:scale-105 duration-300"
               priority

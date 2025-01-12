@@ -47,9 +47,9 @@ export default function Berita({ data }) {
                 <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl">
                   <Image
                     src={item.headerImage}
-                    alt="Responsive Image"
-                    layout="fill"
-                    objectFit="cover"
+                    alt={item.slug}
+                    width={600}
+                    height={400}
                     className="rounded-xl"
                   />
                 </div>
@@ -62,7 +62,7 @@ export default function Berita({ data }) {
                     24 Agustus 2024
                   </time>
                   <Link
-                    href=" #"
+                    href={`/artikel/${item.slug}`}
                     className="rounded-full bg-gradient-to-tr from-emerald-900 to-emerald-400  p-2"
                   >
                     <ArrowRight className="text-xl font-bold -rotate-45" />

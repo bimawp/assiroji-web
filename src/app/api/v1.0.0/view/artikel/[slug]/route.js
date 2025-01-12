@@ -1,20 +1,21 @@
 import { prisma } from '@/lib/prisma';
-import { getAllRecords } from '@/service';
 import { NextResponse } from 'next/server';
+import { handleGetArtikelBySlug } from '../../../auth/artikel/services';
 
-export async function GET(req, { params }) {
-  const { slug } = await params;
+export async function GET(req, context) {
   try {
-    const artikel = await handleGetArtikelBySlug(slug);
-    if (!artikel) {
-      return NextResponse.json({ message: 'No open ARTIKEL found' }, { status: 404 });
+    const { slug } = await context.params;
+    if (!slug) {
+      return new Response('Slug not provided', { status: 400 });
     }
 
-    return NextResponse.json(artikel);
+    if (slug) {
+      const artikel = await handleGetArtikelBySlug(slug);
+
+      return NextResponse.json(artikel, { status: 200 });
+    }
+    return NextResponse.json({ error: 'Slug is required' }, { status: 400 });
   } catch (error) {
-    console.error('Error fetching latest PPDB:', error);
-    return NextResponse.json({ error: 'Error fetching latest PPDB' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }

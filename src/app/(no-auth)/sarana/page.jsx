@@ -11,7 +11,6 @@ export default async function Page() {
     }
 
     const data = await ress.json();
-    console.log('sarana ; ', data);
     return <SaranaDanPrasaranaPage data={data} />;
   } catch (error) {
     return (

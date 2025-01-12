@@ -19,12 +19,6 @@ export default function ProfilePage({ data }) {
     { label: 'Nama Kepala', value: data.namaKepala },
   ];
 
-  const enrollmentData = [
-    { year: '2021-2022', students: 246 },
-    { year: '2022-2023', students: 260 },
-    { year: '2023-2024', students: 294 },
-  ];
-
   return (
     <div className=" bg-gradient-to-b from-teal-200 to-teal-400 p-4 md:p-0 text-black">
       <Header
@@ -66,8 +60,8 @@ export default function ProfilePage({ data }) {
         </div>
         <div className="mt-20 bg-gray-200 rounded-md p-2">
           <div className="grid grid-cols-3 gap-4 text-center">
-            {data?.siswaTahunan.map((data) => (
-              <div key={data.year} className="space-y-2">
+            {data?.siswaTahunan.map((data, index) => (
+              <div key={index} className="space-y-2">
                 <h3 className="font-medium">{data.tahun}</h3>
                 <p className="text-3xl font-bold">{data.jumlahSiswa}</p>
               </div>

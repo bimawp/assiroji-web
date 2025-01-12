@@ -21,14 +21,15 @@ export default function SaranaDanPrasaranaPage({ data }) {
       </div>
       <div className="max-w-7xl mx-auto space-y-6 pb-20 mt-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          {data.sarana.map((sarana, index) => (
-            <div
-              key={sarana['id_sarana']}
-              className="p-4 bg-white/20 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
-            >
-              <SarananaCard data={sarana} />
-            </div>
-          ))}
+          {data &&
+            data?.sarana.map((sarana, index) => (
+              <div
+                key={sarana['id_sarana']}
+                className="p-4 bg-white/20 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+              >
+                <SarananaCard data={sarana} />
+              </div>
+            ))}
         </div>
         <div className="w-full bg-white rounded-md">
           <div>
@@ -46,14 +47,15 @@ export default function SaranaDanPrasaranaPage({ data }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.prasarana.map((room, index) => (
-                    <tr key={room['id_prasarana']}>
-                      <td className="text-center">{index + 1}</td>
-                      <td className="text-center">{room.name}</td>
-                      <td className="text-center">{room.quantity}</td>
-                      <td className="text-center">{room.condition}</td>
-                    </tr>
-                  ))}
+                  {data &&
+                    data?.prasarana.map((room, index) => (
+                      <tr key={room['id_prasarana']}>
+                        <td className="text-center">{index + 1}</td>
+                        <td className="text-center">{room.name}</td>
+                        <td className="text-center">{room.quantity}</td>
+                        <td className="text-center">{room.condition}</td>
+                      </tr>
+                    ))}
                   {/* <tr className="bg-gray-400 rounded-md">
                     <td className="text-center" colSpan={2}>
                       Jumlah

@@ -5,9 +5,10 @@ import Footer from '@/components/__Fotter';
 import { getAllRecords } from '@/service';
 
 export const metadata = {
-  title: 'Home Page',
+  title: 'MA ASSIROJI',
   description: 'Welcome to the home page',
 };
+
 async function getFooterData() {
   const ress = await getAllRecords('Contact');
 

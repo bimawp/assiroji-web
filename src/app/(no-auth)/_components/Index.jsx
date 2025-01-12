@@ -26,7 +26,7 @@ export default function HomePage({ data }) {
               Terwujudnya Madrasah Sebagai Lembaga <br /> Pendidikan Yang Islami Dan Unggul
             </h1>
             <Link
-              href="#"
+              href="/profile/visi-misi"
               className="bg-[#F7B118] text-white w-56 py-4 flex items-center gap-4 justify-center mt-10 hover:bg-white hover:text-black transition-all"
             >
               <ArrowRightCircle />

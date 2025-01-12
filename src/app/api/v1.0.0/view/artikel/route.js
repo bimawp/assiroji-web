@@ -12,8 +12,8 @@ export async function GET() {
 
     return NextResponse.json({ artikels, categories });
   } catch (error) {
-    console.error('Error fetching latest PPDB:', error);
-    return NextResponse.json({ error: 'Error fetching latest PPDB' }, { status: 500 });
+    console.error('Error fetching latest artikel:', error);
+    return NextResponse.json({ error: 'Error fetching latest artikel' }, { status: 500 });
   } finally {
     await prisma.$disconnect();
   }

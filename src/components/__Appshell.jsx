@@ -10,6 +10,7 @@ const menuItems = [
     name: 'Profile',
     isDropdown: true,
     items: [
+      { name: 'PROFILE', href: '/profile/' },
       { name: 'SEJARAH', href: '/profile/sejarah' },
       { name: 'VISI & MISI', href: '/profile/visi-misi' },
       { name: 'GURU & KARYAWAN', href: '/profile/guru-dan-karyawan' },
@@ -40,10 +41,10 @@ export default function Appshell() {
             alt="logo"
             className="w-auto lg:h-16 h-12"
           />
-          <h1 className="font-bold text-sm lg:text-lg">
+          <Link href="/" className="font-bold text-sm lg:text-lg">
             Madrasah Aliyah (MA) <br />
             AS-SIROJI
-          </h1>
+          </Link>
         </div>
 
         <button
@@ -73,7 +74,7 @@ export default function Appshell() {
                         <ChevronDown size={16} />
                       </button>
                       <ul
-                        className="absolute left-0 mt-2 w-48 bg-white text-black rounded-md shadow-md transition-all duration-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-2"
+                        className="absolute left-0 mt-2 w-56 bg-white text-black rounded-md shadow-md transition-all duration-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:translate-y-2"
                         role="menu"
                       >
                         {menu.items.map((subItem, subIndex) => (

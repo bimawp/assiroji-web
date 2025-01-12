@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { formatTanggalArtikel } from '@/lib/date';
 
 export default function ArticleDetailPage({ data: article }) {
   if (!article) {
@@ -36,13 +37,7 @@ export default function ArticleDetailPage({ data: article }) {
                 />
                 <span className="text-gray-600">admin</span>
               </div>
-              <span className="text-gray-500">
-                {article.createdAt.toLocaleDateString('id-ID', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
+              <span className="text-gray-500">{formatTanggalArtikel(article.createdAt)}</span>
             </div>
             <div className="flex gap-2 mb-6">
               {article.tags.map((category) => (
