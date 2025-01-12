@@ -9,7 +9,9 @@ export default async function Page() {
     if (!ress) {
       notFound();
     }
+
     const data = await ress.json();
+    console.log('sarana ; ', data);
     return <SaranaDanPrasaranaPage data={data} />;
   } catch (error) {
     return (

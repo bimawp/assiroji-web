@@ -4,10 +4,7 @@ import GuruKaryawanPage from './_components';
 export default async function Page() {
   try {
     const ress = await fetch(
-      process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/guru-dan-karyawan',
-      {
-        cache: 'no-store',
-      }
+      process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/guru-dan-karyawan'
     );
     if (!ress) {
       notFound();
