@@ -46,7 +46,11 @@ export default function SocialMediaSettings() {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('/api/v1.0.0/auth/contact');
+        const response = await fetch('/api/v1.0.0/auth/contact', {
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch initial data');
         }
@@ -59,8 +63,8 @@ export default function SocialMediaSettings() {
       }
     };
 
-    fetchInitialData();
-  }, []);
+    if (session?.user?.access_token) fetchInitialData();
+  }, [session?.user?.access_token]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

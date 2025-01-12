@@ -2,7 +2,6 @@ import Header from '@/components/__Header';
 import Image from 'next/image';
 
 export default function ProfilePage({ data }) {
-  console.log('data : ', data);
   const schoolInfo = [
     { label: 'Nama Yayasan', value: data.namaYayasan },
     { label: 'Nama Madrasah', value: data.namaMadrasah },

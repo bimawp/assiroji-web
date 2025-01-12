@@ -3,8 +3,6 @@
 import { useSession } from 'next-auth/react';
 
 export default function Page() {
-  const { data: session } = useSession();
-
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="bg-white border-b border-gray-200">

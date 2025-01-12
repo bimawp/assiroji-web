@@ -5,11 +5,11 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 export async function GET(req) {
-  // const tokenValidation = await jwtAuthToken(req);
+  const tokenValidation = await jwtAuthToken(req);
 
-  // if (tokenValidation.error) {
-  //   return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
-  // }
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
 
   try {
     // const latestPpdb = await prisma.pPDB.findFirst({
@@ -55,7 +55,6 @@ export async function GET(req) {
       },
     });
 
-    console.log('ppdbWithJumlahDaftar : ', ppdbWithJumlahDaftar);
     if (!ppdbWithJumlahDaftar) {
       return NextResponse.json({ message: 'PPDB belum dibuka', error: true }, { status: 200 });
     }

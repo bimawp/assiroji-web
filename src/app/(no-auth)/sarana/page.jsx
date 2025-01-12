@@ -1,21 +1,15 @@
 import React from 'react';
-import { getAllRecords } from '@/service';
 import SaranaDanPrasaranaPage from './_components';
-import { prisma } from '@/lib/prisma';
 
 export default async function Page() {
   try {
-    const sarana = await getAllRecords('Sarana');
-    const prasarana = await getAllRecords('Prasarana');
-    if (!sarana && !prasarana) {
+    const ress = await fetch(
+      process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/sarana-prasarana'
+    );
+    if (!ress) {
       notFound();
     }
-
-    const data = {
-      sarana,
-      prasarana,
-    };
-
+    const data = await ress.json();
     return <SaranaDanPrasaranaPage data={data} />;
   } catch (error) {
     return (
@@ -24,7 +18,5 @@ export default async function Page() {
         <p>{error.message}</p>
       </div>
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

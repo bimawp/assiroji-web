@@ -8,6 +8,9 @@ export async function GET() {
     const gallery = await getAllRecords('Gallery');
     const artikel = await getAllRecords('Artikel');
     const contact = await getAllRecords('Contact');
+    if (!gallery || !artikel || !contact) {
+      return NextResponse.json({ message: 'No open home found' }, { status: 404 });
+    }
     const sortedArtikel = artikel.sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
@@ -18,6 +21,7 @@ export async function GET() {
       artikel: latestTenData,
       contact: contact[0],
     };
+
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

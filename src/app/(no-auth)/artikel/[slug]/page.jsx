@@ -1,17 +1,17 @@
 import React from 'react';
 import ArticleDetailPage from './_components/Dashboard';
-import { handleGetArtikelBySlug } from '@/app/api/v1.0.0/auth/artikel/services';
 
 export default async function Page({ params }) {
   const { slug } = params;
 
   try {
-    const artikel = await handleGetArtikelBySlug(slug);
-    if (!artikel) {
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/view/artikel/' + slug);
+    if (!ress) {
       notFound();
     }
+    const data = await ress.json();
 
-    return <ArticleDetailPage data={artikel} />;
+    return <ArticleDetailPage data={data} />;
   } catch (error) {
     return (
       <div>

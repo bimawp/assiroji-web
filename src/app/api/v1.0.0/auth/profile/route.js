@@ -1,7 +1,13 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(req) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const profiles = await prisma.profile.findFirst({
       include: { siswaTahunan: true },
@@ -14,6 +20,11 @@ export async function GET() {
   }
 }
 export async function POST(req) {
+  const tokenValidation = await jwtAuthToken(request);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const data = await req.json();
 
@@ -41,6 +52,11 @@ export async function POST(req) {
 }
 
 export async function PUT(req) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const data = await req.json();
 
@@ -63,7 +79,6 @@ export async function PUT(req) {
           ...(item.jumlahSiswa !== undefined && { jumlahSiswa: Number(item.jumlahSiswa) }),
         };
 
-        console.log(data);
         return prisma.siswaTahunan.update({
           where: { id_siswaTahunan: item.id_siswaTahunan },
           data: data,

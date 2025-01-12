@@ -6,10 +6,11 @@ import 'react-calendar/dist/Calendar.css';
 import AddEventModal from './_components/AddEventModal';
 import formatToIndonesianDate from '@/lib/date';
 import ConfirmDeleteModal from './_components/ConfirmDeleteModal';
+import { useSession } from 'next-auth/react';
 
 export default function MyCalendar() {
+  const { data: session } = useSession();
   const [specialDates, setSpecialDates] = useState([]);
-
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -20,7 +21,11 @@ export default function MyCalendar() {
   const fetchKalender = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/v1.0.0/auth/kalender');
+      const response = await fetch('/api/v1.0.0/auth/kalender', {
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -34,8 +39,8 @@ export default function MyCalendar() {
     }
   };
   useEffect(() => {
-    fetchKalender();
-  }, []);
+    if (session?.user?.access_token) fetchKalender();
+  }, [session?.user?.access_token]);
   const handleDeleteDate = (date) => {
     setSelectedDate(date);
     setIsDeleteModalOpen(true);
@@ -120,6 +125,9 @@ export default function MyCalendar() {
       try {
         await fetch(`/api/v1.0.0/auth/kalender/${selectedDate['id_tgl_kalender']}`, {
           method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
         });
       } catch (error) {
         console.error('Error deleting item:', error);

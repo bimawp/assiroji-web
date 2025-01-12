@@ -14,32 +14,36 @@ export default function WelcomePage({ nama }) {
   const [error, setError] = useState('');
   const { data: session, status } = useSession();
   const router = useRouter();
-  const fetchData = async () => {
-    if (session?.user?.id && !dataFetched) {
-      try {
-        setIsLoading(true);
-        const userResponse = await fetch(`/api/v1.0.0/auth/pendaftaran/${session.user.id}`);
-        if (!userResponse.ok) throw new Error('Failed to fetch user data');
-        const userData = await userResponse.json();
-       
-        setStatusUser(userData?.status || null);
-        setDataFetched(true);
-      } catch (error) {
-        console.error(error);
-        setError('Failed to load data');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
 
   useEffect(() => {
-    if (session?.user?.id && !dataFetched) {
+    const fetchData = async () => {
+      if (session?.user?.id && !dataFetched) {
+        try {
+          setIsLoading(true);
+          const userResponse = await fetch(`/api/v1.0.0/auth/pendaftaran/${session.user.id}`, {
+            headers: {
+              Authorization: `Bearer ${session.user.access_token}`,
+            },
+          });
+          if (!userResponse.ok) throw new Error('Failed to fetch user data');
+          const userData = await userResponse.json();
+
+          setStatusUser(userData?.status || null);
+          setDataFetched(true);
+        } catch (error) {
+          console.error(error);
+          setError('Failed to load data');
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    if (session?.user?.id && session?.user?.access_token && !dataFetched) {
       fetchData();
     } else if (status !== 'loading') {
       setIsLoading(false);
     }
-  }, [session?.user?.id, status, dataFetched]);
+  }, [session?.user?.id, session?.user?.access_token, status, dataFetched]);
   const handleClick = () => {
     setIsModalOpen(true);
   };

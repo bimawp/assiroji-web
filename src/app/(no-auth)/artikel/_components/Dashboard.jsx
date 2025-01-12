@@ -120,18 +120,10 @@ export default function ArticlePage({ data, categories }) {
                 <h2 className="text-xl font-medium leading-tight">{article.title}</h2>
                 <div className="flex items-center justify-between border-t border-teal-400 py-2">
                   <time
-                    dateTime={article.createdAt.toLocaleDateString('id-ID', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
+                    dateTime={article?.createdAt}
                     className="text-sm"
                   >
-                    {article.createdAt.toLocaleDateString('id-ID', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
+                    {article?.createdAt}
                   </time>
                   <Link
                     href={`/artikel/${article.slug}`}

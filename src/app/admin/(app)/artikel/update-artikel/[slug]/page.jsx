@@ -44,7 +44,11 @@ export default function PageUpdateArtikel() {
     const fetchArticle = async () => {
       setIsLoadingData(true);
       try {
-        const response = await fetch(`/api/v1.0.0/auth/artikel/${slug}`);
+        const response = await fetch(`/api/v1.0.0/auth/artikel/${slug}`, {
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
+        });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -69,10 +73,10 @@ export default function PageUpdateArtikel() {
       }
     };
 
-    if (slug) {
+    if (slug && session?.user?.access_token) {
       fetchArticle();
     }
-  }, [slug]);
+  }, [slug, session?.user?.access_token]);
 
   const handleEditorChange = (htmlContent) => {
     setEditorContent(htmlContent);

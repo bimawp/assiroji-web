@@ -1,8 +1,10 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
 export default function ProfileForm() {
+  const { data: session } = useSession();
   const [profile, setProfile] = useState({
     namaYayasan: '',
     namaMadrasah: '',
@@ -30,33 +32,36 @@ export default function ProfileForm() {
     { id_siswaTahunan: '', tahun: '', jumlahSiswa: '' },
   ]);
 
-  const fetchProfile = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/v1.0.0/auth/profile');
-      if (!response.ok) {
-        throw new Error('Failed to fetch profile');
-      }
-      const data = await response.json();
-      if (data) {
-        setProfile(data);
-        setInitialProfile(data);
-        // Ensure we always have 3 siswaTahunan entries
-        const fetchedSiswaTahunan = data.siswaTahunan || [];
-        setSiswaTahunan([
-          fetchedSiswaTahunan[0] || { id_siswaTahunan: '', tahun: '', jumlahSiswa: '' },
-          fetchedSiswaTahunan[1] || { id_siswaTahunan: '', tahun: '', jumlahSiswa: '' },
-          fetchedSiswaTahunan[2] || { id_siswaTahunan: '', tahun: '', jumlahSiswa: '' },
-        ]);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch('/api/v1.0.0/auth/profile', {
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile');
+        }
+        const data = await response.json();
+        if (data) {
+          setProfile(data);
+          setInitialProfile(data);
+          const fetchedSiswaTahunan = data.siswaTahunan || [];
+          setSiswaTahunan([
+            fetchedSiswaTahunan[0] || { id_siswaTahunan: '', tahun: '', jumlahSiswa: '' },
+            fetchedSiswaTahunan[1] || { id_siswaTahunan: '', tahun: '', jumlahSiswa: '' },
+            fetchedSiswaTahunan[2] || { id_siswaTahunan: '', tahun: '', jumlahSiswa: '' },
+          ]);
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (session?.user?.access_token) fetchProfile();
+  }, [session?.user?.access_token]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,7 +83,7 @@ export default function ProfileForm() {
     setLoading(true);
     setError(null);
 
-    const url = 'http://localhost:3000/api/v1.0.0/auth/profile';
+    const url = '/api/v1.0.0/auth/profile';
     const method = profile.id_profile ? 'PUT' : 'POST';
 
     const changedFields = Object.keys(profile).reduce((acc, key) => {
@@ -114,13 +119,12 @@ export default function ProfileForm() {
     const sendData = profile.id_profile
       ? { ...changedFields, id_profile: initialProfile.id_profile }
       : changedFields;
-      
-    console.log('initialProfile : ', sendData);
 
     try {
       const response = await fetch(url, {
         method,
         headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(sendData),

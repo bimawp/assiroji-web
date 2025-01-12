@@ -4,37 +4,42 @@ import { ClipboardList, Settings, UserPlus, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { ModalEditPPDB } from './_components/ModalEditPpdb';
+import { useSession } from 'next-auth/react';
 
 export default function KelolaPPDB() {
+  const { data: session } = useSession();
   const router = useRouter();
   const [currentPPDB, setCurrentPPDB] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const fetchPPDBData = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/v1.0.0/auth/ppdb');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const ppdb = await response.json();
-      console.log(ppdb);
-      setCurrentPPDB(ppdb);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const openModal = async () => {
     setIsModalOpen(true);
   };
 
   useEffect(() => {
-    fetchPPDBData();
-  }, []);
+    const fetchPPDBData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/v1.0.0/auth/ppdb', {
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const ppdb = await response.json();
+
+        setCurrentPPDB(ppdb);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (session?.user?.access_token) fetchPPDBData();
+  }, [session?.user?.access_token]);
 
   return (
     <>
@@ -138,9 +143,9 @@ export default function KelolaPPDB() {
                 </div>
               ) : !currentPPDB?.error ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <DetailItem label="Nama PPDB" value={currentPPDB.namaPPDB} />
-                  <DetailItem label="Tahun Ajaran" value={currentPPDB.tahunAjaran} />
-                  <DetailItem label="Status" value={currentPPDB.status} />
+                  <DetailItem label="Nama PPDB" value={currentPPDB?.namaPPDB} />
+                  <DetailItem label="Tahun Ajaran" value={currentPPDB?.tahunAjaran} />
+                  <DetailItem label="Status" value={currentPPDB?.status} />
                   <DetailItem
                     label="Biaya Pendaftaran"
                     value={`Rp ${currentPPDB?.biayaPendaftaran?.toLocaleString()}` || 0}
@@ -153,7 +158,7 @@ export default function KelolaPPDB() {
                     label="Biaya Seragam"
                     value={`Rp ${currentPPDB?.biayaSeragam?.toLocaleString()}` || 0}
                   />
-                  <DetailItem label="Jumlah Kuota" value={currentPPDB.jumlahKuota} />
+                  <DetailItem label="Jumlah Kuota" value={currentPPDB?.jumlahKuota} />
                 </div>
               ) : (
                 <p className="text-center">Belum ada PPDB</p>

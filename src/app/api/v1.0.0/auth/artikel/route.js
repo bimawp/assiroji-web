@@ -5,6 +5,11 @@ import { bucket, supabaseAnonKey, supabaseUrl } from '@/lib/prisma/index.js';
 import { jwtAuthToken } from '@/lib/jwt/index.js';
 
 export async function GET(req) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const artikels = await handleGetAllArtikels();
     return NextResponse.json(artikels, { status: 200 });

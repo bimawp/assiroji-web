@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 export default function Page() {
+  const { data: session } = useSession();
   const { id_ppdb } = useParams();
   const [ppdbData, setPPDBData] = useState(null);
   const [userData, setDataUser] = useState([]);
@@ -15,26 +17,29 @@ export default function Page() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchPPDBData = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/v1.0.0/auth/ppdb/log/' + id_ppdb);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setPPDBData(data?.dataPPDB);
-      setDataUser(data?.dataPendaftar);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchPPDBData();
-  }, []);
+    const fetchPPDBData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/v1.0.0/auth/ppdb/log/' + id_ppdb, {
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setPPDBData(data?.dataPPDB);
+        setDataUser(data?.dataPendaftar);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (session?.user?.access_token && id_ppdb) fetchPPDBData();
+  }, [session?.user?.access_token, id_ppdb]);
 
   const filteredPPDBData = userData.filter((item) =>
     item.user.namaLengkap.toLowerCase().includes(searchQuery.toLowerCase())
@@ -173,7 +178,7 @@ export default function Page() {
                   ))
                 ) : currentPPDBData.length > 0 ? (
                   currentPPDBData.map((item, index) => (
-                    <tr key={item.id_ppdb} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-gray-50">
                       <td className="px-6 py-4">{indexOfFirstItem + index + 1}</td>
                       <td className="px-6 py-4">{item.user.namaLengkap}</td>
                       <td className="px-6 py-4">{item.jenisPendaftaran}</td>

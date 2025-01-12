@@ -4,8 +4,13 @@ import { deleteRecord, getRecordById, updateRecord } from '@/service';
 import { NextResponse } from 'next/server';
 
 export async function GET(req, context) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
@@ -21,6 +26,11 @@ export async function GET(req, context) {
 }
 
 export async function PUT(req, context) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const { id } = context.params;
 
@@ -51,12 +61,14 @@ export async function PUT(req, context) {
     return NextResponse.json({ message: 'Updated successfully', newData }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
 export async function DELETE(req, context) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });

@@ -1,7 +1,13 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { prisma } from '@/lib/prisma';
 import { createRecord, getAllRecords, getRecordById } from '@/service';
 import { NextResponse } from 'next/server';
-export async function GET() {
+export async function GET(req) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const kalenderData = await getAllRecords('kalender');
 
@@ -18,6 +24,11 @@ export async function GET() {
   }
 }
 export async function POST(req) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const body = await req.json();
     const user = await createRecord('Kalender', body);

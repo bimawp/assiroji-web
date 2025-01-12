@@ -2,32 +2,36 @@
 
 import React, { useState, useEffect } from 'react';
 import EditorComponent from '@/components/__EditorInput';
+import { useSession } from 'next-auth/react';
 
 export default function SocialMediaSettings() {
+  const { data: session } = useSession();
   const [content, setEditorContent] = useState('');
   const [kurikulumId, setKurikulumId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isFetchLoading, setFetchLoading] = useState(false);
-
   useEffect(() => {
-    fetchKurikulumData();
-  }, []);
+    const fetchKurikulumData = async () => {
+      try {
+        const response = await fetch('/api/v1.0.0/auth/kurikulum', {
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
+        });
+        const data = await response.json();
 
-  const fetchKurikulumData = async () => {
-    try {
-      const response = await fetch('/api/v1.0.0/auth/kurikulum');
-      const data = await response.json();
-
-      if (data && data.deskripsi) {
-        setEditorContent(data.deskripsi);
-        setKurikulumId(data.id_kurikulum);
+        if (data && data.deskripsi) {
+          setEditorContent(data.deskripsi);
+          setKurikulumId(data.id_kurikulum);
+        }
+      } catch (error) {
+        console.error('Error fetching kurikulum data:', error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching kurikulum data:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+    if (session?.user?.access_token) fetchKurikulumData();
+  }, [session?.user?.access_token]);
 
   const handleEditorChange = (htmlContent) => {
     setEditorContent(htmlContent);

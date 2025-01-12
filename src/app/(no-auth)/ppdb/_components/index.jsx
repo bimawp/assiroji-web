@@ -20,7 +20,6 @@ const navigationItems = [
 ];
 
 export default function PpdbPage({ data }) {
-  console.log('data : ', data);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);

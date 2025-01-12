@@ -1,12 +1,17 @@
 import { jwtAuthToken } from '@/lib/jwt';
-import { bucket, supabase, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma';
+import { bucket, prisma, supabase, supabaseAnonKey, supabaseUrl, verifyToken } from '@/lib/prisma';
 import { deleteRecord, getRecordByColumn, updateRecord } from '@/service';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-export async function GET(context) {
+export async function GET(req, context) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
@@ -29,7 +34,7 @@ export async function GET(context) {
 
 export async function PUT(req, context) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
@@ -116,7 +121,7 @@ export async function PUT(req, context) {
 
 export async function DELETE(req, context) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
@@ -155,5 +160,7 @@ export async function DELETE(req, context) {
   } catch (error) {
     console.error('Error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 400 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

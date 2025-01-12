@@ -1,11 +1,21 @@
 import { NextResponse } from 'next/server';
 import { handleDeleteUser, handleGetUser, handleUpdateUser } from '../services';
+import { jwtAuthToken } from '@/lib/jwt';
 
 export async function GET(req, { params }) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
+  const { id } = await params;
+  if (!id) {
+    return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+  }
   try {
-    if (params.id) {
-      const user = await handleGetUser(params.id);
- 
+    if (id) {
+      const user = await handleGetUser(id);
+
       return NextResponse.json(user, { status: 200 });
     }
   } catch (error) {
@@ -14,13 +24,19 @@ export async function GET(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
-  if (!params.id) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
+  const { id } = await params;
+  if (!id) {
     return NextResponse.json({ error: 'ID is required' }, { status: 400 });
   }
 
   try {
     const body = await req.json();
-    const updatedUser = await handleUpdateUser(params.id, body);
+    const updatedUser = await handleUpdateUser(id, body);
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (error) {
     if (error.code === 'P2002') {
@@ -37,12 +53,22 @@ export async function PUT(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
-  if (!params.id) {
+  const { id } = await params;
+  if (!id) {
+    return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+  }
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
+
+  if (!id) {
     return NextResponse.json({ error: 'ID is required' }, { status: 400 });
   }
 
   try {
-    await handleDeleteUser(params.id);
+    await handleDeleteUser(id);
     return NextResponse.json({ message: 'User deleted successfully' }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });

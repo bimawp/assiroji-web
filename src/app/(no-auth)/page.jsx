@@ -4,11 +4,12 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 export default async function Page() {
   try {
-    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/landingpage/home');
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/home');
     if (!ress) {
       notFound();
     }
     const data = await ress.json();
+
     return <HomePage data={data} />;
   } catch (error) {
     return (

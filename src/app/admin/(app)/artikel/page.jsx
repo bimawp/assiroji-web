@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ExternalLink, PlusIcon, Search } from 'lucide-react';
 import ModalDeleteArtikel from './_components/ModalDeleteArtikel';
+import { useSession } from 'next-auth/react';
 
 export default function Page() {
+  const { data: session } = useSession();
   const [modalDelete, setModalDelete] = useState(false);
   const [articleDelete, setArticleDelete] = useState('');
   const [articles, setArticles] = useState([]);
@@ -17,25 +19,28 @@ export default function Page() {
     if (articles.length > 0) onModalDelete(true);
   }, [articleDelete]);
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch('/api/v1.0.0/auth/artikel');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setArticles(data);
-      } catch (error) {
-        console.error('Error fetching articles:', error);
-      } finally {
-        setIsLoading(false);
+  const fetchArticles = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/v1.0.0/auth/artikel', {
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
-
-    fetchArticles();
-  }, []);
+      const data = await response.json();
+      setArticles(data);
+    } catch (error) {
+      console.log('Error fetching articles:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (session?.user?.access_token) fetchArticles();
+  }, [session?.user?.access_token]);
   const filteredArticles = articles.filter((article) =>
     article.title.toLowerCase().includes(searchQuery.toLowerCase())
   );

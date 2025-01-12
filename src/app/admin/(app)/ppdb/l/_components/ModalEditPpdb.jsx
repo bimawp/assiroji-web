@@ -155,8 +155,6 @@ export function ModalEditPPDB({ isOpen, onClose, ppdbData, onReset }) {
 
       if (response.ok) {
         onClose();
-      } else {
-        console.log(isEndingPPDB ? 'Failed to end PPDB' : 'Failed to update PPDB data');
       }
     } catch (error) {
       console.error('An unexpected error occurred', error);

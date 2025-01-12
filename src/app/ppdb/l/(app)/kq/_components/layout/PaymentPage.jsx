@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 export default function PaymentPage({ onRefresh, ppdbData, id_user, fetching }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
-  console.log('ppdbData : ', ppdbData);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsModalOpen(true);

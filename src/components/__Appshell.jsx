@@ -14,7 +14,7 @@ const menuItems = [
       { name: 'VISI & MISI', href: '/profile/visi-misi' },
       { name: 'GURU & KARYAWAN', href: '/profile/guru-dan-karyawan' },
       { name: 'KURIKULUM', href: '/profile/kurikulum' },
-      { name: 'KALENDER AKADEMIK', href: '/kalender' },
+      { name: 'KALENDER AKADEMIK', href: '/profile/kalender-akademik' },
     ],
   },
   { name: 'Sarana', href: '/sarana' },

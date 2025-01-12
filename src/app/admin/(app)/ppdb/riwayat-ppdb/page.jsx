@@ -2,33 +2,38 @@
 import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 export default function Page() {
+  const { data: session } = useSession();
   const [ppdbData, setPPDBData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const fetchPPDBData = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/v1.0.0/auth/ppdb/log');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setPPDBData(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchPPDBData();
-  }, []);
+    const fetchPPDBData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/v1.0.0/auth/ppdb/log', {
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setPPDBData(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (session?.user?.access_token) fetchPPDBData();
+  }, [session?.user?.access_token]);
 
   const filteredPPDBData = ppdbData.filter((item) =>
     item.namaPPDB.toLowerCase().includes(searchQuery.toLowerCase())

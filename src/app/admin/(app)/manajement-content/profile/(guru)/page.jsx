@@ -20,14 +20,14 @@ export default function Page() {
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [selectedGuru, setSelectedGuru] = useState(null);
   const { data: session } = useSession();
-  useEffect(() => {
-    fetchGurus();
-  }, []);
-
   const fetchGurus = async () => {
     setIsLoadingData(true);
     try {
-      const response = await fetch('/api/v1.0.0/auth/guru');
+      const response = await fetch('/api/v1.0.0/auth/guru', {
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -41,6 +41,9 @@ export default function Page() {
       setIsLoadingData(false);
     }
   };
+  useEffect(() => {
+    if (session?.user?.access_token) fetchGurus();
+  }, [session?.user?.access_token]);
 
   const filteredGurus = gurus.filter((guru) =>
     guru.name.toLowerCase().includes(searchQuery.toLowerCase())

@@ -3,7 +3,12 @@ import { prisma, verifyToken } from '@/lib/prisma';
 import { getAllRecords } from '@/service';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(req) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const contacts = await getAllRecords('Contact');
     return NextResponse.json(contacts, { status: 200 });

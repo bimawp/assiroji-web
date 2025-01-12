@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { ExternalLink, Eye, PlusIcon, Search } from 'lucide-react';
 import ModalDeletePrestasi from './_components/ModalDeletePrestasi';
 import ModalViewPrestasi from './_components/ModalViewPrestasi';
+import { useSession } from 'next-auth/react';
 
 export default function Page() {
+  const { data: session } = useSession();
   const [modalDelete, setModalDelete] = useState(false);
   const [prestasiDelete, setPrestasiDelete] = useState('');
   const [prestasis, setPrestasis] = useState([]);
@@ -22,7 +24,11 @@ export default function Page() {
   const fetchPrestasis = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/v1.0.0/auth/prestasi');
+      const response = await fetch('/api/v1.0.0/auth/prestasi', {
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -36,8 +42,8 @@ export default function Page() {
     }
   };
   useEffect(() => {
-    fetchPrestasis();
-  }, []);
+    if (session?.user?.access_token) fetchPrestasis();
+  }, [session?.user?.access_token]);
   const filteredPrestasis = prestasis.filter(
     (prestasi) =>
       prestasi.title.toLowerCase().includes(searchQuery.toLowerCase()) &&

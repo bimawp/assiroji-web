@@ -1,8 +1,14 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { prisma } from '@/lib/prisma';
 import { getRecordById } from '@/service';
 import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const { id_user } = await params;
 
@@ -50,6 +56,11 @@ export async function GET(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const { id_user: id_data_pendaftar } = await params;
 

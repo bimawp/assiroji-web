@@ -1,16 +1,19 @@
 import React from 'react';
-import { getAllRecords } from '@/service';
 import GuruKaryawanPage from './_components';
-import { prisma } from '@/lib/prisma';
 
 export default async function Page() {
   try {
-    const guru = await getAllRecords('Guru');
-    if (!guru) {
+    const ress = await fetch(
+      process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/guru-dan-karyawan',
+      {
+        cache: 'no-store',
+      }
+    );
+    if (!ress) {
       notFound();
     }
-
-    return <GuruKaryawanPage guru={guru} />;
+    const data = await ress.json();
+    return <GuruKaryawanPage guru={data} />;
   } catch (error) {
     return (
       <div>
@@ -18,7 +21,5 @@ export default async function Page() {
         <p>{error.message}</p>
       </div>
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

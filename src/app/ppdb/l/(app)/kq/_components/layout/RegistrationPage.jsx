@@ -1,5 +1,6 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +11,7 @@ export default function RegistrationPage({
   fetching,
   jenisPendaftaran,
 }) {
+  const { data: session } = useSession();
   const router = useRouter();
   const [formData, setFormData] = useState({
     namaLengkap: '',
@@ -71,6 +73,9 @@ export default function RegistrationPage({
           jenisPendaftaran,
           jenjang: 'kelas 3',
         }),
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
       });
 
       if (response.ok) {

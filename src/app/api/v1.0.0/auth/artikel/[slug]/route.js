@@ -9,8 +9,13 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export async function GET(req, context) {
-  const { params } = context;
-  const slug = params?.slug;
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
+  const { params } = await context;
+  const slug = await params?.slug;
   if (!slug) {
     return new Response('Slug not provided', { status: 400 });
   }
@@ -127,6 +132,11 @@ export async function PUT(req, context) {
 }
 
 export async function DELETE(req, context) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const { slug } = context.params;
 

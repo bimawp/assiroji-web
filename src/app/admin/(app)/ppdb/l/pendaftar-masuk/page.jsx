@@ -23,7 +23,11 @@ export default function Page() {
   const fetchPPDBData = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/v1.0.0/auth/ppdb/data-pendaftar');
+      const response = await fetch('/api/v1.0.0/auth/ppdb/data-pendaftar', {
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -39,8 +43,8 @@ export default function Page() {
   };
 
   useEffect(() => {
-    fetchPPDBData();
-  }, []);
+    if (session?.user?.access_token) fetchPPDBData();
+  }, [session?.user?.access_token]);
 
   const filteredPPDBData = ppdbData.filter((item) =>
     item.user.formulirPendaftaran.namaLengkap.toLowerCase().includes(searchQuery.toLowerCase())

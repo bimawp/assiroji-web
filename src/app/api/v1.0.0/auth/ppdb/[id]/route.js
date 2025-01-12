@@ -5,6 +5,11 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 export async function GET(request, { params }) {
+  const tokenValidation = await jwtAuthToken(request);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const { id } = await params;
     const ppdb = await prisma.pPDB.findUnique({
@@ -22,6 +27,11 @@ export async function GET(request, { params }) {
 }
 
 export async function PUT(req, context) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const { id } = await context.params;
 

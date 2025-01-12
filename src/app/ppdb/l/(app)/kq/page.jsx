@@ -31,7 +31,11 @@ export default function Page() {
     if (session?.user?.id && !dataFetched) {
       try {
         setIsLoading(true);
-        const userResponse = await fetch(`/api/v1.0.0/auth/pendaftaran/${session.user.id}`);
+        const userResponse = await fetch(`/api/v1.0.0/auth/pendaftaran/${session.user.id}`, {
+          headers: {
+            Authorization: `Bearer ${session.user.access_token}`,
+          },
+        });
         if (!userResponse.ok) throw new Error('Failed to fetch user data');
         const userData = await userResponse.json();
         setStatusUser(userData?.status || null);
@@ -46,14 +50,13 @@ export default function Page() {
       }
     }
   };
-
   useEffect(() => {
-    if (session?.user?.id && !dataFetched) {
+    if (session?.user?.id && session?.user?.access_token && !dataFetched) {
       fetchData();
     } else if (status !== 'loading') {
       setIsLoading(false);
     }
-  }, [session?.user?.id, status, dataFetched]);
+  }, [session?.user?.id, session?.user?.access_token, status, dataFetched]);
 
   const handleRefresh = () => {
     setDataFetched(false);

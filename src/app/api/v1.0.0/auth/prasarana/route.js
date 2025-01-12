@@ -4,7 +4,12 @@ import { getAllRecords } from '@/service';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request) {
+  const tokenValidation = await jwtAuthToken(request);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const ekstrakurikulers = await getAllRecords('Prasarana');
     return NextResponse.json(ekstrakurikulers, { status: 200 });
@@ -22,7 +27,6 @@ export async function POST(req) {
     return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
   }
 
-
   try {
     const formData = await req.formData();
 
@@ -34,7 +38,6 @@ export async function POST(req) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
- 
     const oke = await prisma['Prasarana'].create({
       data: { name, quantity: Number(quantity), condition: Number(condition) },
     });

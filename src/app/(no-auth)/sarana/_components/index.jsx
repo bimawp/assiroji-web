@@ -3,7 +3,6 @@ import Image from 'next/image';
 import SarananaCard from './SarananaCard';
 
 export default function SaranaDanPrasaranaPage({ data }) {
-
   return (
     <div className="bg-gradient-to-b from-teal-200 to-teal-400 p-4 md:p-0 text-black">
       <Header

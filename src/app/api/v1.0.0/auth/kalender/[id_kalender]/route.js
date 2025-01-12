@@ -1,10 +1,16 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { prisma } from '@/lib/prisma';
 import { deleteRecord, getRecordById } from '@/service';
 import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
-    const { id_kalender: id_tgl_kalender } = params;
+    const { id_kalender: id_tgl_kalender } = await params;
 
     if (!id_tgl_kalender) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
@@ -25,8 +31,13 @@ export async function GET(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
-    const { id_kalender: id_tgl_kalender } = params;
+    const { id_kalender: id_tgl_kalender } = await params;
 
     if (!id_tgl_kalender) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
@@ -48,7 +59,12 @@ export async function PUT(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
-  const { id_kalender: id_tgl_kalender } = params;
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
+  const { id_kalender: id_tgl_kalender } = await params;
 
   if (!id_tgl_kalender) {
     return NextResponse.json({ error: 'ID is required' }, { status: 400 });

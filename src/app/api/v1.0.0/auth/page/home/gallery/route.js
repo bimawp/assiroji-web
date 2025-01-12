@@ -4,7 +4,12 @@ import { getAllRecords } from '@/service';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(req) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const galeri = await getAllRecords('Gallery');
     return NextResponse.json(galeri, { status: 200 });

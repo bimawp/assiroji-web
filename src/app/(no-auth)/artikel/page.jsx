@@ -1,19 +1,13 @@
 import React from 'react';
 import ArticlePage from './_components/Dashboard';
-import { handleGetAllArtikels } from '@/app/api/v1.0.0/auth/artikel/services';
 
 export default async function Page() {
   try {
-    const artikels = await handleGetAllArtikels();
-    const categories = Array.from(new Set(artikels.map((item) => item.category)));
-    if (!categories.includes('All')) {
-      categories.unshift('All');
-    }
-
-    if (!artikels) {
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/artikel');
+    if (!ress) {
       notFound();
     }
-
+    const { artikels, categories } = await ress.json();
     return <ArticlePage data={artikels} categories={categories} />;
   } catch (error) {
     return (

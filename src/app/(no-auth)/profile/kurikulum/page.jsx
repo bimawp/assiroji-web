@@ -1,16 +1,16 @@
 import React from 'react';
-import { getAllRecords } from '@/service';
 import KurikulumPage from './_components';
-import { prisma } from '@/lib/prisma';
 export const revalidate = 3600;
 export default async function Page() {
   try {
-    const Kurikulum = await getAllRecords('Kurikulum');
-    if (!Kurikulum) {
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/kurikulum', {
+      cache: 'no-store',
+    });
+    if (!ress) {
       notFound();
     }
-
-    return <KurikulumPage data={Kurikulum[0]} />;
+    const data = await ress.json();
+    return <KurikulumPage data={data} />;
   } catch (error) {
     return (
       <div>
@@ -18,7 +18,5 @@ export default async function Page() {
         <p>{error.message}</p>
       </div>
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

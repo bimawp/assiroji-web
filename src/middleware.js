@@ -7,4 +7,5 @@ export function mainMiddleware(req) {
 }
 export default withAuth(mainMiddleware, ['/admin', '/ppdb/l']);
 
-export const config = { matcher: ['/(admin|ppdb/l|admin/login|ppdb/l/auth)'] };
+export const config = { matcher: ['/(admin|ppdb/l)(.*)', '/admin/login', '/ppdb/l/auth'] };
+// export const config = { matcher: ['/(admin|ppdb/l|admin/login|ppdb/l/auth)'] };

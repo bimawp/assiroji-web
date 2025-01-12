@@ -22,7 +22,11 @@ export default function Page() {
   const fetchSaranas = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/v1.0.0/auth/prasarana');
+      const response = await fetch('/api/v1.0.0/auth/prasarana', {
+        headers: {
+          Authorization: `Bearer ${session.user.access_token}`,
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -36,8 +40,8 @@ export default function Page() {
     }
   };
   useEffect(() => {
-    fetchSaranas();
-  }, []);
+    if (session?.user?.access_token) fetchSaranas();
+  }, [session?.user?.access_token]);
 
   const filteredSaranas = prasarana.filter((prasarana) =>
     prasarana.name.toLowerCase().includes(searchQuery.toLowerCase())

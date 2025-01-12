@@ -1,8 +1,14 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { prisma } from '@/lib/prisma';
 import { createRecord, deleteAllRecords, getAllRecords, updateRecord } from '@/service';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(req) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const ekstrakurikulers = await getAllRecords('Kurikulum');
     return NextResponse.json(ekstrakurikulers[0], { status: 200 });
@@ -14,6 +20,11 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  const tokenValidation = await jwtAuthToken(request);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const body = await request.json();
     const dataKurikulum = await createRecord('Kurikulum', body);
@@ -31,6 +42,11 @@ export async function POST(request) {
   }
 }
 export async function PUT(request) {
+  const tokenValidation = await jwtAuthToken(request);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const body = await request.json();
     const { id_kurikulum, ...dataToUpdate } = body;
@@ -55,7 +71,12 @@ export async function PUT(request) {
     await prisma.$disconnect();
   }
 }
-export async function DELETE() {
+export async function DELETE(req) {
+  const tokenValidation = await jwtAuthToken(req);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const result = await deleteAllRecords('Kurikulum');
     return NextResponse.json({ message: 'All rows deleted successfully', result }, { status: 200 });

@@ -1,8 +1,13 @@
+import { jwtAuthToken } from '@/lib/jwt';
 import { prisma } from '@/lib/prisma';
-import { getRecordByColumn } from '@/service';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request) {
+  const tokenValidation = await jwtAuthToken(request);
+
+  if (tokenValidation.error) {
+    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  }
   try {
     const latestPpdb = await prisma.pPDB.findFirst({
       orderBy: {

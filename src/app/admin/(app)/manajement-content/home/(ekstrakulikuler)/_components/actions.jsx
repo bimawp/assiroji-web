@@ -18,9 +18,7 @@ export async function addActivity(formData, token) {
 }
 
 export async function updateActivity(formData, token, id) {
-
   try {
-
     const response = await fetch(`/api/v1.0.0/auth/page/home/ekstrakulikuler/${id}`, {
       method: 'PUT',
       body: formData,

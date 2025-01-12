@@ -1,16 +1,16 @@
 import React from 'react';
 import ContactPage from './_components/Dashboard';
-import { getAllRecords } from '@/service';
 import { prisma } from '@/lib/prisma';
 
 export default async function Page() {
   try {
-    const contacts = await getAllRecords('Contact');
-    if (!contacts) {
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/contact');
+    if (!ress) {
       notFound();
     }
+    const data = await ress.json();
 
-    return <ContactPage data={contacts[0]} />;
+    return <ContactPage data={data} />;
   } catch (error) {
     return (
       <div>
