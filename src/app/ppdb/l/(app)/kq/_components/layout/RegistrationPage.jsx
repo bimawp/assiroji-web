@@ -70,8 +70,7 @@ export default function RegistrationPage({
           formData,
           id_user,
           id_ppdb: ppdbData?.id_ppdb,
-          jenisPendaftaran,
-          jenjang: 'kelas 3',
+          jenisPendaftaran
         }),
         headers: {
           Authorization: `Bearer ${session.user.access_token}`,

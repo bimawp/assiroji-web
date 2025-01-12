@@ -32,7 +32,6 @@ export async function GET(request, { params }) {
         statusPendaftaran: true,
         tanggalPendaftaran: true,
         jenisPendaftaran: true,
-        jenjang: true,
         user: {
           select: {
             formulirPendaftaran: {

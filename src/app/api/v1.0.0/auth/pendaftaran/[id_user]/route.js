@@ -35,14 +35,12 @@ export async function GET(req, { params }) {
     const status = ppdbWithPendaftar.dataPendaftar[0]?.statusPendaftaran || null;
     const tanggalPendaftaran = ppdbWithPendaftar.dataPendaftar[0]?.tanggalPendaftaran || null;
     const jenisPendaftaran = ppdbWithPendaftar.dataPendaftar[0]?.jenisPendaftaran || null;
-    const jenjang = ppdbWithPendaftar.dataPendaftar[0]?.jenjang || null;
 
     const updatedPpdb = {
       ...ppdbWithPendaftar,
       status,
       tanggalPendaftaran,
       jenisPendaftaran,
-      jenjang,
       dataUser,
     };
 

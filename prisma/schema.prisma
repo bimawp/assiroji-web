@@ -160,7 +160,6 @@ model DataPendaftar {
   createdAt           DateTime  @default(now())
   updatedAt           DateTime @updatedAt @default(now())
   jenisPendaftaran    String
-  jenjang             String
 }
 
 model FormulirPendaftaran {

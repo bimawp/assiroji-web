@@ -131,7 +131,7 @@ export default function Page() {
                 <th className="px-6 py-4 text-left">No</th>
                 <th className="px-6 py-4 text-left">Nama lengkap</th>
                 <th className="px-6 py-4 text-left">Jenis Pendaftaran</th>
-                <th className="px-6 py-4 text-center">Jenjang</th>
+                {/* <th className="px-6 py-4 text-center">Jenjang</th> */}
                 <th className="px-6 py-4 text-center">Status Pendaftaran</th>
                 <th className="px-6 py-4 text-right">Action</th>
               </tr>
@@ -166,7 +166,7 @@ export default function Page() {
                     <td className="px-6 py-4">{indexOfFirstItem + index + 1}</td>
                     <td className="px-6 py-4">{item.user.formulirPendaftaran.namaLengkap}</td>
                     <td className="px-6 py-4">{item.jenisPendaftaran}</td>
-                    <td className="px-6 py-4 text-center">{item.jenjang}</td>
+                    {/* <td className="px-6 py-4 text-center">{item.jenjang}</td> */}
                     <td className="px-6 py-4 text-center">{item.statusPendaftaran}</td>
                     <td className="px-6 py-4">
                       <div className="flex justify-end gap-2">

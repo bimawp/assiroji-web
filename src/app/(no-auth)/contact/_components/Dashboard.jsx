@@ -4,13 +4,6 @@ import Header from '@/components/__Header';
 import Image from 'next/image';
 import { useState } from 'react';
 
-const contactItems = [
-  { id: 1, icon: '📞', label: 'Telepon', value: '+62 123 4567 890' },
-  { id: 2, icon: '✉️', label: 'Email', value: 'info@ma-assiroji.sch.id' },
-  { id: 3, icon: '📍', label: 'Alamat', value: 'Jl. Contoh No. 123, Kota, Provinsi' },
-  { id: 4, icon: '🕒', label: 'Jam Kerja', value: 'Senin - Jumat: 08:00 - 16:00' },
-];
-
 export default function ContactPage({ data }) {
   const [formData, setFormData] = useState({
     name: '',
@@ -150,7 +143,7 @@ export default function ContactPage({ data }) {
         <div className="bg-white/20 backdrop-blur-sm rounded-lg overflow-hidden">
           <h3 className="text-lg font-semibold p-4">Lokasi Kami</h3>
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.5984760549637!2d107.88975731477226!3d-6.938307694989396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68c3052c65c6dd%3A0x89b0802179c78baf!2sMA%20AS-SIROJI!5e0!3m2!1sen!2sid!4v1652345678901!5m2!1sen!2sid"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3959.104459310235!2d107.69518699999999!3d-7.1138921!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68bfbf1b4a8a5b%3A0xbf2bf58ae2834420!2sSMP%20As-SIROJI!5e0!3m2!1sid!2sid!4v1736670880015!5m2!1sid!2sid"
             width="100%"
             height="450"
             style={{ border: 0 }}

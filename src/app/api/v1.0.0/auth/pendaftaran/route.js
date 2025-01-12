@@ -47,8 +47,7 @@ export async function POST(request) {
         id_user: id_user,
         id_ppdb: id_ppdb,
         statusPendaftaran: 'proses',
-        jenisPendaftaran,
-        jenjang,
+        jenisPendaftaran
       },
     });
 
