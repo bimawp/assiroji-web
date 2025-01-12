@@ -3,11 +3,11 @@ import { prisma } from '@/lib/prisma';
 import { getAllRecords, getRecordById } from '@/service';
 import { NextResponse } from 'next/server';
 export async function GET(req) {
-  const tokenValidation = await jwtAuthToken(req);
+  // const tokenValidation = await jwtAuthToken(req);
 
-  if (tokenValidation.error) {
-    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
-  }
+  // if (tokenValidation.error) {
+  //   return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  // }
   try {
     const latestPpdb = await prisma.pPDB.findFirst({
       orderBy: {
@@ -31,13 +31,15 @@ export async function GET(req) {
   }
 }
 export async function POST(request) {
-  const tokenValidation = await jwtAuthToken(request);
+  // const tokenValidation = await jwtAuthToken(request);
 
-  if (tokenValidation.error) {
-    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
-  }
+  // if (tokenValidation.error) {
+  //   return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  // }
   try {
     const body = await request.json();
+
+    console.log('body : ', body);
     const { id_user, id_ppdb, formData, jenisPendaftaran, jenjang } = body;
 
     const dataPendaftar = await prisma.dataPendaftar.create({

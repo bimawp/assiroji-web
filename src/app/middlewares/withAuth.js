@@ -10,25 +10,25 @@ export default function withAuth(middleware, requireAuth) {
       req,
       secret: process.env.NEXTAUTH_SECRET,
     });
-    const isValidToken = await verifyToken(token.access_token);
-    if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
-      if (!isValidToken) {
-        return NextResponse.redirect(new URL('/admin/login', req.url));
-      }
-    }
+    // const isValidToken = await verifyToken(token.access_token);
+    // if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+    //   if (!isValidToken) {
+    //     return NextResponse.redirect(new URL('/admin/login', req.url));
+    //   }
+    // }
 
-    // if (pathname === '/admin/login') {
-    //   if (token?.role === 'admin') {
-    //     return NextResponse.redirect(new URL('/admin', req.url));
-    //   }
-    //   return middleware(req, next);
-    // }
-    // if (pathname === '/ppdb/l/auth') {
-    //   if (token?.role === 'peserta') {
-    //     return NextResponse.redirect(new URL('/ppdb/l', req.url));
-    //   }
-    //   return middleware(req, next);
-    // }
+    if (pathname === '/admin/login') {
+      if (token?.role === 'admin') {
+        return NextResponse.redirect(new URL('/admin', req.url));
+      }
+      return middleware(req, next);
+    }
+    if (pathname === '/ppdb/l/auth') {
+      if (token?.role === 'peserta') {
+        return NextResponse.redirect(new URL('/ppdb/l', req.url));
+      }
+      return middleware(req, next);
+    }
 
     if (requireAuth.some((route) => pathname.startsWith(route))) {
       if (!token) {

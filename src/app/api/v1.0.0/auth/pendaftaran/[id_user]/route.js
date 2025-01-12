@@ -4,11 +4,11 @@ import { getRecordById } from '@/service';
 import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
-  const tokenValidation = await jwtAuthToken(req);
+  // const tokenValidation = await jwtAuthToken(req);
 
-  if (tokenValidation.error) {
-    return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
-  }
+  // if (tokenValidation.error) {
+  //   return NextResponse.json({ error: tokenValidation.error }, { status: tokenValidation.status });
+  // }
   try {
     const { id_user } = await params;
 

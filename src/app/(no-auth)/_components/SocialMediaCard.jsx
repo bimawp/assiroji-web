@@ -4,12 +4,7 @@ import React from 'react';
 export default function SocialMediaCard() {
   return (
     <div className="grid grid-cols-4 gap-2">
-      {[
-        { src: '/image/facebook.png' },
-        { src: '/image/instagram2.png' },
-        { src: '/image/facebook.png' },
-        { src: '/image/instagram2.png' },
-      ].map((Icon, index) => (
+      {[{ src: '/image/facebook.png' }, { src: '/image/instagram2.png' }].map((Icon, index) => (
         <div key={index} className="bg-[#ffc107] rounded-lg">
           <div className="p-4 flex items-center justify-center">
             <a

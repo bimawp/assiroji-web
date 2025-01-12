@@ -56,14 +56,6 @@ export default function SaranaDanPrasaranaPage({ data }) {
                         <td className="text-center">{room.condition}</td>
                       </tr>
                     ))}
-                  {/* <tr className="bg-gray-400 rounded-md">
-                    <td className="text-center" colSpan={2}>
-                      Jumlah
-                    </td>
-                    <td className="text-center">50</td>
-
-                    <td className="text-center">32</td>
-                  </tr> */}
                 </tbody>
               </table>
             </div>

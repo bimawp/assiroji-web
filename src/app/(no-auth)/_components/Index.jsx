@@ -107,7 +107,6 @@ export default function HomePage({ data }) {
             </div>
           </div>
 
-          {/* Contact Information */}
           <div className="space-y-4">
             <div className="bg-[#009688] text-white rounded-lg">
               <div className="p-4">
@@ -135,7 +134,6 @@ export default function HomePage({ data }) {
               </div>
             </div>
 
-            {/* Social Media Links */}
             <SocialMediaCard />
           </div>
         </div>

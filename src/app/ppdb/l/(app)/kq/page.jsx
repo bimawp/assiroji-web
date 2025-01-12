@@ -51,12 +51,12 @@ export default function Page() {
     }
   };
   useEffect(() => {
-    if (session?.user?.id && session?.user?.access_token && !dataFetched) {
+    if (session?.user?.id && !dataFetched) {
       fetchData();
     } else if (status !== 'loading') {
       setIsLoading(false);
     }
-  }, [session?.user?.id, session?.user?.access_token, status, dataFetched]);
+  }, [session?.user?.id, status, dataFetched]);
 
   const handleRefresh = () => {
     setDataFetched(false);
