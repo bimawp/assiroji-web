@@ -1,6 +1,6 @@
 import React from 'react';
 import GuruKaryawanPage from './_components';
-
+export const revalidate = 3600;
 export default async function Page() {
   try {
     const ress = await fetch(

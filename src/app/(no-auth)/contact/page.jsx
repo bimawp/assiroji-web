@@ -1,7 +1,7 @@
 import React from 'react';
 import ContactPage from './_components/Dashboard';
 import { prisma } from '@/lib/prisma';
-
+export const revalidate = 3600;
 export default async function Page() {
   try {
     const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/contact');

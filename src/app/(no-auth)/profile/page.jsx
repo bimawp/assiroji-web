@@ -1,11 +1,9 @@
 import React from 'react';
 import ProfilePage from './_components';
-
+export const revalidate = 3600;
 export default async function Page() {
   try {
-    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/profile', {
-      cache: 'no-store',
-    });
+    const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/profile');
     if (!ress) {
       notFound();
     }

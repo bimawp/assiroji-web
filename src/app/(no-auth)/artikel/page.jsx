@@ -1,6 +1,6 @@
 import React from 'react';
 import ArticlePage from './_components/Dashboard';
-
+export const revalidate = 500;
 export default async function Page() {
   try {
     const ress = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/v1.0.0/view/artikel');

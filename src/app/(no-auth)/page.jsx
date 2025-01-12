@@ -1,6 +1,5 @@
 import React from 'react';
 import HomePage from './_components/Index';
-export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 export default async function Page() {
   try {

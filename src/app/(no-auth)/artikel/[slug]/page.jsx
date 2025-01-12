@@ -1,6 +1,6 @@
 import React from 'react';
 import ArticleDetailPage from './_components/Dashboard';
-
+export const revalidate = 500;
 export default async function Page({ params }) {
   const { slug } = params;
 

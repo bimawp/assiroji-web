@@ -1,6 +1,4 @@
 import PagePrestasiLanding from './_components';
-
-export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 export default async function PrestasiPage() {
   try {
